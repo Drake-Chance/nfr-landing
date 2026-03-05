@@ -274,7 +274,7 @@
         .pipeline-header p {
             font-size: 0.88rem; color: var(--text-muted);
         }
-        #pipeline-canvas { display: block; max-width: 920px; margin: 0 auto; }
+        #pipeline-canvas { display: block; max-width: 960px; margin: 0 auto; }
 
         /* Spectrum */
         .spectrum-section {
@@ -283,7 +283,7 @@
             background: var(--bg-dark);
         }
         .spectrum-inner { max-width: 1200px; margin: 0 auto; }
-        #waveform-demo { max-width: 860px; height: 220px; margin: 0 auto 1rem; }
+        #waveform-demo { max-width: 860px; height: 380px; margin: 0 auto 1rem; }
         .spectrum-caption {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.7rem; color: rgba(255,255,255,0.3);
@@ -698,8 +698,10 @@
         <div class="spectrum-inner">
             <canvas id="waveform-demo"></canvas>
             <p class="spectrum-caption">
-                FIG. 1 — Frequency bin activation after energy minimization. Of 64 bins, approximately 6 carry 
-                meaningful amplitude. Remaining bins converge to noise floor.
+                FIG. 1 — Top: Output waveform after inverse FFT. Green regions contain encoded data; 
+                gray regions are near-zero (silence). Bottom: Corresponding frequency spectrum showing 
+                6 of 64 bins carrying meaningful amplitude. Information concentrates in sparse spectral peaks 
+                while 90.6% of bins converge to noise floor.
             </p>
         </div>
     </div>
@@ -1107,9 +1109,9 @@
 
         function resizePipeline() {
             const rect = pipe.parentElement.getBoundingClientRect();
-            const w = Math.min(rect.width, 920);
+            const w = Math.min(rect.width, 960);
             pipe.width = w;
-            pipe.height = w < 600 ? 740 : 480;
+            pipe.height = w < 600 ? 740 : 490;
         }
         resizePipeline();
         window.addEventListener('resize', resizePipeline);
@@ -1157,8 +1159,10 @@
         function drawPipeline() {
             const w=pipe.width,h=pipe.height;
             pctx.clearRect(0,0,w,h);
-            const narrow=w<600, boxW=narrow?w*0.62:148, boxH=68;
-            let nodes;
+            const narrow=w<600, boxW=narrow?w*0.55:140, boxH=68;
+            const sideW=narrow?w*0.45:155, sideH=110;
+
+            let nodes, sideNode;
             if(narrow){
                 const cx=w/2,sy=15,g=115;
                 nodes=[
@@ -1169,17 +1173,30 @@
                     {x:cx-boxW/2,y:sy+g*4,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
                     {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'99.2% reconstruction',i:'06',hi:true},
                 ];
+                sideNode=null; // skip on narrow
             } else {
-                const p=35,gX=(w-p*2-boxW*3)/2,r1=55,r2=280;
+                const mainW=boxW*3+80;
+                const mainLeft=(w-mainW-sideW-40)/2;
+                const gX=(mainW-boxW*3)/2;
+                const r1=55,r2=280;
                 nodes=[
-                    {x:p,y:r1,l:'Raw Text',s:'Knowledge corpus',i:'01'},
-                    {x:p+boxW+gX,y:r1,l:'Neural Encoder',s:'Amplitude + Phase mapping',i:'02'},
-                    {x:p+(boxW+gX)*2,y:r1,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
-                    {x:p+(boxW+gX)*2,y:r2,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
-                    {x:p+boxW+gX,y:r2,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:p,y:r2,l:'Verification',s:'99.2% reconstruction',i:'06',hi:true},
+                    {x:mainLeft,y:r1,l:'Raw Text',s:'Knowledge corpus',i:'01'},
+                    {x:mainLeft+boxW+gX,y:r1,l:'Neural Encoder',s:'Amplitude + Phase mapping',i:'02'},
+                    {x:mainLeft+(boxW+gX)*2,y:r1,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
+                    {x:mainLeft+(boxW+gX)*2,y:r2,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
+                    {x:mainLeft+boxW+gX,y:r2,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
+                    {x:mainLeft,y:r2,l:'Verification',s:'99.2% reconstruction',i:'06',hi:true},
                 ];
+                // Side node - Cooperative Training
+                sideNode={
+                    x: mainLeft+mainW+40,
+                    y: (r1+r2)/2 - sideH/2 + 10,
+                    w: sideW,
+                    h: sideH
+                };
             }
+
+            // Draw main flow arrows
             for(let i=0;i<nodes.length-1;i++){
                 const a=nodes[i],b=nodes[i+1];let fx,fy,tx,ty;
                 if(narrow){fx=a.x+boxW/2;fy=a.y+boxH+4;tx=b.x+boxW/2;ty=b.y-4;}
@@ -1188,6 +1205,73 @@
                 else{fx=a.x-4;fy=a.y+boxH/2;tx=b.x+boxW+4;ty=b.y+boxH/2;}
                 arrow(pctx,fx,fy,tx,ty,((pt*0.4+i*0.18)%1),i===3?'rgba(10,124,80,0.25)':undefined);
             }
+
+            // Draw side node + connections (desktop only)
+            if(sideNode){
+                // Dashed border box
+                pctx.setLineDash([4,3]);
+                rrect(pctx,sideNode.x,sideNode.y,sideNode.w,sideNode.h,6,'rgba(26,58,138,0.03)','rgba(26,58,138,0.2)');
+                pctx.setLineDash([]);
+
+                // Side node label
+                pctx.font='500 8px IBM Plex Mono,monospace';pctx.textAlign='center';
+                pctx.fillStyle='#1a3a8a';
+                pctx.fillText('COOPERATIVE TRAINING',sideNode.x+sideNode.w/2,sideNode.y+16);
+
+                // Two sub-boxes inside
+                const subW=sideNode.w-20, subH=28, subX=sideNode.x+10;
+                rrect(pctx,subX,sideNode.y+26,subW,subH,3,'#fff','rgba(0,0,0,0.08)');
+                pctx.font='600 9.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
+                pctx.fillText('Encoder',subX+subW/2,sideNode.y+38);
+                pctx.font='400 8px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
+                pctx.fillText('Discovers frequency mapping',subX+subW/2,sideNode.y+50);
+
+                rrect(pctx,subX,sideNode.y+60,subW,subH,3,'#fff','rgba(0,0,0,0.08)');
+                pctx.font='600 9.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
+                pctx.fillText('Decoder',subX+subW/2,sideNode.y+72);
+                pctx.font='400 8px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
+                pctx.fillText('Verifies reconstruction fidelity',subX+subW/2,sideNode.y+84);
+
+                // Bidirectional arrow between sub-boxes
+                const arrowX=subX+subW-8;
+                pctx.beginPath();pctx.strokeStyle='rgba(26,58,138,0.2)';pctx.lineWidth=1;
+                pctx.moveTo(arrowX,sideNode.y+54);pctx.lineTo(arrowX,sideNode.y+60);pctx.stroke();
+
+                // Label beneath
+                pctx.font='400 7.5px IBM Plex Mono,monospace';pctx.fillStyle='rgba(10,124,80,0.5)';
+                pctx.fillText('Joint optimization drives',sideNode.x+sideNode.w/2,sideNode.y+sideH-6);
+                pctx.fillText('proprietary sparse format',sideNode.x+sideNode.w/2,sideNode.y+sideH+4);
+
+                // Connecting arrows from side node to encoder (node 1) and verification (node 5)
+                const encNode=nodes[1], verNode=nodes[5];
+                // Arrow from side to encoder
+                pctx.beginPath();pctx.strokeStyle='rgba(26,58,138,0.12)';pctx.lineWidth=1;
+                pctx.setLineDash([3,3]);
+                pctx.moveTo(sideNode.x,sideNode.y+40);
+                pctx.lineTo(encNode.x+boxW+4,encNode.y+boxH/2+5);
+                pctx.stroke();
+                // Arrow from side to verification
+                pctx.moveTo(sideNode.x,sideNode.y+74);
+                pctx.lineTo(verNode.x+boxW+4,verNode.y+boxH/2-5);
+                pctx.stroke();
+                pctx.setLineDash([]);
+
+                // Traveling dots on side connections
+                const p1=((pt*0.3)%1);
+                const sx1=sideNode.x, sy1=sideNode.y+40;
+                const ex1=encNode.x+boxW+4, ey1=encNode.y+boxH/2+5;
+                pctx.beginPath();pctx.fillStyle='#1a3a8a';pctx.shadowColor='#1a3a8a';pctx.shadowBlur=4;
+                pctx.arc(sx1+(ex1-sx1)*p1,sy1+(ey1-sy1)*p1,2.5,0,Math.PI*2);pctx.fill();
+
+                const p2=((pt*0.3+0.5)%1);
+                const sx2=sideNode.x, sy2=sideNode.y+74;
+                const ex2=verNode.x+boxW+4, ey2=verNode.y+boxH/2-5;
+                pctx.beginPath();
+                pctx.arc(sx2+(ex2-sx2)*p2,sy2+(ey2-sy2)*p2,2.5,0,Math.PI*2);pctx.fill();
+                pctx.shadowBlur=0;
+            }
+
+            // Draw main nodes
             nodes.forEach(n=>{
                 const bc=n.hi?'rgba(10,124,80,0.2)':'rgba(0,0,0,0.08)';
                 const bg=n.hi?'rgba(10,124,80,0.03)':'#fff';
@@ -1195,14 +1279,15 @@
                 pctx.font='500 9px IBM Plex Mono,monospace';pctx.textAlign='left';
                 pctx.fillStyle=n.hi?'#0a7c50':'#1a3a8a';
                 pctx.fillText(n.i,n.x+12,n.y+18);
-                pctx.font='600 11.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
+                pctx.font='600 11px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
                 pctx.textAlign='center';
                 pctx.fillText(n.l,n.x+boxW/2,n.y+38);
-                pctx.font='400 9.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
+                pctx.font='400 9px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
                 pctx.fillText(n.s,n.x+boxW/2,n.y+55);
                 if(n.v==='spec')miniSpec(pctx,n.x+boxW/2,n.y+boxH+8,boxW*0.75,36,pt);
                 if(n.v==='wave')miniWave(pctx,n.x+boxW/2,n.y+boxH+26,boxW*0.75,24,pt);
             });
+
             if(!narrow){
                 const mid=(nodes[2].y+boxH+nodes[3].y)/2;
                 pctx.font='500 9px IBM Plex Mono,monospace';
@@ -1218,46 +1303,157 @@
         const dctx=demo.getContext('2d');
         function resizeDemo(){
             const r=demo.parentElement.getBoundingClientRect();
-            demo.width=Math.min(r.width-40,860);demo.height=220;
+            demo.width=Math.min(r.width-40,860);demo.height=380;
         }
         resizeDemo();window.addEventListener('resize',resizeDemo);
         let dt=0;
         function drawSpectrum(){
-            const w=demo.width,h=demo.height;dctx.clearRect(0,0,w,h);
-            // Grid lines
-            dctx.strokeStyle='rgba(255,255,255,0.04)';dctx.lineWidth=1;
-            for(let y=0;y<h;y+=40){dctx.beginPath();dctx.moveTo(0,y);dctx.lineTo(w,y);dctx.stroke();}
-            // Y axis label
-            dctx.save();dctx.translate(12,h/2);dctx.rotate(-Math.PI/2);
+            const w=demo.width,h=demo.height;
+            dctx.clearRect(0,0,w,h);
+
+            const waveH=160, specH=160, gap=30;
+            const ox=35, ow=w-70;
+
+            // === TOP: WAVEFORM with highlighted data regions ===
+            // Grid
+            dctx.strokeStyle='rgba(255,255,255,0.03)';dctx.lineWidth=1;
+            for(let gy=0;gy<waveH;gy+=30){
+                dctx.beginPath();dctx.moveTo(ox,gy);dctx.lineTo(ox+ow,gy);dctx.stroke();
+            }
+
+            // Zero line
+            const wMid=waveH/2;
+            dctx.beginPath();dctx.strokeStyle='rgba(255,255,255,0.08)';
+            dctx.moveTo(ox,wMid);dctx.lineTo(ox+ow,wMid);dctx.stroke();
+
+            // Define active regions (where data lives in the waveform)
+            const activeRegions=[
+                {start:0.04,end:0.12},{start:0.22,end:0.28},
+                {start:0.42,end:0.52},{start:0.68,end:0.74},{start:0.85,end:0.95}
+            ];
+
+            // Draw highlight zones behind the wave
+            activeRegions.forEach(r=>{
+                const x1=ox+r.start*ow, x2=ox+r.end*ow;
+                dctx.fillStyle='rgba(10,185,129,0.06)';
+                dctx.fillRect(x1,2,x2-x1,waveH-4);
+                // Top marker
+                dctx.fillStyle='rgba(10,185,129,0.3)';
+                dctx.fillRect(x1,0,x2-x1,2);
+            });
+
+            // Draw the full waveform
+            // Ghost wave (full, dim) - shows entire signal
+            dctx.beginPath();dctx.strokeStyle='rgba(255,255,255,0.06)';dctx.lineWidth=1;
+            for(let i=0;i<=ow;i++){
+                const x=ox+i;
+                const t=i/ow;
+                let y=wMid;
+                // Composite of multiple frequencies
+                y+=Math.sin(t*40+dt)*25;
+                y+=Math.sin(t*12+dt*0.7)*15;
+                y+=Math.sin(t*85+dt*1.3)*8;
+                y+=Math.sin(t*150+dt*0.5)*5;
+                if(i===0)dctx.moveTo(x,y);else dctx.lineTo(x,y);
+            }
+            dctx.stroke();
+
+            // Active wave segments (bright where data exists)
+            activeRegions.forEach(reg=>{
+                dctx.beginPath();dctx.strokeStyle='#34d399';dctx.lineWidth=2;
+                const startPx=Math.floor(reg.start*ow);
+                const endPx=Math.ceil(reg.end*ow);
+                for(let i=startPx;i<=endPx;i++){
+                    const x=ox+i;
+                    const t=i/ow;
+                    let y=wMid;
+                    y+=Math.sin(t*40+dt)*25;
+                    y+=Math.sin(t*12+dt*0.7)*15;
+                    y+=Math.sin(t*85+dt*1.3)*8;
+                    y+=Math.sin(t*150+dt*0.5)*5;
+                    if(i===startPx)dctx.moveTo(x,y);else dctx.lineTo(x,y);
+                }
+                dctx.stroke();
+
+                // Glow
+                dctx.beginPath();dctx.strokeStyle='rgba(52,211,153,0.15)';dctx.lineWidth=6;
+                for(let i=startPx;i<=endPx;i++){
+                    const x=ox+i;
+                    const t=i/ow;
+                    let y=wMid;
+                    y+=Math.sin(t*40+dt)*25;
+                    y+=Math.sin(t*12+dt*0.7)*15;
+                    y+=Math.sin(t*85+dt*1.3)*8;
+                    y+=Math.sin(t*150+dt*0.5)*5;
+                    if(i===startPx)dctx.moveTo(x,y);else dctx.lineTo(x,y);
+                }
+                dctx.stroke();
+            });
+
+            // Waveform labels
             dctx.font='9px IBM Plex Mono,monospace';dctx.fillStyle='rgba(255,255,255,0.2)';
+            dctx.textAlign='left';dctx.fillText('WAVEFORM OUTPUT (iFFT)',ox,waveH+14);
+            dctx.textAlign='right';
+            dctx.fillStyle='rgba(52,211,153,0.4)';dctx.fillText('■',ox+ow-95,waveH+14);
+            dctx.fillStyle='rgba(255,255,255,0.3)';dctx.fillText(' Data regions',ox+ow,waveH+14);
+            dctx.fillStyle='rgba(255,255,255,0.08)';dctx.fillText('■',ox+ow-215,waveH+14);
+            dctx.fillStyle='rgba(255,255,255,0.3)';dctx.fillText(' Near-zero (silence)',ox+ow-100,waveH+14);
+
+            // === BOTTOM: FREQUENCY SPECTRUM ===
+            const specTop=waveH+gap;
+            // Grid
+            dctx.strokeStyle='rgba(255,255,255,0.03)';dctx.lineWidth=1;
+            for(let gy=specTop;gy<specTop+specH;gy+=30){
+                dctx.beginPath();dctx.moveTo(ox,gy);dctx.lineTo(ox+ow,gy);dctx.stroke();
+            }
+
+            // Y axis
+            dctx.save();dctx.translate(12,specTop+specH/2);dctx.rotate(-Math.PI/2);
+            dctx.font='8px IBM Plex Mono,monospace';dctx.fillStyle='rgba(255,255,255,0.15)';
             dctx.textAlign='center';dctx.fillText('AMPLITUDE',0,0);dctx.restore();
-            // X axis label
-            dctx.font='9px IBM Plex Mono,monospace';dctx.fillStyle='rgba(255,255,255,0.2)';
-            dctx.textAlign='center';dctx.fillText('FREQUENCY BIN INDEX',w/2,h-4);
+
             // Bins
-            const bins=64,bw=(w-40)/bins,ox=25;
-            const active=[3,7,12,22,31,45];
+            const bins=64,bw=ow/bins;
+            const activeBins=[3,7,12,22,31,45];
             for(let i=0;i<bins;i++){
-                const a=active.includes(i);
-                const amp=a?(0.25+0.75*Math.abs(Math.sin(dt*0.8+i*0.7)))*(h*0.72):Math.random()*2.5;
-                const grad=dctx.createLinearGradient(0,h-30,0,h-30-amp);
-                if(a){grad.addColorStop(0,'rgba(10,185,129,0.7)');grad.addColorStop(1,'rgba(42,92,199,0.5)');}
-                else{grad.addColorStop(0,'rgba(255,255,255,0.04)');grad.addColorStop(1,'rgba(255,255,255,0.02)');}
-                dctx.fillStyle=grad;
-                dctx.fillRect(ox+i*bw+1,h-30-amp,bw-2,amp);
-                // Bin number for active
+                const a=activeBins.includes(i);
+                const amp=a?(0.25+0.75*Math.abs(Math.sin(dt*0.8+i*0.7)))*(specH*0.7):Math.random()*2;
+                const grad=dctx.createLinearGradient(0,specTop+specH,0,specTop+specH-amp);
                 if(a){
-                    dctx.font='8px IBM Plex Mono,monospace';dctx.fillStyle='rgba(255,255,255,0.3)';
-                    dctx.textAlign='center';dctx.fillText(i,ox+i*bw+bw/2,h-22);
+                    grad.addColorStop(0,'rgba(10,185,129,0.7)');
+                    grad.addColorStop(1,'rgba(42,92,199,0.5)');
+                }else{
+                    grad.addColorStop(0,'rgba(255,255,255,0.03)');
+                    grad.addColorStop(1,'rgba(255,255,255,0.01)');
+                }
+                dctx.fillStyle=grad;
+                dctx.fillRect(ox+i*bw+1,specTop+specH-amp,bw-2,amp);
+                if(a){
+                    dctx.font='7px IBM Plex Mono,monospace';dctx.fillStyle='rgba(255,255,255,0.25)';
+                    dctx.textAlign='center';dctx.fillText('f'+i,ox+i*bw+bw/2,specTop+specH+10);
                 }
             }
-            // Legend
-            dctx.font='10px IBM Plex Mono,monospace';dctx.textAlign='left';
-            dctx.fillStyle='rgba(10,185,129,0.6)';dctx.fillRect(w-200,12,8,8);
-            dctx.fillStyle='rgba(255,255,255,0.4)';dctx.fillText('Active (6 bins)',w-186,20);
-            dctx.fillStyle='rgba(255,255,255,0.06)';dctx.fillRect(w-200,28,8,8);
-            dctx.fillStyle='rgba(255,255,255,0.4)';dctx.fillText('Near-zero (58 bins)',w-186,36);
-            dt+=0.012;requestAnimationFrame(drawSpectrum);
+
+            // Spectrum label
+            dctx.font='9px IBM Plex Mono,monospace';dctx.fillStyle='rgba(255,255,255,0.2)';
+            dctx.textAlign='left';dctx.fillText('FREQUENCY SPECTRUM (64 bins — 6 active, 58 near-zero)',ox,specTop+specH+22);
+
+            // Connecting lines from active bins to waveform active regions
+            dctx.strokeStyle='rgba(99,102,241,0.08)';dctx.lineWidth=1;dctx.setLineDash([2,3]);
+            activeBins.forEach((bin,idx)=>{
+                if(idx<activeRegions.length){
+                    const bx=ox+bin*bw+bw/2;
+                    const reg=activeRegions[idx];
+                    const rx=ox+(reg.start+reg.end)/2*ow;
+                    dctx.beginPath();
+                    dctx.moveTo(bx,specTop);
+                    dctx.lineTo(rx,waveH);
+                    dctx.stroke();
+                }
+            });
+            dctx.setLineDash([]);
+
+            dt+=0.01;requestAnimationFrame(drawSpectrum);
         }
         drawSpectrum();
 
