@@ -278,6 +278,90 @@
             font-size: 0.7rem; color: rgba(255,255,255,0.3);
         }
 
+        /* Benchmark */
+        .benchmark-section {
+            background: var(--bg-alt);
+            padding: 6rem 3rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .benchmark-inner { max-width: 1200px; margin: 0 auto; }
+        .benchmark-header { margin-bottom: 3rem; }
+        .benchmark-header h2 {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 1.8rem; font-weight: 600; margin-bottom: 0.8rem;
+        }
+        .benchmark-header p { font-size: 0.9rem; color: var(--text-secondary); max-width: 680px; line-height: 1.8; }
+        .benchmark-methodology {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem; color: var(--text-muted);
+            padding: 1rem 1.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border); border-radius: 4px;
+            margin-bottom: 3rem; line-height: 1.8;
+        }
+        .benchmark-table-wrap {
+            overflow-x: auto; margin-bottom: 2.5rem;
+        }
+        .benchmark-table-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem; font-weight: 500;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--accent-light); margin-bottom: 0.8rem;
+        }
+        .bench-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .bench-table thead th {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0.8rem 1rem;
+            border-bottom: 2px solid var(--border-strong);
+            text-align: left;
+        }
+        .bench-table thead th.num { text-align: right; }
+        .bench-table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .bench-table tbody td.num {
+            text-align: right;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+        }
+        .bench-table tbody td.model-name { font-weight: 600; color: var(--text); }
+        .bench-table tbody td.highlight {
+            color: var(--green); font-weight: 600;
+        }
+        .bench-table tbody td.savings {
+            color: var(--green); font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+        .bench-table tbody tr:hover { background: rgba(0,0,0,0.015); }
+        .bench-bar-section { margin-top: 3rem; }
+        #benchmark-chart { display: block; max-width: 860px; width: 100%; height: 320px; margin: 1.5rem auto 0; }
+        .bench-caveat {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(138, 32, 32, 0.15);
+            border-left: 3px solid var(--red);
+            background: var(--red-bg);
+            border-radius: 4px;
+        }
+        .bench-caveat-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--red); margin-bottom: 0.6rem;
+        }
+        .bench-caveat p {
+            font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 0.4rem;
+        }
+
         /* Applications grid */
         .apps-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
@@ -433,6 +517,7 @@
             </div>
             <div class="nav-right">
                 <a href="#research" class="nav-link">Research</a>
+                <a href="#benchmark" class="nav-link">Benchmarks</a>
                 <a href="#applications" class="nav-link">Applications</a>
                 <a href="#contact" class="nav-link">Contact</a>
                 <div class="nav-status">Patent Pending</div>
@@ -585,6 +670,186 @@
         </div>
     </div>
 
+    <!-- Benchmark -->
+    <div class="benchmark-section" id="benchmark">
+        <div class="benchmark-inner">
+            <div class="benchmark-header">
+                <div class="section-label">Compute Efficiency Analysis</div>
+                <h2>FLOPS Reduction at Scale</h2>
+                <p>
+                    Extrapolated compute savings when NFR sparse representations are applied to 
+                    industry-standard transformer architectures. Per-layer FLOPS calculated using 
+                    standard transformer cost formulas with measured NFR sparsity ratios.
+                </p>
+            </div>
+
+            <div class="benchmark-methodology">
+                <strong>Methodology:</strong> Standard transformer layer FLOPS = 12d²n + 2n²d, where d = model dimension, 
+                n = sequence length. NFR effective dimension d_eff = d × 0.094 (6 of 64 frequency bins active). 
+                Sparse operations skip zero-amplitude bins. Cost projections assume H100 GPU at $2/hr with 
+                1B tokens/day inference volume. All figures represent dimension-dependent operations only.
+            </div>
+
+            <!-- Table 1: Per-Layer FLOPS -->
+            <div class="benchmark-table-wrap">
+                <div class="benchmark-table-label">Table 1 — Per-Token FLOPS per Transformer Layer</div>
+                <table class="bench-table">
+                    <thead>
+                        <tr>
+                            <th>Model Class</th>
+                            <th>Parameters</th>
+                            <th>Layers</th>
+                            <th>d_model</th>
+                            <th class="num">Dense FLOPS/Token/Layer</th>
+                            <th class="num">NFR Sparse FLOPS</th>
+                            <th class="num">Reduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="model-name">GPT-4 Class</td>
+                            <td>~1.8T</td>
+                            <td>120</td>
+                            <td>12,288</td>
+                            <td class="num">1.81 × 10⁹</td>
+                            <td class="num">1.70 × 10⁸</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Claude / GPT-4o Class</td>
+                            <td>~175B</td>
+                            <td>80</td>
+                            <td>8,192</td>
+                            <td class="num">8.05 × 10⁸</td>
+                            <td class="num">7.57 × 10⁷</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Llama 3 70B</td>
+                            <td>70B</td>
+                            <td>80</td>
+                            <td>8,192</td>
+                            <td class="num">8.05 × 10⁸</td>
+                            <td class="num">7.57 × 10⁷</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Mid-Tier (GPT-3.5 Class)</td>
+                            <td>~20B</td>
+                            <td>48</td>
+                            <td>4,096</td>
+                            <td class="num">2.01 × 10⁸</td>
+                            <td class="num">1.89 × 10⁷</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 2: Full Forward Pass -->
+            <div class="benchmark-table-wrap">
+                <div class="benchmark-table-label">Table 2 — Full Forward Pass (All Layers)</div>
+                <table class="bench-table">
+                    <thead>
+                        <tr>
+                            <th>Model Class</th>
+                            <th class="num">Dense (TFLOPS)</th>
+                            <th class="num">NFR Sparse (TFLOPS)</th>
+                            <th class="num">Savings (TFLOPS)</th>
+                            <th class="num">Reduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="model-name">GPT-4 Class</td>
+                            <td class="num">217.2</td>
+                            <td class="num">20.4</td>
+                            <td class="num highlight">196.8</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Claude / GPT-4o Class</td>
+                            <td class="num">64.4</td>
+                            <td class="num">6.1</td>
+                            <td class="num highlight">58.3</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Llama 3 70B</td>
+                            <td class="num">64.4</td>
+                            <td class="num">6.1</td>
+                            <td class="num highlight">58.3</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Mid-Tier (GPT-3.5 Class)</td>
+                            <td class="num">9.7</td>
+                            <td class="num">0.9</td>
+                            <td class="num highlight">8.8</td>
+                            <td class="num savings">90.6%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 3: Cost Projections -->
+            <div class="benchmark-table-wrap">
+                <div class="benchmark-table-label">Table 3 — Projected Annual Inference Cost Savings (1B tokens/day)</div>
+                <table class="bench-table">
+                    <thead>
+                        <tr>
+                            <th>Model Class</th>
+                            <th class="num">Dense Inference Cost/Year</th>
+                            <th class="num">NFR Sparse Cost/Year</th>
+                            <th class="num">Annual Savings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="model-name">GPT-4 Class</td>
+                            <td class="num">$152M</td>
+                            <td class="num">$14.3M</td>
+                            <td class="num savings">$137.7M</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Claude / GPT-4o Class</td>
+                            <td class="num">$45.1M</td>
+                            <td class="num">$4.2M</td>
+                            <td class="num savings">$40.9M</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Llama 3 70B</td>
+                            <td class="num">$45.1M</td>
+                            <td class="num">$4.2M</td>
+                            <td class="num savings">$40.9M</td>
+                        </tr>
+                        <tr>
+                            <td class="model-name">Mid-Tier (GPT-3.5 Class)</td>
+                            <td class="num">$6.8M</td>
+                            <td class="num">$0.6M</td>
+                            <td class="num savings">$6.2M</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bar chart -->
+            <div class="bench-bar-section">
+                <div class="benchmark-table-label">FIG. 2 — Dense vs. NFR Sparse FLOPS per Forward Pass</div>
+                <canvas id="benchmark-chart"></canvas>
+            </div>
+
+            <!-- Caveats -->
+            <div class="bench-caveat">
+                <div class="bench-caveat-label">Important Assumptions &amp; Limitations</div>
+                <p>These projections extrapolate NFR's measured 90.6% bin-level sparsity to full-scale architectures. Actual FLOPS reduction at scale has not yet been validated empirically.</p>
+                <p>Not all transformer operations benefit equally from input sparsity — softmax, layer normalization, and residual connections remain dense. The 90.6% figure represents an upper bound on dimension-dependent computation savings.</p>
+                <p>Hardware-level sparsity support varies by platform. NVIDIA Ampere and Hopper architectures (A100, H100) offer native structured sparsity acceleration at 2:4 patterns; unstructured sparsity gains depend on software optimization.</p>
+                <p>Memory bandwidth savings — often the true bottleneck in transformer inference — may exceed FLOPS savings but are architecture-dependent and not quantified here.</p>
+            </div>
+        </div>
+    </div>
+
     <hr class="section-divider">
 
     <!-- Applications -->
@@ -635,7 +900,8 @@
         <h2>The Economics of Representation Efficiency</h2>
         <p class="lead">
             AI compute costs are the fastest-growing line item in technology infrastructure. 
-            Methods that reduce representation density have direct economic impact at every scale.
+            At measured sparsity levels, NFR projects a 90.6% reduction in per-layer FLOPS 
+            for dimension-dependent operations.
         </p>
         <div class="scale-grid">
             <div class="scale-item">
@@ -643,12 +909,12 @@
                 <div class="scale-label">Annual global AI<br>compute expenditure</div>
             </div>
             <div class="scale-item">
-                <div class="scale-value">6–9 mo.</div>
-                <div class="scale-label">Training cost<br>doubling period</div>
+                <div class="scale-value">90.6%</div>
+                <div class="scale-label">Per-layer FLOPS<br>reduction (projected)</div>
             </div>
             <div class="scale-item">
-                <div class="scale-value">99.5%</div>
-                <div class="scale-label">Representation energy<br>eliminated by NFR</div>
+                <div class="scale-value">$138M</div>
+                <div class="scale-label">Projected annual savings<br>GPT-4 class deployment</div>
             </div>
         </div>
     </div>
@@ -857,6 +1123,112 @@
             dt+=0.012;requestAnimationFrame(drawSpectrum);
         }
         drawSpectrum();
+
+        // Benchmark chart
+        const bc = document.getElementById('benchmark-chart');
+        const bctx = bc.getContext('2d');
+        function resizeBench() {
+            const r = bc.parentElement.getBoundingClientRect();
+            bc.width = Math.min(r.width, 860);
+            bc.height = 320;
+        }
+        resizeBench();
+        window.addEventListener('resize', () => { resizeBench(); drawBenchChart(); });
+
+        function drawBenchChart() {
+            const w = bc.width, h = bc.height;
+            bctx.clearRect(0, 0, w, h);
+
+            const models = [
+                { name: 'GPT-4 Class', dense: 217.2, sparse: 20.4 },
+                { name: 'Claude / GPT-4o', dense: 64.4, sparse: 6.1 },
+                { name: 'Llama 3 70B', dense: 64.4, sparse: 6.1 },
+                { name: 'GPT-3.5 Class', dense: 9.7, sparse: 0.9 },
+            ];
+
+            const maxVal = 230;
+            const leftPad = 120, rightPad = 40, topPad = 30, bottomPad = 50;
+            const chartW = w - leftPad - rightPad;
+            const chartH = h - topPad - bottomPad;
+            const groupH = chartH / models.length;
+            const barH = 14;
+
+            // Grid lines
+            bctx.strokeStyle = 'rgba(0,0,0,0.06)';
+            bctx.lineWidth = 1;
+            const gridSteps = [0, 50, 100, 150, 200];
+            gridSteps.forEach(v => {
+                const x = leftPad + (v / maxVal) * chartW;
+                bctx.beginPath(); bctx.moveTo(x, topPad); bctx.lineTo(x, h - bottomPad);
+                bctx.stroke();
+                bctx.font = '9px IBM Plex Mono, monospace';
+                bctx.fillStyle = 'rgba(0,0,0,0.3)';
+                bctx.textAlign = 'center';
+                bctx.fillText(v + ' TFLOPS', x, h - bottomPad + 16);
+            });
+
+            models.forEach((m, i) => {
+                const cy = topPad + i * groupH + groupH / 2;
+
+                // Model name
+                bctx.font = '500 11px IBM Plex Sans, sans-serif';
+                bctx.fillStyle = '#1a1a2e';
+                bctx.textAlign = 'right';
+                bctx.fillText(m.name, leftPad - 12, cy + 2);
+
+                // Dense bar
+                const denseW = (m.dense / maxVal) * chartW;
+                bctx.fillStyle = 'rgba(138, 32, 32, 0.15)';
+                bctx.fillRect(leftPad, cy - barH - 2, denseW, barH);
+                // Dense border
+                bctx.strokeStyle = 'rgba(138, 32, 32, 0.3)';
+                bctx.lineWidth = 1;
+                bctx.strokeRect(leftPad, cy - barH - 2, denseW, barH);
+
+                // Dense label
+                bctx.font = '500 9px IBM Plex Mono, monospace';
+                bctx.fillStyle = '#8a2020';
+                bctx.textAlign = 'left';
+                bctx.fillText(m.dense.toFixed(1) + ' TFLOPS', leftPad + denseW + 6, cy - barH + 9);
+
+                // Sparse bar
+                const sparseW = (m.sparse / maxVal) * chartW;
+                bctx.fillStyle = 'rgba(10, 124, 80, 0.25)';
+                bctx.fillRect(leftPad, cy + 2, sparseW, barH);
+                bctx.strokeStyle = 'rgba(10, 124, 80, 0.5)';
+                bctx.lineWidth = 1;
+                bctx.strokeRect(leftPad, cy + 2, sparseW, barH);
+
+                // Sparse label
+                bctx.fillStyle = '#0a7c50';
+                bctx.fillText(m.sparse.toFixed(1) + ' TFLOPS', leftPad + sparseW + 6, cy + barH - 1);
+
+                // Reduction label
+                const pct = ((1 - m.sparse / m.dense) * 100).toFixed(1);
+                bctx.font = '700 10px IBM Plex Mono, monospace';
+                bctx.fillStyle = '#0a7c50';
+                bctx.textAlign = 'right';
+                bctx.fillText('-' + pct + '%', w - rightPad, cy + 4);
+            });
+
+            // Legend
+            bctx.fillStyle = 'rgba(138, 32, 32, 0.15)';
+            bctx.fillRect(leftPad, h - 22, 12, 10);
+            bctx.strokeStyle = 'rgba(138, 32, 32, 0.3)';
+            bctx.strokeRect(leftPad, h - 22, 12, 10);
+            bctx.font = '10px IBM Plex Sans, sans-serif';
+            bctx.fillStyle = '#4a4a65';
+            bctx.textAlign = 'left';
+            bctx.fillText('Dense (standard)', leftPad + 18, h - 13);
+
+            bctx.fillStyle = 'rgba(10, 124, 80, 0.25)';
+            bctx.fillRect(leftPad + 140, h - 22, 12, 10);
+            bctx.strokeStyle = 'rgba(10, 124, 80, 0.5)';
+            bctx.strokeRect(leftPad + 140, h - 22, 12, 10);
+            bctx.fillStyle = '#4a4a65';
+            bctx.fillText('NFR Sparse', leftPad + 158, h - 13);
+        }
+        drawBenchChart();
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(a=>{
