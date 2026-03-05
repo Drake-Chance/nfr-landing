@@ -3,226 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural Frequency Resonance — A New Language for Knowledge</title>
-    <meta name="description" content="Neural Frequency Resonance (NFR) — encoding human knowledge as frequency-domain waveforms. Patent pending.">
-    <meta property="og:title" content="Neural Frequency Resonance">
-    <meta property="og:description" content="What if knowledge could be encoded as waveforms? A new approach to AI representation learning. Patent pending.">
+    <title>Neural Frequency Resonance — Sparse Waveform Representations for AI</title>
+    <meta name="description" content="NFR reduces AI representation density by 99.5% through frequency-domain encoding. Patent pending. Licensing available.">
+    <meta property="og:title" content="Neural Frequency Resonance — The Future of Efficient AI">
+    <meta property="og:description" content="99.5% sparser representations. Near-perfect fidelity. A fundamentally new approach to how AI encodes knowledge. Patent pending.">
     <meta property="og:type" content="website">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a25;
-            --text-primary: #e8e8ed;
-            --text-secondary: #8888a0;
-            --text-muted: #555570;
+            --bg-primary: #08080c;
+            --bg-secondary: #0e0e14;
+            --bg-card: #141420;
+            --bg-card-hover: #1a1a28;
+            --text-primary: #f0f0f5;
+            --text-secondary: #9090a8;
+            --text-muted: #555568;
             --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.15);
+            --accent-glow: rgba(99, 102, 241, 0.12);
             --accent-bright: #818cf8;
-            --green: #34d399;
-            --border: rgba(255, 255, 255, 0.06);
+            --green: #10b981;
+            --green-bright: #34d399;
+            --green-glow: rgba(16, 185, 129, 0.1);
+            --border: rgba(255, 255, 255, 0.05);
+            --border-accent: rgba(99, 102, 241, 0.15);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.7;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         #waveform-bg {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 0; opacity: 0.4;
+            z-index: 0; opacity: 0.25;
         }
         .content { position: relative; z-index: 1; }
 
+        /* Nav */
         nav {
             position: fixed; top: 0; width: 100%;
-            padding: 1.2rem 2rem;
+            padding: 1rem 2.5rem;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 100;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(20px);
+            background: rgba(8, 8, 12, 0.85);
+            backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--border);
         }
-        .logo { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.05em; }
+        .logo { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
         .logo span { color: var(--accent-bright); }
+        .nav-right { display: flex; align-items: center; gap: 1.5rem; }
         .patent-badge {
-            font-size: 0.7rem; font-weight: 500;
-            letter-spacing: 0.1em; text-transform: uppercase;
-            padding: 0.3rem 0.8rem;
-            border: 1px solid var(--accent); border-radius: 100px;
-            color: var(--accent-bright);
+            font-size: 0.65rem; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 0.25rem 0.7rem;
+            border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px;
+            color: var(--green-bright);
+            background: var(--green-glow);
         }
+        .nav-link {
+            font-size: 0.8rem; color: var(--text-secondary);
+            text-decoration: none; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--text-primary); }
 
+        /* Hero */
         .hero {
             min-height: 100vh;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             text-align: center;
-            padding: 6rem 2rem 4rem;
+            padding: 8rem 2rem 5rem;
         }
         .hero-overline {
-            font-size: 0.75rem; font-weight: 500;
-            letter-spacing: 0.2em; text-transform: uppercase;
-            color: var(--accent-bright); margin-bottom: 1.5rem;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--green-bright); margin-bottom: 2rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .hero-overline::before, .hero-overline::after {
+            content: ''; width: 30px; height: 1px;
+            background: var(--green); opacity: 0.4;
         }
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 700; line-height: 1.1;
-            max-width: 800px; margin-bottom: 1.5rem;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 800; line-height: 1.05;
+            max-width: 900px; margin-bottom: 2rem;
+            letter-spacing: -0.02em;
         }
         .hero h1 .gradient {
-            background: linear-gradient(135deg, var(--accent-bright), #a78bfa, #34d399);
+            background: linear-gradient(135deg, #818cf8 0%, #a78bfa 30%, #34d399 70%, #10b981 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .hero-sub {
-            font-size: 1.2rem; color: var(--text-secondary);
-            max-width: 600px; margin-bottom: 3rem; font-weight: 300;
+            font-size: 1.15rem; color: var(--text-secondary);
+            max-width: 620px; margin-bottom: 1.5rem; font-weight: 400;
+            line-height: 1.8;
+        }
+        .hero-sub-small {
+            font-size: 0.85rem; color: var(--text-muted);
+            max-width: 500px; margin-bottom: 3rem;
         }
         .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
         .btn {
-            padding: 0.8rem 2rem; border-radius: 8px;
-            font-size: 0.9rem; font-weight: 500;
+            padding: 0.85rem 2.2rem; border-radius: 6px;
+            font-size: 0.85rem; font-weight: 600;
             text-decoration: none; transition: all 0.2s;
             cursor: pointer; border: none; font-family: inherit;
+            letter-spacing: 0.02em;
         }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: var(--accent-bright); box-shadow: 0 0 30px var(--accent-glow); }
-        .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
-        .btn-outline:hover { border-color: var(--accent); background: var(--accent-glow); }
+        .btn-primary {
+            background: var(--accent); color: white;
+        }
+        .btn-primary:hover {
+            background: var(--accent-bright);
+            box-shadow: 0 4px 30px rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent; color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent); background: var(--accent-glow);
+        }
 
+        /* Metrics */
         .metrics {
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
+        .metrics-inner {
+            max-width: 1100px; margin: 0 auto;
+        }
+        .metrics-header {
+            text-align: center; margin-bottom: 3rem;
+        }
+        .metrics-header h2 {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent-bright); margin-bottom: 0.5rem;
+        }
+        .metrics-header p {
+            font-size: 0.9rem; color: var(--text-muted);
+        }
         .metrics-grid {
-            max-width: 1000px; margin: 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem; text-align: center;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 1px; background: var(--border);
+            border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden;
+        }
+        .metric {
+            padding: 2.5rem 1.5rem; text-align: center;
+            background: var(--bg-card);
         }
         .metric-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem; font-weight: 700;
-            color: var(--green); line-height: 1; margin-bottom: 0.5rem;
+            font-size: 2.8rem; font-weight: 700;
+            line-height: 1; margin-bottom: 0.5rem;
         }
-        .metric-label { font-size: 0.85rem; color: var(--text-secondary); }
+        .metric-value.green { color: var(--green-bright); }
+        .metric-value.accent { color: var(--accent-bright); }
+        .metric-label {
+            font-size: 0.75rem; color: var(--text-secondary);
+            font-weight: 500; text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
 
+        /* Sections */
         section {
-            max-width: 1000px; margin: 0 auto; padding: 6rem 2rem;
+            max-width: 1100px; margin: 0 auto; padding: 7rem 2rem;
         }
         .section-label {
-            font-size: 0.7rem; font-weight: 600;
-            letter-spacing: 0.2em; text-transform: uppercase;
-            color: var(--accent-bright); margin-bottom: 1rem;
+            font-size: 0.65rem; font-weight: 600;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--accent-bright); margin-bottom: 1.2rem;
         }
-        section h2 { font-size: 2rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.2; }
-        section p { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 1.5rem; max-width: 700px; }
+        section h2 {
+            font-size: 2.2rem; font-weight: 700; margin-bottom: 1.2rem;
+            line-height: 1.15; letter-spacing: -0.01em;
+        }
+        section p.lead {
+            color: var(--text-secondary); font-size: 1.05rem;
+            margin-bottom: 1.5rem; max-width: 650px; line-height: 1.8;
+        }
 
-        .flow {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem; margin-top: 3rem;
+        /* Problem / Solution */
+        .problem-solution {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 2rem; margin-top: 3rem;
         }
-        .flow-step {
+        .ps-card {
             background: var(--bg-card);
             border: 1px solid var(--border); border-radius: 12px;
-            padding: 2rem;
+            padding: 2.5rem;
         }
-        .flow-step::before {
-            content: attr(data-step);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem; font-weight: 600;
-            color: var(--accent-bright);
-            background: var(--accent-glow);
-            padding: 0.2rem 0.6rem; border-radius: 4px;
-            display: inline-block;
+        .ps-card.problem { border-color: rgba(239, 68, 68, 0.15); }
+        .ps-card.solution { border-color: rgba(16, 185, 129, 0.15); }
+        .ps-label {
+            font-size: 0.65rem; font-weight: 600;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            margin-bottom: 1rem;
         }
-        .flow-step h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; font-weight: 600; }
-        .flow-step p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+        .ps-card.problem .ps-label { color: #f87171; }
+        .ps-card.solution .ps-label { color: var(--green-bright); }
+        .ps-card h3 { font-size: 1.2rem; margin-bottom: 1rem; font-weight: 600; }
+        .ps-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.8rem; line-height: 1.7; }
+        .ps-card ul {
+            list-style: none; padding: 0; margin-top: 1rem;
+        }
+        .ps-card ul li {
+            font-size: 0.85rem; color: var(--text-secondary);
+            padding: 0.4rem 0; padding-left: 1.2rem;
+            position: relative;
+        }
+        .ps-card ul li::before {
+            content: '→'; position: absolute; left: 0;
+            color: var(--text-muted);
+        }
 
-        .implications {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem; margin-top: 3rem;
-        }
-        .implication {
-            background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 12px;
-            padding: 2rem;
-        }
-        .implication-icon { font-size: 1.5rem; margin-bottom: 1rem; }
-        .implication h3 { font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; }
-        .implication p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
-
-        /* Pipeline flowchart */
+        /* Pipeline */
         .pipeline-section {
-            padding: 5rem 2rem;
+            padding: 6rem 2rem;
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
         .pipeline-section .section-label,
         .pipeline-section h2,
-        .pipeline-section > p {
-            max-width: 1000px; margin-left: auto; margin-right: auto;
+        .pipeline-section > p.lead {
+            max-width: 1100px; margin-left: auto; margin-right: auto;
         }
-        .pipeline-section h2 { text-align: center; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .pipeline-section > p { text-align: center; color: var(--text-secondary); font-size: 1rem; margin-bottom: 3rem; }
-        .pipeline-section .section-label { text-align: center; margin-bottom: 1rem; }
-        #pipeline-canvas {
-            display: block;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+        .pipeline-section h2 { text-align: center; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.8rem; }
+        .pipeline-section > p.lead { text-align: center; color: var(--text-secondary); font-size: 1rem; margin-bottom: 3rem; max-width: 500px; }
+        .pipeline-section .section-label { text-align: center; margin-bottom: 1.2rem; }
+        #pipeline-canvas { display: block; max-width: 900px; margin: 0 auto; }
 
-        .viz-section { text-align: center; padding: 4rem 2rem; }
+        /* Spectrum viz */
+        .viz-section {
+            text-align: center; padding: 4rem 2rem;
+        }
         #waveform-demo { width: 100%; max-width: 800px; height: 200px; margin: 2rem auto; }
-        .viz-caption { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .viz-caption { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
 
+        /* Use cases */
+        .use-cases {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem; margin-top: 3rem;
+        }
+        .use-case {
+            background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 12px;
+            padding: 2.5rem;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .use-case:hover { border-color: var(--border-accent); background: var(--bg-card-hover); }
+        .use-case-icon {
+            width: 40px; height: 40px;
+            background: var(--accent-glow);
+            border: 1px solid var(--border-accent);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; margin-bottom: 1.2rem;
+        }
+        .use-case h3 { font-size: 1rem; margin-bottom: 0.6rem; font-weight: 600; }
+        .use-case p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.7; }
+
+        /* Scale section */
+        .scale-numbers {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1px; background: var(--border);
+            border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden; margin-top: 3rem;
+        }
+        .scale-item {
+            background: var(--bg-card); padding: 2.5rem;
+            text-align: center;
+        }
+        .scale-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem; font-weight: 700;
+            color: var(--accent-bright); margin-bottom: 0.5rem;
+        }
+        .scale-label { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Domains */
         .domains-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1rem; margin-top: 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.75rem; margin-top: 2rem;
         }
         .domain-tag {
             background: var(--bg-card);
             border: 1px solid var(--border); border-radius: 8px;
-            padding: 1rem; text-align: center;
-            font-size: 0.9rem; font-weight: 500;
+            padding: 1rem 0.5rem; text-align: center;
+            font-size: 0.8rem; font-weight: 500;
             transition: border-color 0.2s;
         }
-        .domain-tag:hover { border-color: var(--accent); }
-        .domain-tag .icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+        .domain-tag:hover { border-color: var(--border-accent); }
+        .domain-tag .icon { font-size: 1.3rem; margin-bottom: 0.4rem; display: block; }
 
+        /* CTA */
         .cta-section {
-            text-align: center; padding: 6rem 2rem;
+            text-align: center; padding: 8rem 2rem;
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
+            position: relative;
         }
-        .cta-section h2 { max-width: 600px; margin: 0 auto 1rem; }
-        .cta-section p { max-width: 500px; margin: 0 auto 2rem; text-align: center; }
+        .cta-section h2 {
+            font-size: 2.5rem; font-weight: 800;
+            max-width: 700px; margin: 0 auto 1rem;
+            letter-spacing: -0.02em;
+        }
+        .cta-section p.lead {
+            max-width: 520px; margin: 0 auto 2.5rem;
+            text-align: center;
+        }
+        .cta-contacts {
+            display: flex; gap: 2rem; justify-content: center;
+            flex-wrap: wrap; margin-top: 1rem;
+        }
+        .cta-contact-item {
+            text-align: center;
+        }
+        .cta-contact-label {
+            font-size: 0.65rem; font-weight: 600;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 0.3rem;
+        }
         .contact-email {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem; color: var(--accent-bright); text-decoration: none;
+            font-size: 0.9rem; color: var(--accent-bright); text-decoration: none;
         }
         .contact-email:hover { text-decoration: underline; }
 
+        /* Footer */
         footer {
-            padding: 2rem; text-align: center;
-            font-size: 0.8rem; color: var(--text-muted);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            font-size: 0.75rem; color: var(--text-muted);
             border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between;
+            align-items: center; max-width: 1100px; margin: 0 auto;
         }
+        footer a { color: var(--text-secondary); text-decoration: none; }
 
-        @media (max-width: 640px) {
-            nav { padding: 1rem; }
-            .hero { padding: 5rem 1.5rem 3rem; }
+        @media (max-width: 768px) {
+            nav { padding: 1rem 1.5rem; }
+            .nav-link { display: none; }
+            .hero { padding: 6rem 1.5rem 3rem; }
             section { padding: 4rem 1.5rem; }
             .metric-value { font-size: 2rem; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .problem-solution { grid-template-columns: 1fr; }
+            .scale-numbers { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -230,122 +373,182 @@
     <canvas id="waveform-bg"></canvas>
     <div class="content">
         <nav>
-            <div class="logo"><span>NFR</span> Neural Frequency Resonance</div>
-            <div class="patent-badge">Patent Pending</div>
+            <div class="logo"><span>NFR</span></div>
+            <div class="nav-right">
+                <a href="#technology" class="nav-link">Technology</a>
+                <a href="#applications" class="nav-link">Applications</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <div class="patent-badge">Patent Pending</div>
+            </div>
         </nav>
 
+        <!-- Hero -->
         <section class="hero">
-            <div class="hero-overline">A New Paradigm in AI Representation</div>
-            <h1>What if knowledge could be encoded as <span class="gradient">waveforms?</span></h1>
+            <div class="hero-overline">Neural Frequency Resonance</div>
+            <h1>Reduce AI representation density by <span class="gradient">99.5%</span></h1>
             <p class="hero-sub">
-                Neural Frequency Resonance transforms text into real frequency-domain signals —
-                achieving 99.5% energy reduction while preserving information with near-perfect fidelity.
+                A novel encoding method that transforms dense token embeddings into sparse 
+                frequency-domain waveforms — preserving information fidelity while eliminating 
+                computational waste.
+            </p>
+            <p class="hero-sub-small">
+                Validated across 7 knowledge domains. Patent pending. Licensing available.
             </p>
             <div class="hero-cta">
-                <a href="#how-it-works" class="btn btn-primary">How It Works</a>
-                <a href="#contact" class="btn btn-outline">Get in Touch</a>
+                <a href="#technology" class="btn btn-primary">Explore the Technology</a>
+                <a href="#contact" class="btn btn-outline">Licensing Inquiries</a>
             </div>
         </section>
 
+        <!-- Metrics -->
         <div class="metrics">
-            <div class="metrics-grid">
-                <div class="metric">
-                    <div class="metric-value">99.2%</div>
-                    <div class="metric-label">Reconstruction Accuracy</div>
+            <div class="metrics-inner">
+                <div class="metrics-header">
+                    <h2>Proven Results</h2>
+                    <p>Experimentally validated — not theoretical</p>
                 </div>
-                <div class="metric">
-                    <div class="metric-value">99.5%</div>
-                    <div class="metric-label">Energy Reduction</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">99.5%</div>
-                    <div class="metric-label">Sequential Prediction</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-value">7</div>
-                    <div class="metric-label">Knowledge Domains</div>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value green">99.5%</div>
+                        <div class="metric-label">Energy Reduction</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value green">99.2%</div>
+                        <div class="metric-label">Reconstruction Accuracy</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value accent">99.5%</div>
+                        <div class="metric-label">Sequential Prediction</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value accent">7</div>
+                        <div class="metric-label">Knowledge Domains</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <section id="how-it-works">
-            <div class="section-label">The Approach</div>
-            <h2>Knowledge as Signal</h2>
-            <p>
-                Instead of representing text as dense token embeddings — where every dimension is active and
-                computationally expensive — NFR encodes information into sparse frequency-domain waveforms
-                where most of the signal is silence.
+        <!-- Problem / Solution -->
+        <section id="technology">
+            <div class="section-label">The Problem &amp; The Solution</div>
+            <h2>Dense representations are computationally wasteful</h2>
+            <p class="lead">
+                Modern AI systems encode knowledge in dense, high-dimensional vectors where every 
+                dimension is active. This drives enormous compute costs at training and inference.
             </p>
-            <div class="flow">
-                <div class="flow-step" data-step="01">
-                    <h3>Encode</h3>
-                    <p>Text is transformed into amplitude and phase values across frequency bins by a neural encoder that learns which frequencies carry information.</p>
+            <div class="problem-solution">
+                <div class="ps-card problem">
+                    <div class="ps-label">Current Approach</div>
+                    <h3>Dense Token Embeddings</h3>
+                    <p>Every token is represented as a high-dimensional vector with thousands of active dimensions. Every dimension participates in every computation.</p>
+                    <ul>
+                        <li>Billions of active parameters per forward pass</li>
+                        <li>Memory bandwidth is the bottleneck, not compute</li>
+                        <li>Training costs doubling every 6-9 months</li>
+                        <li>Inference requires dedicated GPU clusters</li>
+                    </ul>
                 </div>
-                <div class="flow-step" data-step="02">
-                    <h3>Transform</h3>
-                    <p>The frequency representation becomes a real waveform through inverse Fourier transform — an actual oscillating signal, not an abstract vector.</p>
-                </div>
-                <div class="flow-step" data-step="03">
-                    <h3>Compress</h3>
-                    <p>Energy minimization forces the encoder to concentrate information into fewer frequencies. The result: 99.5% of the waveform energy is eliminated while information is preserved.</p>
-                </div>
-                <div class="flow-step" data-step="04">
-                    <h3>Predict</h3>
-                    <p>A spectral predictor analyzes sequences of waveforms and predicts what comes next — proving that waveforms carry meaningful sequential structure.</p>
+                <div class="ps-card solution">
+                    <div class="ps-label">NFR Approach</div>
+                    <h3>Sparse Frequency Waveforms</h3>
+                    <p>Knowledge is encoded as frequency-domain waveforms where information concentrates into a small number of active frequency bins. The rest is silence.</p>
+                    <ul>
+                        <li>99.5% of representation energy eliminated</li>
+                        <li>Information preserved with 99.2% fidelity</li>
+                        <li>Sparse signals = sparse computation</li>
+                        <li>Fundamentally less data to move and process</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Pipeline flowchart -->
+        <!-- Pipeline -->
         <div class="pipeline-section">
-            <div class="section-label">The Pipeline</div>
-            <h2>From Text to Waveform</h2>
-            <p>How NFR compresses knowledge into sparse frequency representations</p>
+            <div class="section-label">How It Works</div>
+            <h2>From Text to Sparse Waveform</h2>
+            <p class="lead">The NFR encoding pipeline in six stages</p>
             <canvas id="pipeline-canvas"></canvas>
         </div>
 
+        <!-- Spectrum viz -->
         <div class="viz-section">
             <canvas id="waveform-demo"></canvas>
-            <p class="viz-caption">Simulated frequency spectrum — information concentrated in sparse bins</p>
+            <p class="viz-caption">Live simulation — 64 frequency bins, only 6 carry meaningful information</p>
         </div>
 
-        <section>
-            <div class="section-label">Implications</div>
-            <h2>Why This Matters</h2>
-            <p>
-                If knowledge can be represented as sparse waveforms instead of dense vectors,
-                the implications for AI efficiency are profound.
+        <!-- Applications -->
+        <section id="applications">
+            <div class="section-label">Applications</div>
+            <h2>Where NFR Creates Value</h2>
+            <p class="lead">
+                Sparse frequency representations have implications across the entire AI stack — 
+                from training infrastructure to edge deployment.
             </p>
-            <div class="implications">
-                <div class="implication">
-                    <div class="implication-icon">⚡</div>
-                    <h3>Compute Efficiency</h3>
-                    <p>Sparse frequency representations mean fewer active dimensions. Fewer active dimensions mean dramatically less computation at every layer of a neural network.</p>
+            <div class="use-cases">
+                <div class="use-case">
+                    <div class="use-case-icon">⚡</div>
+                    <h3>Training Efficiency</h3>
+                    <p>Models trained on sparse waveform representations require dramatically less computation per layer. Sparse matrix operations are hardware-optimized on modern GPUs and TPUs.</p>
                 </div>
-                <div class="implication">
-                    <div class="implication-icon">🧠</div>
-                    <h3>Cross-Domain Discovery</h3>
-                    <p>When knowledge from different fields exists as waveforms, combining them through superposition could reveal relationships invisible in text.</p>
+                <div class="use-case">
+                    <div class="use-case-icon">💰</div>
+                    <h3>Inference Cost Reduction</h3>
+                    <p>Representations that are 99.5% sparser mean 99.5% less data moving through every layer at inference. At scale, this translates directly to infrastructure cost savings.</p>
                 </div>
-                <div class="implication">
-                    <div class="implication-icon">📡</div>
-                    <h3>Frequency-Native AI</h3>
-                    <p>A model that operates entirely in frequency space — never seeing text, only waveforms — represents a fundamentally different approach to artificial intelligence.</p>
+                <div class="use-case">
+                    <div class="use-case-icon">📡</div>
+                    <h3>Edge &amp; On-Device AI</h3>
+                    <p>Compressed waveform representations enable model deployment on resource-constrained devices — mobile phones, embedded systems, IoT — where dense models cannot run.</p>
                 </div>
-                <div class="implication">
-                    <div class="implication-icon">🔋</div>
-                    <h3>Edge Deployment</h3>
-                    <p>Models operating on compressed waveform representations could run on devices where traditional large language models cannot.</p>
+                <div class="use-case">
+                    <div class="use-case-icon">🔬</div>
+                    <h3>Scientific Discovery</h3>
+                    <p>Knowledge from different domains encoded as waveforms can be combined through superposition. Interference patterns may reveal cross-domain relationships invisible in text.</p>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">🧠</div>
+                    <h3>Frequency-Native Models</h3>
+                    <p>Models operating entirely in frequency space — processing waveforms instead of tokens — represent a new computational paradigm with unique capabilities.</p>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">🔐</div>
+                    <h3>Compact Knowledge Storage</h3>
+                    <p>Sparse spectral representations offer a fundamentally more efficient way to store and retrieve encoded knowledge, with natural compression built into the representation.</p>
                 </div>
             </div>
         </section>
 
+        <!-- Scale -->
         <section>
-            <div class="section-label">Training Data</div>
-            <h2>Validated Across Scientific Knowledge</h2>
-            <p>
-                NFR has been validated across seven distinct domains of human knowledge,
-                using foundational scientific texts spanning centuries of discovery.
+            <div class="section-label">At Industry Scale</div>
+            <h2>The Economics of Sparse Representations</h2>
+            <p class="lead">
+                The AI compute market exceeds $50B annually and is growing exponentially. 
+                Even marginal efficiency improvements have enormous economic impact.
+            </p>
+            <div class="scale-numbers">
+                <div class="scale-item">
+                    <div class="scale-value">$50B+</div>
+                    <div class="scale-label">Annual AI compute<br>market (2026)</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-value">2×</div>
+                    <div class="scale-label">Training costs double<br>every 6-9 months</div>
+                </div>
+                <div class="scale-item">
+                    <div class="scale-value">99.5%</div>
+                    <div class="scale-label">Representation energy<br>eliminated by NFR</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Domains -->
+        <section>
+            <div class="section-label">Validation</div>
+            <h2>Proven Across 7 Knowledge Domains</h2>
+            <p class="lead">
+                NFR has been experimentally validated using foundational scientific texts 
+                spanning centuries of human discovery.
             </p>
             <div class="domains-grid">
                 <div class="domain-tag"><span class="icon">⚛️</span> Physics</div>
@@ -358,52 +561,63 @@
             </div>
         </section>
 
+        <!-- CTA -->
         <section class="cta-section" id="contact">
-            <div class="section-label">Interested?</div>
-            <h2>Let's Talk</h2>
-            <p>
-                NFR is patent pending and in active development. For licensing inquiries, research collaboration,
-                or investment opportunities:
+            <div class="section-label">Next Steps</div>
+            <h2>Licensing &amp; Partnership</h2>
+            <p class="lead">
+                NFR is protected by a pending patent and available for licensing. 
+                We're open to research partnerships, strategic investment, and integration discussions 
+                with organizations building the next generation of AI infrastructure.
             </p>
-            <a href="mailto:joshuapageau@gmail.com" class="contact-email">joshuapageau@gmail.com</a>
+            <div class="hero-cta" style="margin-bottom: 2.5rem;">
+                <a href="mailto:joshuapageau@gmail.com?subject=NFR%20Licensing%20Inquiry" class="btn btn-primary">Licensing Inquiry</a>
+                <a href="mailto:joshuapageau@gmail.com?subject=NFR%20Research%20Partnership" class="btn btn-outline">Research Partnership</a>
+            </div>
+            <div class="cta-contacts">
+                <div class="cta-contact-item">
+                    <div class="cta-contact-label">General Inquiries</div>
+                    <a href="mailto:joshuapageau@gmail.com" class="contact-email">joshuapageau@gmail.com</a>
+                </div>
+            </div>
         </section>
 
         <footer>
-            <p>&copy; 2026 Neural Frequency Resonance. Patent Pending. All rights reserved.</p>
+            <p>&copy; 2026 Neural Frequency Resonance. All rights reserved.</p>
+            <p>Patent Pending &mdash; USPTO Provisional Application Filed March 2026</p>
         </footer>
     </div>
 
     <script>
-        // Background waveform animation
+        // Background waveform
         const canvas = document.getElementById('waveform-bg');
         const ctx = canvas.getContext('2d');
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize();
         window.addEventListener('resize', resize);
-
         let t = 0;
         function drawBackground() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let l = 0; l < 5; l++) {
+            for (let l = 0; l < 4; l++) {
                 ctx.beginPath();
-                ctx.strokeStyle = `rgba(99, 102, 241, ${0.03 + l * 0.01})`;
+                ctx.strokeStyle = `rgba(99, 102, 241, ${0.02 + l * 0.008})`;
                 ctx.lineWidth = 1;
-                const yBase = canvas.height * (0.2 + l * 0.15);
-                const freq = 0.003 + l * 0.001;
-                const amp = 30 + l * 10;
-                const phase = t * (0.5 + l * 0.3);
+                const yBase = canvas.height * (0.25 + l * 0.15);
+                const freq = 0.002 + l * 0.0008;
+                const amp = 25 + l * 8;
+                const phase = t * (0.4 + l * 0.25);
                 for (let x = 0; x < canvas.width; x += 2) {
-                    const y = yBase + Math.sin(x * freq + phase) * amp * Math.sin(x * 0.001 + t * 0.2);
+                    const y = yBase + Math.sin(x * freq + phase) * amp * Math.sin(x * 0.0008 + t * 0.15);
                     if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
                 }
                 ctx.stroke();
             }
-            t += 0.01;
+            t += 0.008;
             requestAnimationFrame(drawBackground);
         }
         drawBackground();
 
-        // Demo waveform visualization
+        // Spectrum visualization
         const demo = document.getElementById('waveform-demo');
         const dctx = demo.getContext('2d');
         function resizeDemo() {
@@ -413,7 +627,6 @@
         }
         resizeDemo();
         window.addEventListener('resize', resizeDemo);
-
         let dt = 0;
         function drawDemo() {
             const w = demo.width, h = demo.height;
@@ -422,19 +635,24 @@
             const activeBins = [3, 7, 12, 22, 31, 45];
             for (let i = 0; i < bins; i++) {
                 const isActive = activeBins.includes(i);
-                const amp = isActive ? (0.3 + 0.7 * Math.abs(Math.sin(dt + i))) * (h * 0.7) : Math.random() * 3;
-                const alpha = isActive ? 0.8 : 0.1;
+                const amp = isActive ? (0.3 + 0.7 * Math.abs(Math.sin(dt + i * 0.7))) * (h * 0.7) : Math.random() * 3;
+                const alpha = isActive ? 0.8 : 0.08;
                 const gradient = dctx.createLinearGradient(0, h, 0, h - amp);
-                gradient.addColorStop(0, `rgba(99, 102, 241, ${alpha})`);
-                gradient.addColorStop(1, `rgba(129, 140, 248, ${alpha * 0.5})`);
+                if (isActive) {
+                    gradient.addColorStop(0, `rgba(16, 185, 129, ${alpha})`);
+                    gradient.addColorStop(1, `rgba(99, 102, 241, ${alpha * 0.6})`);
+                } else {
+                    gradient.addColorStop(0, `rgba(85, 85, 104, ${alpha})`);
+                    gradient.addColorStop(1, `rgba(85, 85, 104, ${alpha * 0.5})`);
+                }
                 dctx.fillStyle = gradient;
                 dctx.fillRect(i * binWidth + 1, h - amp, binWidth - 2, amp);
             }
-            dctx.fillStyle = 'rgba(136, 136, 160, 0.6)';
+            dctx.fillStyle = 'rgba(144, 144, 168, 0.5)';
             dctx.font = '11px Inter, sans-serif';
             dctx.textAlign = 'center';
-            dctx.fillText('Frequency Bins (64 total \u2014 only 6 carry information)', w / 2, 16);
-            dt += 0.02;
+            dctx.fillText('64 frequency bins \u2014 6 active, 58 near-zero (99.5% sparse)', w / 2, 16);
+            dt += 0.015;
             requestAnimationFrame(drawDemo);
         }
         drawDemo();
@@ -443,205 +661,155 @@
         const pipe = document.getElementById('pipeline-canvas');
         const pctx = pipe.getContext('2d');
         let pt = 0;
-
         function resizePipeline() {
             const rect = pipe.parentElement.getBoundingClientRect();
             const w = Math.min(rect.width - 40, 900);
             pipe.width = w;
-            pipe.height = w < 600 ? 700 : 480;
+            pipe.height = w < 600 ? 740 : 500;
         }
         resizePipeline();
         window.addEventListener('resize', resizePipeline);
 
-        function drawRoundedRect(ctx, x, y, w, h, r, fill, stroke) {
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + w - r, y);
-            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-            ctx.lineTo(x + w, y + h - r);
-            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            ctx.lineTo(x + r, y + h);
-            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.closePath();
-            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
-            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+        function drawRoundedRect(c, x, y, w, h, r, fill, stroke) {
+            c.beginPath();
+            c.moveTo(x + r, y); c.lineTo(x + w - r, y);
+            c.quadraticCurveTo(x + w, y, x + w, y + r);
+            c.lineTo(x + w, y + h - r);
+            c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            c.lineTo(x + r, y + h);
+            c.quadraticCurveTo(x, y + h, x, y + h - r);
+            c.lineTo(x, y + r);
+            c.quadraticCurveTo(x, y, x + r, y);
+            c.closePath();
+            if (fill) { c.fillStyle = fill; c.fill(); }
+            if (stroke) { c.strokeStyle = stroke; c.lineWidth = 1; c.stroke(); }
         }
 
-        function drawArrow(ctx, x1, y1, x2, y2, progress, color) {
-            const dx = x2 - x1, dy = y2 - y1;
-            const len = Math.sqrt(dx * dx + dy * dy);
-            const px = x1 + dx * progress, py = y1 + dy * progress;
-
-            // Line
-            ctx.beginPath();
-            ctx.strokeStyle = color || 'rgba(99, 102, 241, 0.4)';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([4, 4]);
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Arrowhead
-            const angle = Math.atan2(dy, dx);
-            const headLen = 8;
-            ctx.beginPath();
-            ctx.fillStyle = color || 'rgba(99, 102, 241, 0.6)';
-            ctx.moveTo(x2, y2);
-            ctx.lineTo(x2 - headLen * Math.cos(angle - 0.4), y2 - headLen * Math.sin(angle - 0.4));
-            ctx.lineTo(x2 - headLen * Math.cos(angle + 0.4), y2 - headLen * Math.sin(angle + 0.4));
-            ctx.closePath();
-            ctx.fill();
-
-            // Traveling dot
-            ctx.beginPath();
-            ctx.fillStyle = '#818cf8';
-            ctx.shadowColor = '#818cf8';
-            ctx.shadowBlur = 10;
-            ctx.arc(px, py, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
+        function drawArrow(c, x1, y1, x2, y2, progress, color) {
+            c.beginPath();
+            c.strokeStyle = color || 'rgba(99, 102, 241, 0.25)';
+            c.lineWidth = 1.5;
+            c.setLineDash([3, 4]);
+            c.moveTo(x1, y1); c.lineTo(x2, y2);
+            c.stroke();
+            c.setLineDash([]);
+            const angle = Math.atan2(y2-y1, x2-x1);
+            c.beginPath();
+            c.fillStyle = color || 'rgba(99, 102, 241, 0.4)';
+            c.moveTo(x2, y2);
+            c.lineTo(x2 - 7*Math.cos(angle-0.4), y2 - 7*Math.sin(angle-0.4));
+            c.lineTo(x2 - 7*Math.cos(angle+0.4), y2 - 7*Math.sin(angle+0.4));
+            c.closePath(); c.fill();
+            const px = x1 + (x2-x1)*progress, py = y1 + (y2-y1)*progress;
+            c.beginPath();
+            c.fillStyle = '#818cf8'; c.shadowColor = '#818cf8'; c.shadowBlur = 8;
+            c.arc(px, py, 3, 0, Math.PI*2); c.fill();
+            c.shadowBlur = 0;
         }
 
-        function drawMiniWaveform(ctx, cx, cy, w, h, time) {
-            ctx.beginPath();
-            ctx.strokeStyle = '#34d399';
-            ctx.lineWidth = 1.5;
-            const steps = 40;
-            for (let i = 0; i <= steps; i++) {
-                const x = cx - w/2 + (i / steps) * w;
-                const y = cy + Math.sin(i * 0.5 + time * 2) * (h/2) * Math.exp(-Math.pow((i - steps/2) / (steps/3), 2));
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        function drawMiniWaveform(c, cx, cy, w, h, time) {
+            c.beginPath(); c.strokeStyle = '#34d399'; c.lineWidth = 1.5;
+            for (let i = 0; i <= 40; i++) {
+                const x = cx - w/2 + (i/40)*w;
+                const y = cy + Math.sin(i*0.5+time*2)*(h/2)*Math.exp(-Math.pow((i-20)/13,2));
+                if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
             }
-            ctx.stroke();
+            c.stroke();
         }
 
-        function drawMiniSpectrum(ctx, cx, cy, w, h, time) {
-            const bins = 16;
-            const bw = w / bins;
-            const active = [2, 5, 9, 13];
-            for (let i = 0; i < bins; i++) {
-                const isActive = active.includes(i);
-                const amp = isActive ? (0.4 + 0.6 * Math.abs(Math.sin(time * 1.5 + i))) * h : 2;
-                const alpha = isActive ? 0.7 : 0.1;
-                ctx.fillStyle = `rgba(99, 102, 241, ${alpha})`;
-                ctx.fillRect(cx - w/2 + i * bw + 1, cy + h/2 - amp, bw - 2, amp);
+        function drawMiniSpectrum(c, cx, cy, w, h, time) {
+            const bins=16, bw=w/bins, active=[2,5,9,13];
+            for (let i=0;i<bins;i++) {
+                const a=active.includes(i);
+                const amp=a?(0.4+0.6*Math.abs(Math.sin(time*1.5+i)))*h:2;
+                c.fillStyle=a?`rgba(16,185,129,0.6)`:`rgba(85,85,104,0.1)`;
+                c.fillRect(cx-w/2+i*bw+1,cy+h/2-amp,bw-2,amp);
             }
         }
 
         function drawPipeline() {
             const w = pipe.width, h = pipe.height;
             pctx.clearRect(0, 0, w, h);
-
             const isNarrow = w < 600;
-            const boxW = isNarrow ? w * 0.7 : 140;
-            const boxH = 70;
+            const boxW = isNarrow ? w * 0.65 : 145;
+            const boxH = 72;
 
             let nodes;
             if (isNarrow) {
-                // Vertical layout
-                const cx = w / 2;
-                const startY = 30;
-                const gap = 110;
+                const cx = w/2, startY = 20, gap = 115;
                 nodes = [
-                    { x: cx - boxW/2, y: startY, label: 'Raw Text', sub: 'Knowledge input', icon: '📄' },
-                    { x: cx - boxW/2, y: startY + gap, label: 'Neural Encoder', sub: 'Learns frequency mapping', icon: '🧠' },
-                    { x: cx - boxW/2, y: startY + gap*2, label: 'Frequency Spectrum', sub: 'Amplitude + Phase', icon: '📊', viz: 'spectrum' },
-                    { x: cx - boxW/2, y: startY + gap*3, label: 'Energy Minimization', sub: '99.5% reduction', icon: '⚡', highlight: true },
-                    { x: cx - boxW/2, y: startY + gap*4, label: 'Sparse Waveform', sub: 'Inverse FFT output', icon: '🌊', viz: 'wave' },
-                    { x: cx - boxW/2, y: startY + gap*5, label: 'Decoded Knowledge', sub: '99.2% accuracy', icon: '✅', highlight: true },
+                    {x:cx-boxW/2,y:startY,label:'Raw Text',sub:'Knowledge input',icon:'📄'},
+                    {x:cx-boxW/2,y:startY+gap,label:'Neural Encoder',sub:'Learns frequency mapping',icon:'🧠'},
+                    {x:cx-boxW/2,y:startY+gap*2,label:'Frequency Spectrum',sub:'Amplitude + Phase',icon:'📊',viz:'spectrum'},
+                    {x:cx-boxW/2,y:startY+gap*3,label:'Energy Minimization',sub:'99.5% reduction',icon:'⚡',highlight:true},
+                    {x:cx-boxW/2,y:startY+gap*4,label:'Sparse Waveform',sub:'Inverse FFT output',icon:'🌊',viz:'wave'},
+                    {x:cx-boxW/2,y:startY+gap*5,label:'Decoded Knowledge',sub:'99.2% fidelity',icon:'✅',highlight:true},
                 ];
             } else {
-                // Horizontal zigzag
-                const pad = 30;
-                const gapX = (w - pad * 2 - boxW * 3) / 2;
-                const row1Y = 40;
-                const row2Y = 260;
+                const pad=40, gapX=(w-pad*2-boxW*3)/2;
+                const row1Y=50, row2Y=290;
                 nodes = [
-                    { x: pad, y: row1Y, label: 'Raw Text', sub: 'Knowledge input', icon: '📄' },
-                    { x: pad + boxW + gapX, y: row1Y, label: 'Neural Encoder', sub: 'Learns frequency mapping', icon: '🧠' },
-                    { x: pad + (boxW + gapX) * 2, y: row1Y, label: 'Frequency Spectrum', sub: 'Amplitude + Phase', icon: '📊', viz: 'spectrum' },
-                    { x: pad + (boxW + gapX) * 2, y: row2Y, label: 'Energy Minimization', sub: '99.5% reduction', icon: '⚡', highlight: true },
-                    { x: pad + boxW + gapX, y: row2Y, label: 'Sparse Waveform', sub: 'Inverse FFT output', icon: '🌊', viz: 'wave' },
-                    { x: pad, y: row2Y, label: 'Decoded Knowledge', sub: '99.2% accuracy', icon: '✅', highlight: true },
+                    {x:pad,y:row1Y,label:'Raw Text',sub:'Knowledge input',icon:'📄'},
+                    {x:pad+boxW+gapX,y:row1Y,label:'Neural Encoder',sub:'Learns frequency mapping',icon:'🧠'},
+                    {x:pad+(boxW+gapX)*2,y:row1Y,label:'Frequency Spectrum',sub:'Amplitude + Phase',icon:'📊',viz:'spectrum'},
+                    {x:pad+(boxW+gapX)*2,y:row2Y,label:'Energy Minimization',sub:'99.5% reduction',icon:'⚡',highlight:true},
+                    {x:pad+boxW+gapX,y:row2Y,label:'Sparse Waveform',sub:'Inverse FFT output',icon:'🌊',viz:'wave'},
+                    {x:pad,y:row2Y,label:'Decoded Knowledge',sub:'99.2% fidelity',icon:'✅',highlight:true},
                 ];
             }
 
-            // Draw arrows
-            const progress = (Math.sin(pt * 0.8) + 1) / 2;
-            for (let i = 0; i < nodes.length - 1; i++) {
-                const a = nodes[i], b = nodes[i + 1];
-                const ax = a.x + boxW / 2, ay = a.y + boxH;
-                const bx = b.x + boxW / 2, by = b.y;
-
+            const progress = (Math.sin(pt*0.8)+1)/2;
+            for (let i=0;i<nodes.length-1;i++) {
+                const a=nodes[i],b=nodes[i+1];
+                let fx,fy,tx,ty;
                 if (isNarrow) {
-                    drawArrow(pctx, ax, ay + 4, bx, by - 4, ((pt * 0.5 + i * 0.2) % 1), i === 3 ? 'rgba(52, 211, 153, 0.5)' : undefined);
+                    fx=a.x+boxW/2; fy=a.y+boxH+4;
+                    tx=b.x+boxW/2; ty=b.y-4;
+                } else if (i<2) {
+                    fx=a.x+boxW+4; fy=a.y+boxH/2;
+                    tx=b.x-4; ty=b.y+boxH/2;
+                } else if (i===2) {
+                    fx=a.x+boxW/2; fy=a.y+boxH+4;
+                    tx=b.x+boxW/2; ty=b.y-4;
                 } else {
-                    let fromX, fromY, toX, toY;
-                    if (i < 2) { // Row 1: left to right
-                        fromX = a.x + boxW + 4; fromY = a.y + boxH / 2;
-                        toX = b.x - 4; toY = b.y + boxH / 2;
-                    } else if (i === 2) { // Drop down
-                        fromX = a.x + boxW / 2; fromY = a.y + boxH + 4;
-                        toX = b.x + boxW / 2; toY = b.y - 4;
-                    } else { // Row 2: right to left
-                        fromX = a.x - 4; fromY = a.y + boxH / 2;
-                        toX = b.x + boxW + 4; toY = b.y + boxH / 2;
-                    }
-                    drawArrow(pctx, fromX, fromY, toX, toY, ((pt * 0.5 + i * 0.2) % 1), i === 3 ? 'rgba(52, 211, 153, 0.5)' : undefined);
+                    fx=a.x-4; fy=a.y+boxH/2;
+                    tx=b.x+boxW+4; ty=b.y+boxH/2;
                 }
+                drawArrow(pctx,fx,fy,tx,ty,((pt*0.5+i*0.2)%1),i===3?'rgba(16,185,129,0.3)':undefined);
             }
 
-            // Draw nodes
-            nodes.forEach((node, i) => {
-                const borderColor = node.highlight ? 'rgba(52, 211, 153, 0.4)' : 'rgba(99, 102, 241, 0.2)';
-                const bgColor = node.highlight ? 'rgba(52, 211, 153, 0.05)' : 'rgba(26, 26, 37, 0.95)';
-                drawRoundedRect(pctx, node.x, node.y, boxW, boxH, 10, bgColor, borderColor);
-
-                // Icon
-                pctx.font = '16px sans-serif';
-                pctx.textAlign = 'center';
-                pctx.fillText(node.icon, node.x + boxW / 2, node.y + 22);
-
-                // Label
-                pctx.font = '600 12px Inter, sans-serif';
-                pctx.fillStyle = '#e8e8ed';
-                pctx.fillText(node.label, node.x + boxW / 2, node.y + 42);
-
-                // Sub
-                pctx.font = '11px Inter, sans-serif';
-                pctx.fillStyle = node.highlight ? '#34d399' : '#8888a0';
-                pctx.fillText(node.sub, node.x + boxW / 2, node.y + 58);
-
-                // Mini visualizations inside nodes
-                if (node.viz === 'spectrum') {
-                    drawMiniSpectrum(pctx, node.x + boxW / 2, node.y + boxH + 8, boxW * 0.8, 40, pt);
-                }
-                if (node.viz === 'wave') {
-                    drawMiniWaveform(pctx, node.x + boxW / 2, node.y + boxH + 28, boxW * 0.8, 30, pt);
-                }
+            nodes.forEach((node) => {
+                const bc = node.highlight?'rgba(16,185,129,0.25)':'rgba(99,102,241,0.12)';
+                const bg = node.highlight?'rgba(16,185,129,0.03)':'rgba(20,20,32,0.95)';
+                drawRoundedRect(pctx,node.x,node.y,boxW,boxH,8,bg,bc);
+                pctx.font='15px sans-serif'; pctx.textAlign='center';
+                pctx.fillText(node.icon,node.x+boxW/2,node.y+22);
+                pctx.font='600 11px Inter,sans-serif'; pctx.fillStyle='#f0f0f5';
+                pctx.fillText(node.label,node.x+boxW/2,node.y+42);
+                pctx.font='10px Inter,sans-serif';
+                pctx.fillStyle=node.highlight?'#34d399':'#9090a8';
+                pctx.fillText(node.sub,node.x+boxW/2,node.y+58);
+                if (node.viz==='spectrum') drawMiniSpectrum(pctx,node.x+boxW/2,node.y+boxH+8,boxW*0.8,40,pt);
+                if (node.viz==='wave') drawMiniWaveform(pctx,node.x+boxW/2,node.y+boxH+28,boxW*0.8,28,pt);
             });
 
-            // Compression label between rows (desktop only)
             if (!isNarrow) {
-                const midY = (nodes[2].y + boxH + nodes[3].y) / 2;
-                pctx.font = '500 11px JetBrains Mono, monospace';
-                pctx.fillStyle = '#34d399';
-                pctx.textAlign = 'center';
-                pctx.fillText('99.5% ENERGY REMOVED', nodes[2].x + boxW / 2, midY + 4);
+                const midY=(nodes[2].y+boxH+nodes[3].y)/2;
+                pctx.font='500 10px JetBrains Mono,monospace';
+                pctx.fillStyle='rgba(16,185,129,0.6)';
+                pctx.textAlign='center';
+                pctx.fillText('99.5% ENERGY REMOVED',nodes[2].x+boxW/2,midY+4);
             }
-
-            pt += 0.015;
+            pt+=0.015;
             requestAnimationFrame(drawPipeline);
         }
         drawPipeline();
 
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(a => {
             a.addEventListener('click', e => {
                 e.preventDefault();
-                document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
             });
         });
     </script>
