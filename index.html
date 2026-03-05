@@ -160,6 +160,27 @@
         .implication h3 { font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; }
         .implication p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
 
+        /* Pipeline flowchart */
+        .pipeline-section {
+            padding: 5rem 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .pipeline-section .section-label,
+        .pipeline-section h2,
+        .pipeline-section > p {
+            max-width: 1000px; margin-left: auto; margin-right: auto;
+        }
+        .pipeline-section h2 { text-align: center; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .pipeline-section > p { text-align: center; color: var(--text-secondary); font-size: 1rem; margin-bottom: 3rem; }
+        .pipeline-section .section-label { text-align: center; margin-bottom: 1rem; }
+        #pipeline-canvas {
+            display: block;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         .viz-section { text-align: center; padding: 4rem 2rem; }
         #waveform-demo { width: 100%; max-width: 800px; height: 200px; margin: 2rem auto; }
         .viz-caption { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
@@ -274,6 +295,14 @@
                 </div>
             </div>
         </section>
+
+        <!-- Pipeline flowchart -->
+        <div class="pipeline-section">
+            <div class="section-label">The Pipeline</div>
+            <h2>From Text to Waveform</h2>
+            <p>How NFR compresses knowledge into sparse frequency representations</p>
+            <canvas id="pipeline-canvas"></canvas>
+        </div>
 
         <div class="viz-section">
             <canvas id="waveform-demo"></canvas>
@@ -409,6 +438,205 @@
             requestAnimationFrame(drawDemo);
         }
         drawDemo();
+
+        // Pipeline flowchart
+        const pipe = document.getElementById('pipeline-canvas');
+        const pctx = pipe.getContext('2d');
+        let pt = 0;
+
+        function resizePipeline() {
+            const rect = pipe.parentElement.getBoundingClientRect();
+            const w = Math.min(rect.width - 40, 900);
+            pipe.width = w;
+            pipe.height = w < 600 ? 700 : 480;
+        }
+        resizePipeline();
+        window.addEventListener('resize', resizePipeline);
+
+        function drawRoundedRect(ctx, x, y, w, h, r, fill, stroke) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+        }
+
+        function drawArrow(ctx, x1, y1, x2, y2, progress, color) {
+            const dx = x2 - x1, dy = y2 - y1;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            const px = x1 + dx * progress, py = y1 + dy * progress;
+
+            // Line
+            ctx.beginPath();
+            ctx.strokeStyle = color || 'rgba(99, 102, 241, 0.4)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Arrowhead
+            const angle = Math.atan2(dy, dx);
+            const headLen = 8;
+            ctx.beginPath();
+            ctx.fillStyle = color || 'rgba(99, 102, 241, 0.6)';
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - headLen * Math.cos(angle - 0.4), y2 - headLen * Math.sin(angle - 0.4));
+            ctx.lineTo(x2 - headLen * Math.cos(angle + 0.4), y2 - headLen * Math.sin(angle + 0.4));
+            ctx.closePath();
+            ctx.fill();
+
+            // Traveling dot
+            ctx.beginPath();
+            ctx.fillStyle = '#818cf8';
+            ctx.shadowColor = '#818cf8';
+            ctx.shadowBlur = 10;
+            ctx.arc(px, py, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawMiniWaveform(ctx, cx, cy, w, h, time) {
+            ctx.beginPath();
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 1.5;
+            const steps = 40;
+            for (let i = 0; i <= steps; i++) {
+                const x = cx - w/2 + (i / steps) * w;
+                const y = cy + Math.sin(i * 0.5 + time * 2) * (h/2) * Math.exp(-Math.pow((i - steps/2) / (steps/3), 2));
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function drawMiniSpectrum(ctx, cx, cy, w, h, time) {
+            const bins = 16;
+            const bw = w / bins;
+            const active = [2, 5, 9, 13];
+            for (let i = 0; i < bins; i++) {
+                const isActive = active.includes(i);
+                const amp = isActive ? (0.4 + 0.6 * Math.abs(Math.sin(time * 1.5 + i))) * h : 2;
+                const alpha = isActive ? 0.7 : 0.1;
+                ctx.fillStyle = `rgba(99, 102, 241, ${alpha})`;
+                ctx.fillRect(cx - w/2 + i * bw + 1, cy + h/2 - amp, bw - 2, amp);
+            }
+        }
+
+        function drawPipeline() {
+            const w = pipe.width, h = pipe.height;
+            pctx.clearRect(0, 0, w, h);
+
+            const isNarrow = w < 600;
+            const boxW = isNarrow ? w * 0.7 : 140;
+            const boxH = 70;
+
+            let nodes;
+            if (isNarrow) {
+                // Vertical layout
+                const cx = w / 2;
+                const startY = 30;
+                const gap = 110;
+                nodes = [
+                    { x: cx - boxW/2, y: startY, label: 'Raw Text', sub: 'Knowledge input', icon: '📄' },
+                    { x: cx - boxW/2, y: startY + gap, label: 'Neural Encoder', sub: 'Learns frequency mapping', icon: '🧠' },
+                    { x: cx - boxW/2, y: startY + gap*2, label: 'Frequency Spectrum', sub: 'Amplitude + Phase', icon: '📊', viz: 'spectrum' },
+                    { x: cx - boxW/2, y: startY + gap*3, label: 'Energy Minimization', sub: '99.5% reduction', icon: '⚡', highlight: true },
+                    { x: cx - boxW/2, y: startY + gap*4, label: 'Sparse Waveform', sub: 'Inverse FFT output', icon: '🌊', viz: 'wave' },
+                    { x: cx - boxW/2, y: startY + gap*5, label: 'Decoded Knowledge', sub: '99.2% accuracy', icon: '✅', highlight: true },
+                ];
+            } else {
+                // Horizontal zigzag
+                const pad = 30;
+                const gapX = (w - pad * 2 - boxW * 3) / 2;
+                const row1Y = 40;
+                const row2Y = 260;
+                nodes = [
+                    { x: pad, y: row1Y, label: 'Raw Text', sub: 'Knowledge input', icon: '📄' },
+                    { x: pad + boxW + gapX, y: row1Y, label: 'Neural Encoder', sub: 'Learns frequency mapping', icon: '🧠' },
+                    { x: pad + (boxW + gapX) * 2, y: row1Y, label: 'Frequency Spectrum', sub: 'Amplitude + Phase', icon: '📊', viz: 'spectrum' },
+                    { x: pad + (boxW + gapX) * 2, y: row2Y, label: 'Energy Minimization', sub: '99.5% reduction', icon: '⚡', highlight: true },
+                    { x: pad + boxW + gapX, y: row2Y, label: 'Sparse Waveform', sub: 'Inverse FFT output', icon: '🌊', viz: 'wave' },
+                    { x: pad, y: row2Y, label: 'Decoded Knowledge', sub: '99.2% accuracy', icon: '✅', highlight: true },
+                ];
+            }
+
+            // Draw arrows
+            const progress = (Math.sin(pt * 0.8) + 1) / 2;
+            for (let i = 0; i < nodes.length - 1; i++) {
+                const a = nodes[i], b = nodes[i + 1];
+                const ax = a.x + boxW / 2, ay = a.y + boxH;
+                const bx = b.x + boxW / 2, by = b.y;
+
+                if (isNarrow) {
+                    drawArrow(pctx, ax, ay + 4, bx, by - 4, ((pt * 0.5 + i * 0.2) % 1), i === 3 ? 'rgba(52, 211, 153, 0.5)' : undefined);
+                } else {
+                    let fromX, fromY, toX, toY;
+                    if (i < 2) { // Row 1: left to right
+                        fromX = a.x + boxW + 4; fromY = a.y + boxH / 2;
+                        toX = b.x - 4; toY = b.y + boxH / 2;
+                    } else if (i === 2) { // Drop down
+                        fromX = a.x + boxW / 2; fromY = a.y + boxH + 4;
+                        toX = b.x + boxW / 2; toY = b.y - 4;
+                    } else { // Row 2: right to left
+                        fromX = a.x - 4; fromY = a.y + boxH / 2;
+                        toX = b.x + boxW + 4; toY = b.y + boxH / 2;
+                    }
+                    drawArrow(pctx, fromX, fromY, toX, toY, ((pt * 0.5 + i * 0.2) % 1), i === 3 ? 'rgba(52, 211, 153, 0.5)' : undefined);
+                }
+            }
+
+            // Draw nodes
+            nodes.forEach((node, i) => {
+                const borderColor = node.highlight ? 'rgba(52, 211, 153, 0.4)' : 'rgba(99, 102, 241, 0.2)';
+                const bgColor = node.highlight ? 'rgba(52, 211, 153, 0.05)' : 'rgba(26, 26, 37, 0.95)';
+                drawRoundedRect(pctx, node.x, node.y, boxW, boxH, 10, bgColor, borderColor);
+
+                // Icon
+                pctx.font = '16px sans-serif';
+                pctx.textAlign = 'center';
+                pctx.fillText(node.icon, node.x + boxW / 2, node.y + 22);
+
+                // Label
+                pctx.font = '600 12px Inter, sans-serif';
+                pctx.fillStyle = '#e8e8ed';
+                pctx.fillText(node.label, node.x + boxW / 2, node.y + 42);
+
+                // Sub
+                pctx.font = '11px Inter, sans-serif';
+                pctx.fillStyle = node.highlight ? '#34d399' : '#8888a0';
+                pctx.fillText(node.sub, node.x + boxW / 2, node.y + 58);
+
+                // Mini visualizations inside nodes
+                if (node.viz === 'spectrum') {
+                    drawMiniSpectrum(pctx, node.x + boxW / 2, node.y + boxH + 8, boxW * 0.8, 40, pt);
+                }
+                if (node.viz === 'wave') {
+                    drawMiniWaveform(pctx, node.x + boxW / 2, node.y + boxH + 28, boxW * 0.8, 30, pt);
+                }
+            });
+
+            // Compression label between rows (desktop only)
+            if (!isNarrow) {
+                const midY = (nodes[2].y + boxH + nodes[3].y) / 2;
+                pctx.font = '500 11px JetBrains Mono, monospace';
+                pctx.fillStyle = '#34d399';
+                pctx.textAlign = 'center';
+                pctx.fillText('99.5% ENERGY REMOVED', nodes[2].x + boxW / 2, midY + 4);
+            }
+
+            pt += 0.015;
+            requestAnimationFrame(drawPipeline);
+        }
+        drawPipeline();
 
         document.querySelectorAll('a[href^="#"]').forEach(a => {
             a.addEventListener('click', e => {
