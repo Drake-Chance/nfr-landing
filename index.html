@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SparseWave | Sparse Frequency-Domain Representations for Machine Intelligence</title>
-    <meta name="description" content="SparseWave introduces sparse frequency-domain waveform encoding for knowledge representation, achieving 99.5% representation sparsity with 99.2% reconstruction fidelity. Patent pending.">
+    <meta name="description" content="SparseWave introduces sparse frequency-domain waveform encoding for knowledge representation, achieving 90.6% spectral sparsity with 86.1% reconstruction fidelity across seven scientific domains. Patent pending.">
     <meta property="og:title" content="SparseWave — Sparse Frequency-Domain Representations for AI">
-    <meta property="og:description" content="A novel method for encoding knowledge as sparse frequency-domain waveforms. 99.5% energy reduction. 99.2% reconstruction fidelity. Patent pending.">
+    <meta property="og:description" content="A novel method for encoding knowledge as sparse frequency-domain waveforms. 90.6% spectral sparsity. 86.1% reconstruction fidelity. Patent pending.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sparsewave.com">
     <meta property="og:image" content="https://sparsewave.com/og-image.png">
@@ -15,7 +15,7 @@
     <meta property="og:image:type" content="image/png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SparseWave — Sparse Frequency-Domain Representations for AI">
-    <meta name="twitter:description" content="99.5% sparser representations. 99.2% fidelity. A novel approach to how AI encodes knowledge. Patent pending.">
+    <meta name="twitter:description" content="90.6% spectral sparsity. 86.1% reconstruction fidelity. A novel approach to how AI encodes knowledge. Patent pending.">
     <meta name="twitter:image" content="https://sparsewave.com/og-image.png">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -588,7 +588,7 @@
             We introduce SparseWave, a method for encoding knowledge as 
             sparse frequency-domain waveforms. By representing information through amplitude and phase 
             across frequency bins — transformed via inverse Fourier transform into time-domain signals — 
-            SparseWave achieves 99.5% representation sparsity while maintaining 99.2% reconstruction fidelity 
+            SparseWave achieves 90.6% spectral sparsity while maintaining 86.1% reconstruction fidelity 
             across seven scientific domains.
         </p>
         <div class="hero-meta">
@@ -615,17 +615,17 @@
             <div class="results-label">Experimental Results</div>
             <div class="results-grid">
                 <div class="result-item">
-                    <div class="result-value">99.5<span class="result-unit">%</span></div>
-                    <div class="result-label">Representation energy eliminated through learned sparsity</div>
-                    <div class="result-context">Energy reduced from 8,627 to 43 average units</div>
+                    <div class="result-value">90.6<span class="result-unit">%</span></div>
+                    <div class="result-label">Spectral sparsity — frequency bins converging to noise floor</div>
+                    <div class="result-context">6 of 64 bins carry meaningful amplitude</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-value">99.2<span class="result-unit">%</span></div>
+                    <div class="result-value">86.1<span class="result-unit">%</span></div>
                     <div class="result-label">Byte-level reconstruction fidelity from waveform encoding</div>
-                    <div class="result-context">Measured on held-out text sequences</div>
+                    <div class="result-context">Mean across seven scientific domains</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-value">99.5<span class="result-unit">%</span></div>
+                    <div class="result-value">99.4<span class="result-unit">%</span></div>
                     <div class="result-label">Next-waveform prediction accuracy via spectral analysis</div>
                     <div class="result-context">16-candidate selection task</div>
                 </div>
@@ -672,7 +672,7 @@
                     into a minimal number of active frequencies.
                 </p>
                 <ul>
-                    <li>99.5% of frequency bins converge to near-zero amplitude</li>
+                    <li>90.6% of frequency bins converge to near-zero amplitude</li>
                     <li>Information concentrates in sparse spectral peaks</li>
                     <li>Waveforms carry verifiable sequential structure</li>
                     <li>Sparsity is learned, not imposed — it emerges from energy minimization</li>
@@ -1171,7 +1171,7 @@
                     {x:cx-boxW/2,y:sy+g*2,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
                     {x:cx-boxW/2,y:sy+g*3,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
                     {x:cx-boxW/2,y:sy+g*4,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'99.2% reconstruction',i:'06',hi:true},
+                    {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'86.1% reconstruction',i:'06',hi:true},
                 ];
                 sideNode=null; // skip on narrow
             } else {
@@ -1185,7 +1185,7 @@
                     {x:mainLeft+(boxW+gX)*2,y:r1,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
                     {x:mainLeft+(boxW+gX)*2,y:r2,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
                     {x:mainLeft+boxW+gX,y:r2,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:mainLeft,y:r2,l:'Verification',s:'99.2% reconstruction',i:'06',hi:true},
+                    {x:mainLeft,y:r2,l:'Verification',s:'86.1% reconstruction',i:'06',hi:true},
                 ];
                 // Side node - Cooperative Training
                 sideNode={
@@ -1292,7 +1292,7 @@
                 const mid=(nodes[2].y+boxH+nodes[3].y)/2;
                 pctx.font='500 9px IBM Plex Mono,monospace';
                 pctx.fillStyle='rgba(10,124,80,0.5)';pctx.textAlign='center';
-                pctx.fillText('99.5% ENERGY REDUCTION',nodes[2].x+boxW/2,mid+3);
+                pctx.fillText('90.6% SPECTRAL SPARSITY',nodes[2].x+boxW/2,mid+3);
             }
             pt+=0.012;requestAnimationFrame(drawPipeline);
         }
