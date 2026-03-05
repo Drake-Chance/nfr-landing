@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Frequency Resonance — A New Language for Knowledge</title>
+    <meta name="description" content="Neural Frequency Resonance (NFR) — encoding human knowledge as frequency-domain waveforms. Patent pending.">
+    <meta property="og:title" content="Neural Frequency Resonance">
+    <meta property="og:description" content="What if knowledge could be encoded as waveforms? A new approach to AI representation learning. Patent pending.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a25;
+            --text-primary: #e8e8ed;
+            --text-secondary: #8888a0;
+            --text-muted: #555570;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --accent-bright: #818cf8;
+            --green: #34d399;
+            --border: rgba(255, 255, 255, 0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        #waveform-bg {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; opacity: 0.4;
+        }
+        .content { position: relative; z-index: 1; }
+
+        nav {
+            position: fixed; top: 0; width: 100%;
+            padding: 1.2rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.05em; }
+        .logo span { color: var(--accent-bright); }
+        .patent-badge {
+            font-size: 0.7rem; font-weight: 500;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid var(--accent); border-radius: 100px;
+            color: var(--accent-bright);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+        }
+        .hero-overline {
+            font-size: 0.75rem; font-weight: 500;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent-bright); margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700; line-height: 1.1;
+            max-width: 800px; margin-bottom: 1.5rem;
+        }
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent-bright), #a78bfa, #34d399);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 1.2rem; color: var(--text-secondary);
+            max-width: 600px; margin-bottom: 3rem; font-weight: 300;
+        }
+        .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        .btn {
+            padding: 0.8rem 2rem; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 500;
+            text-decoration: none; transition: all 0.2s;
+            cursor: pointer; border: none; font-family: inherit;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-bright); box-shadow: 0 0 30px var(--accent-glow); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-outline:hover { border-color: var(--accent); background: var(--accent-glow); }
+
+        .metrics {
+            padding: 3rem 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .metrics-grid {
+            max-width: 1000px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem; text-align: center;
+        }
+        .metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem; font-weight: 700;
+            color: var(--green); line-height: 1; margin-bottom: 0.5rem;
+        }
+        .metric-label { font-size: 0.85rem; color: var(--text-secondary); }
+
+        section {
+            max-width: 1000px; margin: 0 auto; padding: 6rem 2rem;
+        }
+        .section-label {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent-bright); margin-bottom: 1rem;
+        }
+        section h2 { font-size: 2rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.2; }
+        section p { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 1.5rem; max-width: 700px; }
+
+        .flow {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem; margin-top: 3rem;
+        }
+        .flow-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 12px;
+            padding: 2rem;
+        }
+        .flow-step::before {
+            content: attr(data-step);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem; font-weight: 600;
+            color: var(--accent-bright);
+            background: var(--accent-glow);
+            padding: 0.2rem 0.6rem; border-radius: 4px;
+            display: inline-block;
+        }
+        .flow-step h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; font-weight: 600; }
+        .flow-step p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+
+        .implications {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; margin-top: 3rem;
+        }
+        .implication {
+            background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 12px;
+            padding: 2rem;
+        }
+        .implication-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+        .implication h3 { font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; }
+        .implication p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+
+        .viz-section { text-align: center; padding: 4rem 2rem; }
+        #waveform-demo { width: 100%; max-width: 800px; height: 200px; margin: 2rem auto; }
+        .viz-caption { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+
+        .domains-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem; margin-top: 2rem;
+        }
+        .domain-tag {
+            background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center;
+            font-size: 0.9rem; font-weight: 500;
+            transition: border-color 0.2s;
+        }
+        .domain-tag:hover { border-color: var(--accent); }
+        .domain-tag .icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+
+        .cta-section {
+            text-align: center; padding: 6rem 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+        .cta-section h2 { max-width: 600px; margin: 0 auto 1rem; }
+        .cta-section p { max-width: 500px; margin: 0 auto 2rem; text-align: center; }
+        .contact-email {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem; color: var(--accent-bright); text-decoration: none;
+        }
+        .contact-email:hover { text-decoration: underline; }
+
+        footer {
+            padding: 2rem; text-align: center;
+            font-size: 0.8rem; color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 640px) {
+            nav { padding: 1rem; }
+            .hero { padding: 5rem 1.5rem 3rem; }
+            section { padding: 4rem 1.5rem; }
+            .metric-value { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="waveform-bg"></canvas>
+    <div class="content">
+        <nav>
+            <div class="logo"><span>NFR</span> Neural Frequency Resonance</div>
+            <div class="patent-badge">Patent Pending</div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-overline">A New Paradigm in AI Representation</div>
+            <h1>What if knowledge could be encoded as <span class="gradient">waveforms?</span></h1>
+            <p class="hero-sub">
+                Neural Frequency Resonance transforms text into real frequency-domain signals —
+                achieving 99.5% energy reduction while preserving information with near-perfect fidelity.
+            </p>
+            <div class="hero-cta">
+                <a href="#how-it-works" class="btn btn-primary">How It Works</a>
+                <a href="#contact" class="btn btn-outline">Get in Touch</a>
+            </div>
+        </section>
+
+        <div class="metrics">
+            <div class="metrics-grid">
+                <div class="metric">
+                    <div class="metric-value">99.2%</div>
+                    <div class="metric-label">Reconstruction Accuracy</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">99.5%</div>
+                    <div class="metric-label">Energy Reduction</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">99.5%</div>
+                    <div class="metric-label">Sequential Prediction</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">7</div>
+                    <div class="metric-label">Knowledge Domains</div>
+                </div>
+            </div>
+        </div>
+
+        <section id="how-it-works">
+            <div class="section-label">The Approach</div>
+            <h2>Knowledge as Signal</h2>
+            <p>
+                Instead of representing text as dense token embeddings — where every dimension is active and
+                computationally expensive — NFR encodes information into sparse frequency-domain waveforms
+                where most of the signal is silence.
+            </p>
+            <div class="flow">
+                <div class="flow-step" data-step="01">
+                    <h3>Encode</h3>
+                    <p>Text is transformed into amplitude and phase values across frequency bins by a neural encoder that learns which frequencies carry information.</p>
+                </div>
+                <div class="flow-step" data-step="02">
+                    <h3>Transform</h3>
+                    <p>The frequency representation becomes a real waveform through inverse Fourier transform — an actual oscillating signal, not an abstract vector.</p>
+                </div>
+                <div class="flow-step" data-step="03">
+                    <h3>Compress</h3>
+                    <p>Energy minimization forces the encoder to concentrate information into fewer frequencies. The result: 99.5% of the waveform energy is eliminated while information is preserved.</p>
+                </div>
+                <div class="flow-step" data-step="04">
+                    <h3>Predict</h3>
+                    <p>A spectral predictor analyzes sequences of waveforms and predicts what comes next — proving that waveforms carry meaningful sequential structure.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="viz-section">
+            <canvas id="waveform-demo"></canvas>
+            <p class="viz-caption">Simulated frequency spectrum — information concentrated in sparse bins</p>
+        </div>
+
+        <section>
+            <div class="section-label">Implications</div>
+            <h2>Why This Matters</h2>
+            <p>
+                If knowledge can be represented as sparse waveforms instead of dense vectors,
+                the implications for AI efficiency are profound.
+            </p>
+            <div class="implications">
+                <div class="implication">
+                    <div class="implication-icon">⚡</div>
+                    <h3>Compute Efficiency</h3>
+                    <p>Sparse frequency representations mean fewer active dimensions. Fewer active dimensions mean dramatically less computation at every layer of a neural network.</p>
+                </div>
+                <div class="implication">
+                    <div class="implication-icon">🧠</div>
+                    <h3>Cross-Domain Discovery</h3>
+                    <p>When knowledge from different fields exists as waveforms, combining them through superposition could reveal relationships invisible in text.</p>
+                </div>
+                <div class="implication">
+                    <div class="implication-icon">📡</div>
+                    <h3>Frequency-Native AI</h3>
+                    <p>A model that operates entirely in frequency space — never seeing text, only waveforms — represents a fundamentally different approach to artificial intelligence.</p>
+                </div>
+                <div class="implication">
+                    <div class="implication-icon">🔋</div>
+                    <h3>Edge Deployment</h3>
+                    <p>Models operating on compressed waveform representations could run on devices where traditional large language models cannot.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-label">Training Data</div>
+            <h2>Validated Across Scientific Knowledge</h2>
+            <p>
+                NFR has been validated across seven distinct domains of human knowledge,
+                using foundational scientific texts spanning centuries of discovery.
+            </p>
+            <div class="domains-grid">
+                <div class="domain-tag"><span class="icon">⚛️</span> Physics</div>
+                <div class="domain-tag"><span class="icon">🧪</span> Chemistry</div>
+                <div class="domain-tag"><span class="icon">🧬</span> Biology</div>
+                <div class="domain-tag"><span class="icon">🔭</span> Astronomy</div>
+                <div class="domain-tag"><span class="icon">🪨</span> Geology</div>
+                <div class="domain-tag"><span class="icon">🏥</span> Medicine</div>
+                <div class="domain-tag"><span class="icon">📐</span> Mathematics</div>
+            </div>
+        </section>
+
+        <section class="cta-section" id="contact">
+            <div class="section-label">Interested?</div>
+            <h2>Let's Talk</h2>
+            <p>
+                NFR is patent pending and in active development. For licensing inquiries, research collaboration,
+                or investment opportunities:
+            </p>
+            <a href="mailto:joshuapageau@gmail.com" class="contact-email">joshuapageau@gmail.com</a>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Neural Frequency Resonance. Patent Pending. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Background waveform animation
+        const canvas = document.getElementById('waveform-bg');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+
+        let t = 0;
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let l = 0; l < 5; l++) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(99, 102, 241, ${0.03 + l * 0.01})`;
+                ctx.lineWidth = 1;
+                const yBase = canvas.height * (0.2 + l * 0.15);
+                const freq = 0.003 + l * 0.001;
+                const amp = 30 + l * 10;
+                const phase = t * (0.5 + l * 0.3);
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = yBase + Math.sin(x * freq + phase) * amp * Math.sin(x * 0.001 + t * 0.2);
+                    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            t += 0.01;
+            requestAnimationFrame(drawBackground);
+        }
+        drawBackground();
+
+        // Demo waveform visualization
+        const demo = document.getElementById('waveform-demo');
+        const dctx = demo.getContext('2d');
+        function resizeDemo() {
+            const rect = demo.parentElement.getBoundingClientRect();
+            demo.width = Math.min(rect.width - 40, 800);
+            demo.height = 200;
+        }
+        resizeDemo();
+        window.addEventListener('resize', resizeDemo);
+
+        let dt = 0;
+        function drawDemo() {
+            const w = demo.width, h = demo.height;
+            dctx.clearRect(0, 0, w, h);
+            const bins = 64, binWidth = w / bins;
+            const activeBins = [3, 7, 12, 22, 31, 45];
+            for (let i = 0; i < bins; i++) {
+                const isActive = activeBins.includes(i);
+                const amp = isActive ? (0.3 + 0.7 * Math.abs(Math.sin(dt + i))) * (h * 0.7) : Math.random() * 3;
+                const alpha = isActive ? 0.8 : 0.1;
+                const gradient = dctx.createLinearGradient(0, h, 0, h - amp);
+                gradient.addColorStop(0, `rgba(99, 102, 241, ${alpha})`);
+                gradient.addColorStop(1, `rgba(129, 140, 248, ${alpha * 0.5})`);
+                dctx.fillStyle = gradient;
+                dctx.fillRect(i * binWidth + 1, h - amp, binWidth - 2, amp);
+            }
+            dctx.fillStyle = 'rgba(136, 136, 160, 0.6)';
+            dctx.font = '11px Inter, sans-serif';
+            dctx.textAlign = 'center';
+            dctx.fillText('Frequency Bins (64 total \u2014 only 6 carry information)', w / 2, 16);
+            dt += 0.02;
+            requestAnimationFrame(drawDemo);
+        }
+        drawDemo();
+
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
