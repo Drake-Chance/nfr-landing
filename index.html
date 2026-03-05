@@ -362,6 +362,49 @@
             font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 0.4rem;
         }
 
+        /* Related Work */
+        .related-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.82rem; margin-top: 2.5rem;
+        }
+        .related-table thead th {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0.8rem 1rem;
+            border-bottom: 2px solid var(--border-strong);
+            text-align: left;
+        }
+        .related-table tbody td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+            line-height: 1.6;
+        }
+        .related-table tbody td:first-child {
+            font-weight: 600; color: var(--text);
+            white-space: nowrap;
+        }
+        .related-table tbody tr:hover { background: rgba(0,0,0,0.015); }
+        .related-distinction {
+            margin-top: 3rem;
+            padding: 2rem 2.5rem;
+            border: 1px solid rgba(26, 58, 138, 0.12);
+            border-left: 3px solid var(--accent);
+            background: var(--accent-muted);
+            border-radius: 4px;
+        }
+        .related-distinction h3 {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 1rem; font-weight: 600; margin-bottom: 0.8rem;
+        }
+        .related-distinction p {
+            font-size: 0.85rem; color: var(--text-secondary);
+            line-height: 1.75; margin-bottom: 0.5rem;
+        }
+
         /* Applications grid */
         .apps-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
@@ -519,6 +562,7 @@
                 <a href="#research" class="nav-link">Research</a>
                 <a href="#benchmark" class="nav-link">Benchmarks</a>
                 <a href="#applications" class="nav-link">Applications</a>
+                <a href="#related" class="nav-link">Related Work</a>
                 <a href="#contact" class="nav-link">Contact</a>
                 <div class="nav-status">Patent Pending</div>
             </div>
@@ -918,6 +962,87 @@
             </div>
         </div>
     </div>
+
+    <!-- Related Work -->
+    <div class="section" id="related">
+        <div class="section-label">Prior &amp; Related Work</div>
+        <h2>Positioning Within the Literature</h2>
+        <p class="lead">
+            Fourier transforms and frequency-domain methods have a growing presence in machine learning. 
+            NFR builds on this foundation while addressing a fundamentally different problem than 
+            existing approaches.
+        </p>
+
+        <table class="related-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Authors / Origin</th>
+                    <th>Use of Fourier Transform</th>
+                    <th>Relationship to NFR</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Fourier Neural Operator (FNO)</td>
+                    <td>Li et al., Caltech / NVIDIA (2021)</td>
+                    <td>FFT as internal computation layer — replaces spatial convolution with frequency-domain multiplication for solving PDEs</td>
+                    <td>FFT used as a computational shortcut inside the model. NFR uses FFT/iFFT as the output representation. Different purpose, complementary insight.</td>
+                </tr>
+                <tr>
+                    <td>FNet</td>
+                    <td>Google Research (2021)</td>
+                    <td>FFT replaces self-attention layers for computational efficiency — applies DFT to token embeddings as a mixing operation</td>
+                    <td>FFT used to mix existing dense embeddings. NFR encodes information as sparse frequency-domain signals from the ground up. FNet does not produce waveforms or target sparsity.</td>
+                </tr>
+                <tr>
+                    <td>Emergent Communication</td>
+                    <td>FAIR / DeepMind (2017–present)</td>
+                    <td>Not frequency-based. Neural agents develop communication protocols using discrete symbols or continuous vectors.</td>
+                    <td>NFR shares the principle of emergent encoding — the network discovers its own representation. But NFR's representation is in the frequency domain, not discrete symbols or arbitrary vectors.</td>
+                </tr>
+                <tr>
+                    <td>Variational Autoencoders</td>
+                    <td>Kingma &amp; Welling (2013)</td>
+                    <td>Not frequency-based. Compress input to latent vector with regularized distribution.</td>
+                    <td>NFR outputs spectral representations (amplitude + phase) with physical structure, not unstructured latent vectors. Energy minimization drives sparsity, not KL divergence.</td>
+                </tr>
+                <tr>
+                    <td>Sparse Transformers</td>
+                    <td>Child et al., OpenAI (2019)</td>
+                    <td>Not frequency-based. Sparsify the attention matrix to reduce quadratic complexity.</td>
+                    <td>Sparse Transformers reduce computation in the attention mechanism. NFR reduces density in the representation itself — a complementary, more fundamental optimization.</td>
+                </tr>
+                <tr>
+                    <td>Spectral Normalization / Methods</td>
+                    <td>Various (2018–present)</td>
+                    <td>Spectral analysis of weight matrices for training stability and generalization.</td>
+                    <td>These methods analyze model weights in the frequency domain. NFR encodes model inputs/knowledge in the frequency domain. Different target (weights vs. data).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="related-distinction">
+            <h3>NFR's Novel Contribution</h3>
+            <p>
+                Existing methods use frequency-domain techniques as internal computational tools — to speed up 
+                convolution, replace attention, or analyze weight matrices. The data representations flowing 
+                through these models remain dense vectors with no spectral structure.
+            </p>
+            <p>
+                NFR introduces a fundamentally different proposition: the representation itself is a 
+                frequency-domain waveform. Information is carried by amplitude and phase across spectral bins. 
+                Energy minimization drives emergent sparsity — the encoder discovers that most frequencies 
+                are unnecessary. The result is a representation that is sparse by nature, not by approximation.
+            </p>
+            <p>
+                This combination — emergent spectral encoding, physical waveform output via iFFT, learned 
+                energy minimization, and cross-domain transfer — is not present in any existing published work.
+            </p>
+        </div>
+    </div>
+
+    <hr class="section-divider">
 
     <!-- CTA -->
     <div class="cta-section" id="contact">
