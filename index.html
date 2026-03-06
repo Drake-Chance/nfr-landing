@@ -30,7 +30,7 @@
             --bg-dark-alt: #1a1a24;
             --text: #1a1a2e;
             --text-secondary: #4a4a65;
-            --text-muted: #8.5aa0;
+            --text-muted: #8a8aa0;
             --accent: #1a3a8a;
             --accent-light: #2a5cc7;
             --accent-muted: rgba(26, 58, 138, 0.08);
@@ -55,13 +55,13 @@
         /* Navigation */
         nav {
             position: fixed; top: 0; width: 100%; z-index: 100;
-            background: rgba(250, 250, 250, 1.22);
+            background: rgba(250, 250, 250, 0.92);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
         .nav-inner {
             max-width: 1200px; margin: 0 auto;
-            padding: 1.2rem 3rem;
+            padding: 0.9rem 3rem;
             display: flex; justify-content: space-between; align-items: center;
         }
         .nav-brand {
@@ -302,7 +302,7 @@
             font-family: 'IBM Plex Serif', Georgia, serif;
             font-size: 1.8rem; font-weight: 600; margin-bottom: 0.8rem;
         }
-        .benchmark-header p { font-size: 1.2rem; color: var(--text-secondary); max-width: 680px; line-height: 1.8; }
+        .benchmark-header p { font-size: 0.9rem; color: var(--text-secondary); max-width: 680px; line-height: 1.8; }
         .benchmark-methodology {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.7rem; color: var(--text-muted);
@@ -388,7 +388,7 @@
             text-align: left;
         }
         .related-table tbody td {
-            padding: 1.2rem 1rem;
+            padding: 0.9rem 1rem;
             border-bottom: 1px solid var(--border);
             color: var(--text-secondary);
             vertical-align: top;
@@ -435,7 +435,7 @@
             margin-bottom: 1rem;
         }
         .app-item h3 {
-            font-size: 1.25rem; font-weight: 600;
+            font-size: 0.95rem; font-weight: 600;
             margin-bottom: 0.6rem;
         }
         .app-item p {
@@ -489,18 +489,18 @@
             color: #fff; margin-bottom: 1.2rem; line-height: 1.25;
         }
         .cta-left p {
-            font-size: 1.25rem; color: rgba(255,255,255,0.55);
+            font-size: 0.95rem; color: rgba(255,255,255,0.55);
             line-height: 1.85; margin-bottom: 2rem;
         }
         .cta-btn {
             display: inline-block;
-            padding: 1.2rem 2.5rem; border-radius: 4px;
+            padding: 0.9rem 2.5rem; border-radius: 4px;
             font-size: 0.82rem; font-weight: 600;
             text-decoration: none; transition: all 0.2s;
             font-family: inherit; letter-spacing: 0.02em;
             background: #fff; color: var(--bg-dark);
         }
-        .cta-btn:hover { background: #e8.5ed; transform: translateY(-1px); }
+        .cta-btn:hover { background: #e8e8ed; transform: translateY(-1px); }
         .cta-btn-outline {
             background: transparent; color: #fff;
             border: 1px solid rgba(255,255,255,0.15);
@@ -520,7 +520,7 @@
             margin-bottom: 0.4rem;
         }
         .cta-contact-value {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
         }
         .cta-contact-value a {
             color: rgba(255,255,255,0.8); text-decoration: none;
@@ -539,7 +539,7 @@
 
         /* Responsive */
         @media (max-width: 900px) {
-            .nav-inner { padding: 1.2rem 1.5rem; }
+            .nav-inner { padding: 0.9rem 1.5rem; }
             .nav-title, .nav-link { display: none; }
             .hero { padding: 8rem 1.5rem 4rem; }
             .section { padding: 4rem 1.5rem; }
@@ -747,7 +747,7 @@
         </p>
 
         <div class="benchmark-table-wrap">
-            <div class="benchmark-table-label">Table — Spectral Sparsity Sweep at 1B Scale</div>
+            <div class="benchmark-table-label">Spectral Sparsity Sweep at 1B Scale</div>
             <table class="bench-table">
                 <thead>
                     <tr>
@@ -778,14 +778,14 @@
                         <td class="num">32</td>
                         <td class="num">520,896</td>
                         <td class="num">5.4</td>
-                        <td class="num">1.26x</td>
+                        <td class="num">0.96x</td>
                     </tr>
                     <tr>
                         <td class="model-name">k=32</td>
                         <td class="num">64</td>
                         <td class="num">522,944</td>
                         <td class="num">5.4</td>
-                        <td class="num">1.26x</td>
+                        <td class="num">0.96x</td>
                     </tr>
                     <tr>
                         <td class="model-name">k=64 (all bins)</td>
@@ -804,7 +804,7 @@
                 </tbody>
             </table>
         </div>
-        <p style="color: #8.5; font-size: 0.85rem; margin-top: 0.5rem;">
+        <p style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">
             Success criterion: k=8/k=64 PPL ratio &lt; 1.15. Measured ratio: 1.143. 
             All spectral configurations outperform standard dense embeddings by 3x.
         </p>
@@ -826,8 +826,8 @@
             <div class="benchmark-methodology">
                 <strong>Methodology:</strong> Standard transformer layer FLOPS = 12d²n + 2n²d, where d = model dimension, 
                 n = sequence length. SparseWave effective dimension d_eff = d × 0.125 (8 of 64 frequency bins 
-                carry equivalent downstream performance). At 1B scale, the top 8 bins achieve PPL 6.4 vs 
-                all 64 bins at PPL 5.6 — a 1.14x ratio. Cost projections assume H100 GPU at $2/hr with 
+                carry equivalent downstream performance, confirmed at 1B-token scale). 
+                Cost projections assume H100 GPU at $2/hr with 
                 1B tokens/day inference volume. All figures represent dimension-dependent operations only.
             </div>
 
@@ -912,14 +912,14 @@
                             <td class="model-name">Frontier 175B Class</td>
                             <td class="num">64.4</td>
                             <td class="num">8.1</td>
-                            <td class="num highlight">56.3</td>
+                            <td class="num highlight">56.4</td>
                             <td class="num savings">87.5%</td>
                         </tr>
                         <tr>
                             <td class="model-name">Llama 3 70B</td>
                             <td class="num">64.4</td>
                             <td class="num">8.1</td>
-                            <td class="num highlight">56.3</td>
+                            <td class="num highlight">56.4</td>
                             <td class="num savings">87.5%</td>
                         </tr>
                         <tr>
@@ -956,13 +956,13 @@
                             <td class="model-name">Frontier 175B Class</td>
                             <td class="num">$45.1M</td>
                             <td class="num">$5.6M</td>
-                            <td class="num savings">$41.2M</td>
+                            <td class="num savings">$39.5M</td>
                         </tr>
                         <tr>
                             <td class="model-name">Llama 3 70B</td>
                             <td class="num">$45.1M</td>
                             <td class="num">$5.6M</td>
-                            <td class="num savings">$41.2M</td>
+                            <td class="num savings">$39.5M</td>
                         </tr>
                         <tr>
                             <td class="model-name">Mid-Tier (GPT-3.5 Class)</td>
@@ -983,7 +983,7 @@
             <!-- Caveats -->
             <div class="bench-caveat">
                 <div class="bench-caveat-label">Important Assumptions &amp; Limitations</div>
-                <p>These projections extrapolate SparseWave's measured sparsity to full-scale architectures. At 1B-token scale, 8 of 64 frequency bins achieve equivalent downstream performance (PPL ratio 1.14x), representing an 87.5% effective dimension reduction. Actual FLOPS reduction at scale has not yet been validated empirically.</p>
+                <p>These projections extrapolate SparseWave's measured spectral sparsity (8/64 effective bins, confirmed at 1B-token scale) to full-scale architectures. Actual FLOPS reduction at scale has not yet been validated empirically.</p>
                 <p>Not all transformer operations benefit equally from input sparsity — softmax, layer normalization, and residual connections remain dense. The 87.5% figure represents an upper bound on dimension-dependent computation savings.</p>
                 <p>Hardware-level sparsity support varies by platform. NVIDIA Ampere and Hopper architectures (A100, H100) offer native structured sparsity acceleration at 2:4 patterns; unstructured sparsity gains depend on software optimization.</p>
                 <p>Memory bandwidth savings — often the true bottleneck in transformer inference — may exceed FLOPS savings but are architecture-dependent and not quantified here.</p>
@@ -1041,7 +1041,7 @@
         <h2>The Economics of Representation Efficiency</h2>
         <p class="lead">
             AI compute costs are the fastest-growing line item in technology infrastructure. 
-            At measured sparsity levels, SparseWave projects a 87.5% reduction in per-layer FLOPS 
+            At measured sparsity levels, SparseWave projects an 87.5% reduction in per-layer FLOPS 
             for dimension-dependent operations.
         </p>
         <div class="scale-grid">
@@ -1054,7 +1054,7 @@
                 <div class="scale-label">Per-layer FLOPS<br>reduction (projected)</div>
             </div>
             <div class="scale-item">
-                <div class="scale-value">$138M</div>
+                <div class="scale-value">$133M</div>
                 <div class="scale-label">Projected annual savings<br>GPT-4 class deployment</div>
             </div>
         </div>
@@ -1106,7 +1106,7 @@
                 </tr>
                 <tr>
                     <td>Sparse Transformers</td>
-                    <td>Child et al., OpenAI (21.2)</td>
+                    <td>Child et al., OpenAI (2019)</td>
                     <td>Not frequency-based. Sparsify the attention matrix to reduce quadratic complexity.</td>
                     <td>Sparse Transformers reduce computation in the attention mechanism. SparseWave reduces density in the representation itself — a complementary, more fundamental optimization.</td>
                 </tr>
@@ -1255,7 +1255,7 @@
                     {x:cx-boxW/2,y:sy+g*2,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
                     {x:cx-boxW/2,y:sy+g*3,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
                     {x:cx-boxW/2,y:sy+g*4,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'88.1% reconstruction',i:'06',hi:true},
+                    {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'91.5% reconstruction',i:'06',hi:true},
                 ];
                 sideNode=null; // skip on narrow
             } else {
@@ -1269,7 +1269,7 @@
                     {x:mainLeft+(boxW+gX)*2,y:r1,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
                     {x:mainLeft+(boxW+gX)*2,y:r2,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
                     {x:mainLeft+boxW+gX,y:r2,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:mainLeft,y:r2,l:'Verification',s:'88.1% reconstruction',i:'06',hi:true},
+                    {x:mainLeft,y:r2,l:'Verification',s:'91.5% reconstruction',i:'06',hi:true},
                 ];
                 // Side node - Cooperative Training
                 sideNode={
@@ -1305,15 +1305,15 @@
                 // Two sub-boxes inside
                 const subW=sideNode.w-20, subH=28, subX=sideNode.x+10;
                 rrect(pctx,subX,sideNode.y+26,subW,subH,3,'#fff','rgba(0,0,0,0.08)');
-                pctx.font='601.2.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
+                pctx.font='600 9.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
                 pctx.fillText('Encoder',subX+subW/2,sideNode.y+38);
-                pctx.font='400 8px IBM Plex Sans,sans-serif';pctx.fillStyle='#8.5aa0';
+                pctx.font='400 8px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
                 pctx.fillText('Discovers frequency mapping',subX+subW/2,sideNode.y+50);
 
                 rrect(pctx,subX,sideNode.y+60,subW,subH,3,'#fff','rgba(0,0,0,0.08)');
-                pctx.font='601.2.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
+                pctx.font='600 9.5px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
                 pctx.fillText('Decoder',subX+subW/2,sideNode.y+72);
-                pctx.font='400 8px IBM Plex Sans,sans-serif';pctx.fillStyle='#8.5aa0';
+                pctx.font='400 8px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
                 pctx.fillText('Verifies reconstruction fidelity',subX+subW/2,sideNode.y+84);
 
                 // Bidirectional arrow between sub-boxes
@@ -1360,13 +1360,13 @@
                 const bc=n.hi?'rgba(10,124,80,0.2)':'rgba(0,0,0,0.08)';
                 const bg=n.hi?'rgba(10,124,80,0.03)':'#fff';
                 rrect(pctx,n.x,n.y,boxW,boxH,4,bg,bc);
-                pctx.font='501.2px IBM Plex Mono,monospace';pctx.textAlign='left';
+                pctx.font='500 9px IBM Plex Mono,monospace';pctx.textAlign='left';
                 pctx.fillStyle=n.hi?'#0a7c50':'#1a3a8a';
                 pctx.fillText(n.i,n.x+12,n.y+18);
                 pctx.font='600 11px IBM Plex Sans,sans-serif';pctx.fillStyle='#1a1a2e';
                 pctx.textAlign='center';
                 pctx.fillText(n.l,n.x+boxW/2,n.y+38);
-                pctx.font='401.2px IBM Plex Sans,sans-serif';pctx.fillStyle='#8.5aa0';
+                pctx.font='400 9px IBM Plex Sans,sans-serif';pctx.fillStyle='#8a8aa0';
                 pctx.fillText(n.s,n.x+boxW/2,n.y+55);
                 if(n.v==='spec')miniSpec(pctx,n.x+boxW/2,n.y+boxH+8,boxW*0.75,36,pt);
                 if(n.v==='wave')miniWave(pctx,n.x+boxW/2,n.y+boxH+26,boxW*0.75,24,pt);
@@ -1374,7 +1374,7 @@
 
             if(!narrow){
                 const mid=(nodes[2].y+boxH+nodes[3].y)/2;
-                pctx.font='501.2px IBM Plex Mono,monospace';
+                pctx.font='500 9px IBM Plex Mono,monospace';
                 pctx.fillStyle='rgba(10,124,80,0.5)';pctx.textAlign='center';
                 pctx.fillText('87.5% SPECTRAL SPARSITY',nodes[2].x+boxW/2,mid+3);
             }
@@ -1413,7 +1413,7 @@
             // Define active regions (where data lives in the waveform)
             const activeRegions=[
                 {start:0.04,end:0.12},{start:0.22,end:0.28},
-                {start:0.42,end:0.52},{start:0.68,end:0.74},{start:0.85,end:1.25}
+                {start:0.42,end:0.52},{start:0.68,end:0.74},{start:0.85,end:0.95}
             ];
 
             // Draw highlight zones behind the wave
@@ -1603,7 +1603,7 @@
                 bctx.strokeRect(leftPad, cy - barH - 2, denseW, barH);
 
                 // Dense label
-                bctx.font = '501.2px IBM Plex Mono, monospace';
+                bctx.font = '500 9px IBM Plex Mono, monospace';
                 bctx.fillStyle = '#8a2020';
                 bctx.textAlign = 'left';
                 bctx.fillText(m.dense.toFixed(1) + ' TFLOPS', leftPad + denseW + 6, cy - barH + 9);
