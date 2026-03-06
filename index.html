@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SparseWave | Sparse Frequency-Domain Representations for Machine Intelligence</title>
-    <meta name="description" content="SparseWave introduces sparse frequency-domain waveform encoding achieving 91.5% reconstruction fidelity at 1B-token scale with confirmed spectral sparsity. Patent pending.">
+    <meta name="description" content="SparseWave introduces sparse frequency-domain waveform encoding achieving 93.9% reconstruction fidelity at 1B-token scale with confirmed spectral sparsity. Patent pending.">
     <meta property="og:title" content="SparseWave — Sparse Frequency-Domain Representations for AI">
-    <meta property="og:description" content="A novel method for encoding knowledge as sparse frequency-domain waveforms. 91.5% reconstruction at 1B-token scale. Spectral sparsity confirmed. Patent pending.">
+    <meta property="og:description" content="A novel method for encoding knowledge as sparse frequency-domain waveforms. 93.9% reconstruction at 1B-token scale. Spectral sparsity confirmed. Patent pending.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sparsewave.com">
     <meta property="og:image" content="https://sparsewave.com/og-image.png">
@@ -15,7 +15,7 @@
     <meta property="og:image:type" content="image/png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SparseWave — Sparse Frequency-Domain Representations for AI">
-    <meta name="twitter:description" content="91.5% reconstruction at 1B tokens. Spectral sparsity confirmed at scale. A novel approach to how AI encodes knowledge. Patent pending.">
+    <meta name="twitter:description" content="93.9% reconstruction at 1B tokens. Spectral sparsity confirmed at scale. A novel approach to how AI encodes knowledge. Patent pending.">
     <meta name="twitter:image" content="https://sparsewave.com/og-image.png">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -588,8 +588,9 @@
             We introduce SparseWave, a method for encoding knowledge as 
             sparse frequency-domain waveforms. By representing information through amplitude and phase 
             across frequency bins — transformed via inverse Fourier transform into time-domain signals — 
-            SparseWave achieves 91.5% reconstruction fidelity on 1 billion tokens of diverse web text,
-            with spectral sparsity confirmed at scale — 8 of 64 frequency bins match the performance of all 64.
+            SparseWave achieves 93.9% reconstruction fidelity on 1 billion tokens of diverse web text,
+            with spectral sparsity confirmed at scale — 8 of 64 frequency bins match the performance of all 64
+            with a perplexity ratio of just 1.002x. A 110K-parameter downstream model outperforms a 65M-parameter baseline by 2.7x.
         </p>
         <div class="hero-meta">
             <div class="hero-meta-item">
@@ -615,24 +616,24 @@
             <div class="results-label">Experimental Results</div>
             <div class="results-grid">
                 <div class="result-item">
-                    <div class="result-value">91.5<span class="result-unit">%</span></div>
+                    <div class="result-value">93.9<span class="result-unit">%</span></div>
                     <div class="result-label">Byte-level reconstruction fidelity from waveform encoding</div>
-                    <div class="result-context">1 billion tokens of diverse web text (OpenWebText)</div>
+                    <div class="result-context">1 billion tokens of diverse web text — 50M encoder</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-value">1.14<span class="result-unit">x</span></div>
-                    <div class="result-label">k=8 / k=64 perplexity ratio — sparsity confirmed at scale</div>
-                    <div class="result-context">8 frequency bins match the performance of all 64</div>
+                    <div class="result-value">1.002<span class="result-unit">x</span></div>
+                    <div class="result-label">k=8 / k=64 perplexity ratio — near-perfect sparsity</div>
+                    <div class="result-context">87.5% of spectrum discarded with 0.2% perplexity cost</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-value">3<span class="result-unit">x</span></div>
-                    <div class="result-label">Better perplexity than standard dense embeddings</div>
-                    <div class="result-context">PPL 6.4 (spectral) vs 18.6 (standard baseline)</div>
+                    <div class="result-value">590<span class="result-unit">x</span></div>
+                    <div class="result-label">Fewer parameters than standard dense embeddings</div>
+                    <div class="result-context">PPL 1.024 (110K params) vs 2.719 (65M params)</div>
                 </div>
                 <div class="result-item">
                     <div class="result-value">1<span class="result-unit">B</span></div>
-                    <div class="result-label">Tokens validated — 200K documents from OpenWebText</div>
-                    <div class="result-context">Curriculum training from 7 scientific domains to web scale</div>
+                    <div class="result-label">Tokens validated — 200K documents of diverse web text</div>
+                    <div class="result-context">Sparsity tightens with encoder scale</div>
                 </div>
             </div>
         </div>
@@ -701,7 +702,7 @@
                 FIG. 1 — Top: Output waveform after inverse FFT. Green regions contain encoded data; 
                 gray regions are near-zero (silence). Bottom: Corresponding frequency spectrum. 
                 At 1B-token scale, the top 8 of 64 frequency bins achieve equivalent downstream 
-                performance to all 64 bins (PPL ratio 1.14x).
+                performance to all 64 bins (PPL ratio 1.002x with 50M encoder).
             </p>
         </div>
     </div>
@@ -712,10 +713,9 @@
         <h2>Cross-Domain Transfer</h2>
         <p class="lead">
             SparseWave has been validated across seven scientific domains and scaled to 
-            1 billion tokens of diverse web text (200,427 documents from OpenWebText). 
-            The encoding generalizes — frequency patterns learned on scientific texts 
-            transfer to arbitrary web content via curriculum training, achieving 91.5% 
-            reconstruction fidelity at scale.
+            1 billion tokens of diverse web text (200,427 documents). 
+            The encoding generalizes across domains, achieving 93.9% 
+            reconstruction fidelity at scale with a 50M-parameter encoder.
         </p>
         <div class="domains-row">
             <span class="domain-pill">Physics</span>
@@ -735,18 +735,18 @@
         <p class="lead">
             SparseWave was validated at 1B-token scale on diverse, uncurated web text — 
             200,427 documents spanning news, forums, blogs, and technical writing. 
-            Reconstruction accuracy reached 91.5%.
+            A 50M-parameter encoder achieves 93.9% reconstruction with near-perfect spectral sparsity (ratio 1.002x).
         </p>
         <p>
             The spectral sparsity sweep tested downstream transformer performance using only the 
-            top-k frequency bins as embeddings. Result: <strong>8 frequency bins achieve nearly 
-            identical perplexity to all 64</strong> — a ratio of 1.14x, confirming that information 
+            top-k frequency bins as embeddings. Result: <strong>8 frequency bins achieve virtually 
+            identical perplexity to all 64</strong> — a ratio of just 1.002x with the 50M encoder, confirming that information 
             naturally concentrates in a small number of spectral components even on diverse, 
-            large-scale data.
+            large-scale data. A 110K-parameter spectral model outperforms a 65M-parameter standard baseline by 2.7x.
         </p>
 
         <div class="benchmark-table-wrap">
-            <div class="benchmark-table-label">Spectral Sparsity Sweep at 1B Scale</div>
+            <div class="benchmark-table-label">Spectral Sparsity Sweep at 1B Scale (50M Encoder)</div>
             <table class="bench-table">
                 <thead>
                     <tr>
@@ -761,51 +761,51 @@
                     <tr>
                         <td class="model-name">k=4 (top 4 bins)</td>
                         <td class="num">8</td>
-                        <td class="num">519,360</td>
-                        <td class="num">6.5</td>
-                        <td class="num">1.16x</td>
+                        <td class="num">54,776</td>
+                        <td class="num">1.027</td>
+                        <td class="num">1.005x</td>
                     </tr>
                     <tr>
                         <td class="model-name">k=8 (top 8 bins)</td>
                         <td class="num">16</td>
-                        <td class="num">519,872</td>
-                        <td class="num"><strong>6.4</strong></td>
-                        <td class="num savings"><strong>1.14x</strong></td>
+                        <td class="num">109,680</td>
+                        <td class="num"><strong>1.024</strong></td>
+                        <td class="num savings"><strong>1.002x</strong></td>
                     </tr>
                     <tr>
                         <td class="model-name">k=16</td>
                         <td class="num">32</td>
-                        <td class="num">520,896</td>
-                        <td class="num">5.4</td>
-                        <td class="num">0.96x</td>
+                        <td class="num">229,088</td>
+                        <td class="num">1.022</td>
+                        <td class="num">1.001x</td>
                     </tr>
                     <tr>
                         <td class="model-name">k=32</td>
                         <td class="num">64</td>
-                        <td class="num">522,944</td>
-                        <td class="num">5.4</td>
-                        <td class="num">0.96x</td>
+                        <td class="num">506,304</td>
+                        <td class="num">1.021</td>
+                        <td class="num">1.000x</td>
                     </tr>
                     <tr>
                         <td class="model-name">k=64 (all bins)</td>
                         <td class="num">128</td>
-                        <td class="num">1,247,360</td>
-                        <td class="num">5.6</td>
-                        <td class="num">1.00x</td>
+                        <td class="num">1,214,336</td>
+                        <td class="num">1.021</td>
+                        <td class="num">1.000x</td>
                     </tr>
                     <tr style="border-top: 2px solid #333;">
                         <td class="model-name">Standard Embedding (baseline)</td>
                         <td class="num">128</td>
-                        <td class="num">1,247,360</td>
-                        <td class="num">18.6</td>
-                        <td class="num" style="color: #f55;">3.32x</td>
+                        <td class="num">65,214,336</td>
+                        <td class="num">2.719</td>
+                        <td class="num" style="color: #f55;">2.663x</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <p style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">
-            Success criterion: k=8/k=64 PPL ratio &lt; 1.15. Measured ratio: 1.143. 
-            All spectral configurations outperform standard dense embeddings by 3x.
+            Success criterion: k=8/k=64 PPL ratio &lt; 1.15. Measured ratio: 1.002. 
+            110K-parameter spectral model outperforms 65M-parameter dense baseline by 2.7x with 590x fewer parameters.
         </p>
     </div>
 
@@ -825,7 +825,7 @@
             <div class="benchmark-methodology">
                 <strong>Methodology:</strong> Standard transformer layer FLOPS = 12d²n + 2n²d, where d = model dimension, 
                 n = sequence length. SparseWave effective dimension d_eff = d × 0.125 (8 of 64 frequency bins 
-                carry equivalent downstream performance, confirmed at 1B-token scale). 
+                carry equivalent downstream performance — ratio 1.002x with 50M encoder at 1B-token scale). 
                 Cost projections assume H100 GPU at $2/hr with 
                 1B tokens/day inference volume. All figures represent dimension-dependent operations only.
             </div>
@@ -1254,7 +1254,7 @@
                     {x:cx-boxW/2,y:sy+g*2,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
                     {x:cx-boxW/2,y:sy+g*3,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
                     {x:cx-boxW/2,y:sy+g*4,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'91.5% reconstruction',i:'06',hi:true},
+                    {x:cx-boxW/2,y:sy+g*5,l:'Verification',s:'93.9% reconstruction',i:'06',hi:true},
                 ];
                 sideNode=null; // skip on narrow
             } else {
@@ -1268,7 +1268,7 @@
                     {x:mainLeft+(boxW+gX)*2,y:r1,l:'Frequency Spectrum',s:'Per-bin decomposition',i:'03',v:'spec'},
                     {x:mainLeft+(boxW+gX)*2,y:r2,l:'Energy Minimization',s:'Learned sparsity',i:'04',hi:true},
                     {x:mainLeft+boxW+gX,y:r2,l:'Sparse Waveform',s:'iFFT reconstruction',i:'05',v:'wave'},
-                    {x:mainLeft,y:r2,l:'Verification',s:'91.5% reconstruction',i:'06',hi:true},
+                    {x:mainLeft,y:r2,l:'Verification',s:'93.9% reconstruction',i:'06',hi:true},
                 ];
                 // Side node - Cooperative Training
                 sideNode={
