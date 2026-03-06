@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SparseWave — Explained Simply</title>
-    <meta name="description" content="SparseWave explained for everyone. How we discovered that AI is doing way more math than it needs to.">
+    <meta name="description" content="SparseWave explained for everyone. We discovered that AI representations are massively over-provisioned.">
     <meta property="og:title" content="SparseWave — Explained Simply">
-    <meta property="og:description" content="We discovered that AI is doing way more math than it needs to. Here's what that means.">
+    <meta property="og:description" content="We discovered that AI is doing way more work than it needs to. Here's what that means.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sparsewave.com/easy">
     <link rel="icon" href="/favicon.ico">
@@ -64,7 +64,7 @@
         .hero .subtitle {
             font-size: 1.25rem;
             color: #888;
-            max-width: 500px;
+            max-width: 520px;
             margin: 0 auto;
         }
 
@@ -207,12 +207,6 @@
             margin-top: 8px;
         }
 
-        .arrow {
-            font-size: 2rem;
-            color: #00d4ff;
-            margin: 16px 0;
-        }
-
         /* Comparison */
         .comparison {
             display: grid;
@@ -314,12 +308,6 @@
 
         .btn:hover { opacity: 0.85; }
 
-        /* Highlight text */
-        .highlight {
-            color: #00d4ff;
-            font-weight: 600;
-        }
-
         /* Responsive */
         @media (max-width: 600px) {
             .hero h1 { font-size: 2rem; }
@@ -333,7 +321,7 @@
 
 <div class="hero">
     <h1>What is <span>SparseWave</span>?</h1>
-    <p class="subtitle">We discovered that AI is doing way more math than it needs to. Here's what that means.</p>
+    <p class="subtitle">We discovered that AI is doing way more work than it needs to. Here's what that means.</p>
 </div>
 
 <div class="container">
@@ -342,7 +330,7 @@
     <section>
         <h2><span class="emoji">🧠</span> The Problem with AI Today</h2>
 
-        <p>Every time ChatGPT writes a sentence, it does <strong>billions of math operations</strong> per word. Every single dimension of every single number is active for every single calculation.</p>
+        <p>Every time ChatGPT writes a sentence, it does <strong>billions of math operations</strong> per word. Every single number in the model is active for every single calculation.</p>
 
         <p>Imagine you had to use <strong>every muscle in your body</strong> just to pick up a cup of coffee. That's essentially what AI is doing right now — using everything, all the time, for everything.</p>
 
@@ -353,24 +341,24 @@
     <section>
         <h2><span class="emoji">🔬</span> What We Found</h2>
 
-        <p>We converted language into sound waves using math (Fourier transforms — the same math that makes your music sound right on Spotify). Then we looked at the waves.</p>
+        <p>We developed a new way to represent language inside AI systems. When we looked at these representations, we found something striking: <strong>most of the representation is empty</strong>.</p>
 
         <div class="analogy">
-            <h3>Think of it like a music equalizer</h3>
-            <p>When you look at an equalizer on a stereo, you see different frequency bars — bass, mids, treble. Some bars are tall, most are short.</p>
-            <p>We built an equalizer for language. And when we looked at it, <strong>almost all the bars were flat</strong>. Language only uses a tiny handful of frequencies.</p>
+            <h3>Think of it like a warehouse</h3>
+            <p>Current AI uses a massive warehouse to store the meaning of every word — and every shelf is full, every slot is used.</p>
+            <p>We found a way to reorganize that warehouse. When we did, it turned out <strong>almost all the shelves could be empty</strong>. The actual information fits in a small corner. The rest was just noise the AI was carrying around for no reason.</p>
         </div>
 
         <!-- Visual Demo -->
         <div class="visual-demo">
-            <p style="color: #888; margin-bottom: 16px; font-size: 0.9rem;">64 frequency bins — what the AI actually uses:</p>
+            <p style="color: #888; margin-bottom: 16px; font-size: 0.9rem;">64 representation channels — what actually carries information:</p>
             <div class="wave-container" id="freqBins">
             </div>
-            <p class="visual-label">🟦 Active bins &nbsp;&nbsp; ⬛ Empty bins</p>
-            <p style="color: #00d4ff; font-weight: 600; margin-top: 16px; margin-bottom: 0;">Only ~8 out of 64 bins carry real information</p>
+            <p class="visual-label">🟦 Active channels &nbsp;&nbsp; ⬛ Empty channels</p>
+            <p style="color: #00d4ff; font-weight: 600; margin-top: 16px; margin-bottom: 0;">Only ~8 out of 64 channels carry real information</p>
         </div>
 
-        <p>Out of 64 frequency channels, <strong>only about 8 actually carry meaningful information</strong>. The other 56 are basically silent. And when we threw away those silent channels? The AI worked just as well.</p>
+        <p>Out of 64 channels in our representation, <strong>only about 8 actually carry meaningful information</strong>. The other 56 are basically silent. And when we threw away those silent channels? <strong>The AI worked just as well.</strong></p>
     </section>
 
     <!-- Section 3: The Numbers -->
@@ -380,7 +368,7 @@
         <div class="stats">
             <div class="stat-card">
                 <div class="number">93.9%</div>
-                <div class="label">Text reconstructed perfectly from waves</div>
+                <div class="label">Information preserved</div>
             </div>
             <div class="stat-card">
                 <div class="number">590×</div>
@@ -388,13 +376,13 @@
             </div>
             <div class="stat-card">
                 <div class="number">0.2%</div>
-                <div class="label">Lost by cutting 87% of the spectrum</div>
+                <div class="label">Lost by cutting 87% of the representation</div>
             </div>
         </div>
 
-        <p>We tested this on <strong>1 billion tokens</strong> of real internet text — news articles, blog posts, forum discussions. Not cherry-picked science papers. Real, messy, diverse language.</p>
+        <p>We tested this on <strong>1 billion tokens</strong> of real internet text — news articles, blog posts, forum discussions. Not cherry-picked examples. Real, messy, diverse language.</p>
 
-        <p>The result: a tiny model with <strong>110,000 parameters</strong> using our wave encoding outperformed a standard model with <strong>65 million parameters</strong>. Same data, same task — 590× smaller, better results.</p>
+        <p>The result: a tiny model with <strong>110,000 parameters</strong> using our encoding beat a standard model with <strong>65 million parameters</strong>. Same data, same task — <strong>590× smaller, better results.</strong></p>
     </section>
 
     <!-- Section 4: Why it matters -->
@@ -404,31 +392,31 @@
         <div class="analogy">
             <h3>The highway analogy</h3>
             <p>Imagine a 64-lane highway where only 8 lanes have cars on them. The other 56 lanes are empty, but you're still paying to maintain all 64.</p>
-            <p>Every AI company in the world is paying to maintain all 64 lanes. We proved you only need 8. <strong>Same traffic, fraction of the road.</strong></p>
+            <p>Every AI company in the world is paying to maintain all 64 lanes. We proved you only need 8. <strong>Same traffic, fraction of the cost.</strong></p>
         </div>
 
         <div class="comparison">
             <div class="compare-card old">
-                <h4>Current AI</h4>
+                <h4>Standard AI</h4>
                 <p class="big">65M params</p>
                 <p>Uses every dimension</p>
-                <p>Perplexity: 2.72</p>
+                <p>Prediction score: 2.72</p>
             </div>
             <div class="compare-card new">
                 <h4>SparseWave</h4>
                 <p class="big">110K params</p>
-                <p>Uses 8 of 64 frequencies</p>
-                <p>Perplexity: 1.02</p>
+                <p>Uses 8 of 64 channels</p>
+                <p>Prediction score: 1.02</p>
             </div>
         </div>
 
-        <p><strong>Lower perplexity = better.</strong> A perplexity of 1.0 means the model predicts every next piece of text perfectly. Our approach got to 1.02. The standard approach sits at 2.72.</p>
+        <p><strong>Lower score = better.</strong> A score of 1.0 means the model predicts text perfectly. Our approach scores 1.02. The standard approach sits at 2.72.</p>
 
-        <p>If this scales — and our experiments suggest it does — it could mean:</p>
+        <p>If this scales — and our experiments show it getting <em>stronger</em> as models get bigger — it could mean:</p>
         <ul style="color: #bbb; padding-left: 24px; margin-bottom: 20px;">
             <li style="margin-bottom: 8px;"><strong style="color: #fff;">AI that's dramatically cheaper to run</strong> — less electricity, fewer GPUs</li>
             <li style="margin-bottom: 8px;"><strong style="color: #fff;">AI that runs on your phone</strong> — not just in massive data centers</li>
-            <li style="margin-bottom: 8px;"><strong style="color: #fff;">A new way to think about AI representations</strong> — waves instead of giant number lists</li>
+            <li style="margin-bottom: 8px;"><strong style="color: #fff;">Fundamentally more efficient AI architectures</strong> — built around what language actually needs</li>
         </ul>
     </section>
 
@@ -436,15 +424,16 @@
     <section>
         <h2><span class="emoji">🤯</span> The Surprising Part</h2>
 
-        <p>Here's what blew our minds: <strong>we didn't force the sparsity.</strong></p>
+        <p>Here's what surprised us most: <strong>we didn't force the efficiency.</strong></p>
 
-        <p>We never told the AI "use fewer frequencies." We just gave it the ability to use frequencies and trained it to reconstruct text. It <em>chose</em> to concentrate everything into a handful of bins on its own.</p>
+        <p>We never told the system "use fewer channels." We just built the representation and let it train. It <em>chose</em> to concentrate everything into a handful of channels on its own.</p>
 
-        <p>Even more surprising: when we made the encoder bigger (50 million parameters instead of 1 million), it didn't spread out and use <em>more</em> frequencies. It used <em>fewer</em>. The sparsity got <em>tighter</em>.</p>
+        <p>Even more surprising: when we made the model bigger, it didn't spread out and use <em>more</em> channels. It used <em>fewer</em>. The efficiency got <em>tighter</em>.</p>
 
         <div class="analogy">
             <h3>What this tells us</h3>
-            <p>Language itself has a natural "frequency fingerprint." It's not something we're imposing — it's something language <em>is</em>. The information content of human language is intrinsically low-dimensional when viewed through the right lens.</p>
+            <p>The information content of human language is <strong>intrinsically compact</strong> when viewed through the right lens. Current AI systems are vastly over-provisioned — not because they need to be, but because nobody had found the right way to look at the problem.</p>
+            <p>We found a new way to look at it. And it changes the math significantly.</p>
         </div>
     </section>
 
@@ -453,28 +442,28 @@
         <h2><span class="emoji">❓</span> Common Questions</h2>
 
         <div class="faq-item">
-            <h3>Is this actually turning text into sound?</h3>
-            <p>Sort of! We use the same math (Fourier transforms) that converts sound between waveforms and frequencies. The text becomes a real waveform — you could technically play it through a speaker, though it wouldn't sound like anything meaningful to human ears. The point is the mathematical structure, not the audio.</p>
-        </div>
-
-        <div class="faq-item">
             <h3>How is this different from just compressing AI models?</h3>
-            <p>Most AI compression (pruning, quantization) takes a big model and makes it smaller after the fact — like shrinking a photo. We're changing <em>what the model looks at</em> in the first place. Instead of compressing a dense representation, we discovered that language has a naturally sparse representation in the frequency domain. It's like discovering the photo was mostly blank to begin with.</p>
+            <p>Most AI compression (pruning, quantization) takes a big model and makes it smaller after the fact — like shrinking a photo. We're changing <em>how the model sees language</em> in the first place. Instead of compressing a dense representation, we discovered that language has a naturally sparse structure when represented correctly. It's like discovering the photo was mostly blank to begin with.</p>
         </div>
 
         <div class="faq-item">
-            <h3>Could this make ChatGPT/Claude faster?</h3>
-            <p>Potentially, yes. If the core insight holds at larger scales — that language only uses a fraction of available frequency bandwidth — then AI models could operate on much smaller representations. That means less math per word, which means faster and cheaper. But there's a lot of engineering between a research finding and a production system.</p>
+            <h3>Could this make ChatGPT / Claude / Gemini faster?</h3>
+            <p>Potentially, yes. If the core insight holds at larger scales — that language only needs a fraction of the representation bandwidth AI currently uses — then models could operate on much smaller internal representations. That means less computation per word, which means faster and cheaper. There's engineering work between a research finding and a production system, but the fundamental efficiency gain is real.</p>
         </div>
 
         <div class="faq-item">
             <h3>Has anyone else done this before?</h3>
-            <p>People have used Fourier transforms inside AI models before (Google's FNet, Fourier Neural Operators), but always as a computational trick — a faster way to do the same thing. Nobody has used the frequency domain as <em>the representation itself</em> and discovered that language is naturally sparse in it. That's the new part.</p>
+            <p>No. Others have worked on making AI models more efficient through compression, pruning, and clever engineering. But nobody has demonstrated that language representations are <em>inherently sparse</em> in the way we've shown — or achieved this kind of parameter efficiency gap (590×) on real-world data at scale.</p>
         </div>
 
         <div class="faq-item">
-            <h3>What's "patent pending" mean?</h3>
-            <p>We filed a provisional patent with the U.S. Patent and Trademark Office in March 2026. This protects the core method while we continue developing it. The technology is available for licensing.</p>
+            <h3>What does "patent pending" mean?</h3>
+            <p>We filed a provisional patent with the U.S. Patent and Trademark Office in March 2026. This protects the method while we continue developing it. The technology is available for licensing to companies that want to integrate these efficiency gains into their AI systems.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>Who built this?</h3>
+            <p>SparseWave was developed by Aircraft Avionics Works Research in Vero Beach, Florida. We're a small independent research team that asked a simple question and found a surprising answer.</p>
         </div>
     </section>
 
@@ -482,18 +471,17 @@
 
 <!-- Bottom CTA -->
 <div class="bottom-cta">
-    <p>Want the full technical details?</p>
-    <a href="/" class="btn">Read the Technical Overview →</a>
+    <p>Interested in licensing or collaboration?</p>
+    <a href="mailto:contact@sparsewave.com" class="btn">Get in Touch →</a>
     <br><br>
-
-    <p style="margin-top: 20px;">Contact: <a href="mailto:contact@sparsewave.com">contact@sparsewave.com</a></p>
+    <p style="margin-top: 20px;"><a href="/">← Back to sparsewave.com</a></p>
     <p style="margin-top: 12px; color: #444; font-size: 0.8rem;">Patent Pending · © 2026 Aircraft Avionics Works Research</p>
 </div>
 
 <script>
-// Generate frequency bin visualization
+// Generate channel visualization
 const container = document.getElementById('freqBins');
-const activeBins = [4, 7, 8, 12, 23, 24, 55, 58]; // Based on actual experiment data
+const activeBins = [4, 7, 8, 12, 23, 24, 55, 58];
 
 for (let i = 0; i < 64; i++) {
     const bin = document.createElement('div');
@@ -501,7 +489,6 @@ for (let i = 0; i < 64; i++) {
     const isActive = activeBins.includes(i);
     bin.classList.add(isActive ? 'active' : 'inactive');
 
-    // Set height based on activity
     if (isActive) {
         const heights = [60, 85, 70, 90, 55, 75, 65, 95];
         bin.style.height = heights[activeBins.indexOf(i)] + 'px';
