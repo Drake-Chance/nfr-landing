@@ -296,11 +296,12 @@
     <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Auth / Tokens</div>
 
 
+
 <!-- Visual Connection Diagram -->
 <div style="max-width:1400px;margin:2.5rem auto 0;padding:0 1rem;">
 <div style="background:#12121e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:2.5rem 2rem;overflow-x:auto;">
 <h3 style="font-size:1.1rem;font-weight:600;text-align:center;margin-bottom:2rem;color:#e8e8f0;letter-spacing:-0.01em;">System Connection Map</h3>
-<svg viewBox="0 0 1400 950" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-height:600px;margin:0 auto;display:block;font-family:'IBM Plex Sans',sans-serif;">
+<svg viewBox="0 0 1400 1050" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-height:650px;margin:0 auto;display:block;font-family:'IBM Plex Sans',sans-serif;">
 <defs>
 <marker id="ah" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7" fill="none" stroke="#4a8aff" stroke-width="1.2"/></marker>
 <marker id="ahg" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7" fill="none" stroke="#22c55e" stroke-width="1.2"/></marker>
@@ -309,63 +310,70 @@
 <marker id="ahc" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7" fill="none" stroke="#06b6d4" stroke-width="1.2"/></marker>
 <marker id="ahk" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><path d="M0,0 L10,3.5 L0,7" fill="none" stroke="#ec4899" stroke-width="1.2"/></marker>
 <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="glow2"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
 
 <!-- ==================== CONNECTION LINES ==================== -->
 
 <!-- Drake to OpenClaw -->
-<path d="M700,75 L700,140" stroke="#06b6d4" stroke-width="2.5" fill="none" marker-end="url(#ahc)" opacity="0.7"/>
+<path d="M700,80 L700,145" stroke="#06b6d4" stroke-width="2.5" fill="none" marker-end="url(#ahc)" opacity="0.7"/>
 
 <!-- OpenClaw to Claude (bidirectional) -->
-<path d="M850,185 Q1000,170 1100,150" stroke="#a855f7" stroke-width="2.5" fill="none" marker-end="url(#ahp)" opacity="0.6"/>
-<path d="M1100,170 Q1000,190 850,195" stroke="#a855f7" stroke-width="1.5" fill="none" stroke-dasharray="5 4" opacity="0.3"/>
+<path d="M870,190 Q1020,175 1100,155" stroke="#a855f7" stroke-width="2.5" fill="none" marker-end="url(#ahp)" opacity="0.6"/>
+<path d="M1100,175 Q1020,195 870,200" stroke="#a855f7" stroke-width="1.5" fill="none" stroke-dasharray="5 4" opacity="0.3"/>
 
 <!-- OpenClaw to Desktop Node -->
-<path d="M560,210 Q400,270 280,320" stroke="#4a8aff" stroke-width="2" fill="none" marker-end="url(#ah)" opacity="0.5"/>
+<path d="M560,215 Q380,275 260,330" stroke="#4a8aff" stroke-width="2" fill="none" marker-end="url(#ah)" opacity="0.5"/>
 
 <!-- OpenClaw to Phone -->
-<path d="M840,210 Q950,270 1070,320" stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#ahc)" opacity="0.5"/>
+<path d="M840,215 Q960,275 1080,330" stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#ahc)" opacity="0.5"/>
 
 <!-- Tailscale mesh dashed arc -->
-<path d="M220,370 Q700,420 1130,370" stroke="#06b6d4" stroke-width="1.5" fill="none" stroke-dasharray="8 5" opacity="0.25"/>
+<path d="M200,375 Q700,430 1140,375" stroke="#06b6d4" stroke-width="1.5" fill="none" stroke-dasharray="8 5" opacity="0.25"/>
+
+<!-- OpenClaw to Construct Panel -->
+<path d="M700,250 L700,290" stroke="#22c55e" stroke-width="2" fill="none" marker-end="url(#ahg)" opacity="0.6"/>
+
+<!-- Construct to DrakeStarsBot -->
+<path d="M820,320 Q880,320 920,320" stroke="#22c55e" stroke-width="1.5" fill="none" marker-end="url(#ahg)" opacity="0.4"/>
 
 <!-- OpenClaw to OpenRouter -->
-<path d="M580,230 Q450,340 340,440" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#aho)" opacity="0.5"/>
+<path d="M560,240 Q420,370 310,460" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#aho)" opacity="0.5"/>
 
 <!-- OpenClaw to Maton Hub -->
-<path d="M700,230 L700,440" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#aho)" opacity="0.5"/>
+<path d="M700,250 Q700,380 700,460" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#aho)" opacity="0.5"/>
 
 <!-- OpenClaw to Telegram -->
-<path d="M820,230 Q900,340 960,440" stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#ahc)" opacity="0.5"/>
+<path d="M820,240 Q900,370 960,460" stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#ahc)" opacity="0.5"/>
 
 <!-- OpenClaw to Webchat -->
-<path d="M850,215 Q1050,280 1200,440" stroke="#06b6d4" stroke-width="1.5" fill="none" marker-end="url(#ahc)" opacity="0.4" stroke-dasharray="5 4"/>
+<path d="M850,220 Q1080,300 1210,460" stroke="#06b6d4" stroke-width="1.5" fill="none" marker-end="url(#ahc)" opacity="0.4" stroke-dasharray="5 4"/>
 
 <!-- Desktop to Ollama -->
-<path d="M210,380 L210,440" stroke="#4a8aff" stroke-width="1.5" fill="none" marker-end="url(#ah)" opacity="0.45"/>
+<path d="M190,395 L190,460" stroke="#4a8aff" stroke-width="1.5" fill="none" marker-end="url(#ah)" opacity="0.45"/>
 
 <!-- OpenRouter to Perplexity -->
-<path d="M280,510 L230,575" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
+<path d="M260,530 L210,595" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
 
 <!-- OpenRouter to Mercury -->
-<path d="M260,510 L130,510" stroke="#a855f7" stroke-width="1.2" fill="none" marker-end="url(#ahp)" opacity="0.35" stroke-dasharray="4 3"/>
+<path d="M240,530 L110,530" stroke="#a855f7" stroke-width="1.2" fill="none" marker-end="url(#ahp)" opacity="0.35" stroke-dasharray="4 3"/>
 
 <!-- Maton to Google Services (fan out) -->
-<path d="M620,510 L500,590" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
-<path d="M700,510 L700,590" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
-<path d="M780,510 L900,590" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
+<path d="M620,530 L500,610" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
+<path d="M700,530 L700,610" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
+<path d="M780,530 L900,610" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#aho)" opacity="0.4"/>
 
 <!-- OpenClaw to GitHub -->
-<path d="M600,230 Q500,600 580,740" stroke="#ec4899" stroke-width="1.5" fill="none" marker-end="url(#ahk)" opacity="0.35" stroke-dasharray="7 5"/>
+<path d="M580,250 Q470,620 560,770" stroke="#ec4899" stroke-width="1.5" fill="none" marker-end="url(#ahk)" opacity="0.35" stroke-dasharray="7 5"/>
 
 <!-- GitHub to Vercel -->
-<path d="M720,770 Q780,790 870,810" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#ahk)" opacity="0.6"/>
+<path d="M720,800 Q790,820 870,835" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#ahk)" opacity="0.6"/>
 
 <!-- OpenClaw to AWS -->
-<path d="M560,230 Q420,550 400,740" stroke="#22c55e" stroke-width="1.3" fill="none" marker-end="url(#ahg)" opacity="0.3" stroke-dasharray="6 4"/>
+<path d="M550,250 Q390,570 380,770" stroke="#22c55e" stroke-width="1.3" fill="none" marker-end="url(#ahg)" opacity="0.3" stroke-dasharray="6 4"/>
 
 <!-- Neb crons -->
-<path d="M830,230 Q1150,500 1150,740" stroke="#22c55e" stroke-width="1.3" fill="none" marker-end="url(#ahg)" opacity="0.3" stroke-dasharray="6 4"/>
+<path d="M840,250 Q1160,520 1160,770" stroke="#22c55e" stroke-width="1.3" fill="none" marker-end="url(#ahg)" opacity="0.3" stroke-dasharray="6 4"/>
 
 <!-- ==================== NODES ==================== -->
 
@@ -376,132 +384,145 @@
 <text x="700" y="22" text-anchor="middle" fill="#6a6a85" font-size="10" font-weight="600" letter-spacing="0.1em">OPERATOR</text>
 
 <!-- OPENCLAW GATEWAY (center hub - biggest node) -->
-<rect x="530" y="140" width="340" height="100" rx="16" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="2.5" filter="url(#glow)"/>
-<text x="700" y="178" text-anchor="middle" fill="#22c55e" font-size="20" font-weight="700">&#x1F9E0; OpenClaw Gateway</text>
-<text x="700" y="200" text-anchor="middle" fill="#9a9ab8" font-size="13">Agent Framework &bull; Nebuchadnezzar VPS</text>
-<text x="700" y="220" text-anchor="middle" fill="#6a6a85" font-size="11">sessions &bull; tools &bull; memory &bull; crons &bull; routing</text>
-<circle cx="855" cy="152" r="5" fill="#22c55e"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+<rect x="530" y="145" width="340" height="110" rx="16" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="2.5" filter="url(#glow)"/>
+<text x="700" y="183" text-anchor="middle" fill="#22c55e" font-size="20" font-weight="700">&#x1F9E0; OpenClaw Gateway</text>
+<text x="700" y="205" text-anchor="middle" fill="#9a9ab8" font-size="13">Agent Framework &bull; M0RPH3US</text>
+<text x="700" y="225" text-anchor="middle" fill="#6a6a85" font-size="11">sessions &bull; tools &bull; memory &bull; crons &bull; routing</text>
+<text x="700" y="243" text-anchor="middle" fill="#6a6a85" font-size="10">Nebuchadnezzar VPS (DigitalOcean NYC)</text>
+<circle cx="855" cy="157" r="5" fill="#22c55e"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+
+<!-- THE CONSTRUCT (below OpenClaw) -->
+<rect x="580" y="285" width="240" height="60" rx="12" fill="rgba(34,197,94,0.15)" stroke="#22c55e" stroke-width="2" filter="url(#glow2)"/>
+<text x="700" y="312" text-anchor="middle" fill="#22c55e" font-size="16" font-weight="700">&#x1F3DB; The Construct</text>
+<text x="700" y="330" text-anchor="middle" fill="#9a9ab8" font-size="11">Control Panel &bull; Web Dashboard</text>
+<text x="700" y="342" text-anchor="middle" fill="#6a6a85" font-size="9">Nexus (Tasks) &bull; Services &bull; Logs &bull; Config</text>
+<circle cx="808" cy="295" r="4" fill="#22c55e"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+
+<!-- DRAKESTARBOT (right of Construct) -->
+<rect x="920" y="290" width="200" height="50" rx="8" fill="rgba(6,182,212,0.1)" stroke="#06b6d4" stroke-width="1.2"/>
+<text x="1020" y="315" text-anchor="middle" fill="#06b6d4" font-size="13" font-weight="600">&#x2B50; DrakeStarsBot</text>
+<text x="1020" y="332" text-anchor="middle" fill="#6a6a85" font-size="10">Telegram Stars AI Q&amp;A</text>
+<circle cx="1112" cy="298" r="3" fill="#06b6d4"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
 
 <!-- CLAUDE API (top right) -->
-<rect x="1050" y="110" width="260" height="70" rx="12" fill="rgba(168,85,247,0.12)" stroke="#a855f7" stroke-width="2"/>
-<text x="1180" y="142" text-anchor="middle" fill="#a855f7" font-size="17" font-weight="700">&#x26A1; Claude API</text>
-<text x="1180" y="162" text-anchor="middle" fill="#9a9ab8" font-size="12">Anthropic &bull; Sonnet 4.5 / Opus</text>
-<text x="1180" y="175" text-anchor="middle" fill="#6a6a85" font-size="10">All reasoning, code gen, tool calls</text>
-<circle cx="1298" cy="120" r="4" fill="#a855f7"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+<rect x="1050" y="115" width="260" height="70" rx="12" fill="rgba(168,85,247,0.12)" stroke="#a855f7" stroke-width="2"/>
+<text x="1180" y="147" text-anchor="middle" fill="#a855f7" font-size="17" font-weight="700">&#x26A1; Claude API</text>
+<text x="1180" y="167" text-anchor="middle" fill="#9a9ab8" font-size="12">Anthropic &bull; Sonnet 4.5 / Opus</text>
+<text x="1180" y="180" text-anchor="middle" fill="#6a6a85" font-size="10">All reasoning, code gen, tool calls</text>
+<circle cx="1298" cy="125" r="4" fill="#a855f7"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
 
 <!-- DESKTOP NODE (left) -->
-<rect x="100" y="310" width="220" height="70" rx="10" fill="rgba(74,138,255,0.12)" stroke="#4a8aff" stroke-width="1.8"/>
-<text x="210" y="340" text-anchor="middle" fill="#4a8aff" font-size="15" font-weight="600">&#x1F5A5; Desktop Node</text>
-<text x="210" y="358" text-anchor="middle" fill="#9a9ab8" font-size="11">RTX 5090 32GB &bull; 128GB RAM</text>
-<text x="210" y="372" text-anchor="middle" fill="#6a6a85" font-size="10">Windows &bull; OpenClaw Node &bull; WSS</text>
+<rect x="80" y="325" width="220" height="70" rx="10" fill="rgba(74,138,255,0.12)" stroke="#4a8aff" stroke-width="1.8"/>
+<text x="190" y="355" text-anchor="middle" fill="#4a8aff" font-size="15" font-weight="600">&#x1F5A5; Desktop Node</text>
+<text x="190" y="373" text-anchor="middle" fill="#9a9ab8" font-size="11">RTX 5090 32GB &bull; 128GB RAM</text>
+<text x="190" y="387" text-anchor="middle" fill="#6a6a85" font-size="10">Windows &bull; OpenClaw Node &bull; WSS</text>
 
 <!-- PHONE (right) -->
-<rect x="1020" y="310" width="220" height="70" rx="10" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="1.8"/>
-<text x="1130" y="340" text-anchor="middle" fill="#06b6d4" font-size="15" font-weight="600">&#x1F4F1; Phone (Pixel)</text>
-<text x="1130" y="358" text-anchor="middle" fill="#9a9ab8" font-size="11">Termux SSH &bull; SMS Gateway</text>
-<text x="1130" y="372" text-anchor="middle" fill="#6a6a85" font-size="10">Camera &bull; Location &bull; Notifications</text>
+<rect x="1020" y="360" width="220" height="55" rx="10" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="1.5"/>
+<text x="1130" y="387" text-anchor="middle" fill="#06b6d4" font-size="14" font-weight="600">&#x1F4F1; Phone (Pixel)</text>
+<text x="1130" y="405" text-anchor="middle" fill="#6a6a85" font-size="10">Termux SSH &bull; SMS &bull; Camera &bull; Location</text>
 
 <!-- TAILSCALE LABEL -->
-<text x="700" y="408" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="500" opacity="0.5">&#x1F512; Tailscale Encrypted Mesh (WireGuard VPN)</text>
+<text x="700" y="430" text-anchor="middle" fill="#06b6d4" font-size="12" font-weight="500" opacity="0.5">&#x1F512; Tailscale Encrypted Mesh (WireGuard VPN)</text>
 
 <!-- OLLAMA (under Desktop) -->
-<rect x="110" y="440" width="200" height="55" rx="10" fill="rgba(74,138,255,0.08)" stroke="#4a8aff" stroke-width="1.2" stroke-dasharray="5 3"/>
-<text x="210" y="465" text-anchor="middle" fill="#4a8aff" font-size="14" font-weight="600">&#x1F999; Ollama</text>
-<text x="210" y="483" text-anchor="middle" fill="#6a6a85" font-size="11">Qwen 2.5 72B &bull; Local &bull; Free</text>
+<rect x="90" y="460" width="200" height="55" rx="10" fill="rgba(74,138,255,0.08)" stroke="#4a8aff" stroke-width="1.2" stroke-dasharray="5 3"/>
+<text x="190" y="485" text-anchor="middle" fill="#4a8aff" font-size="14" font-weight="600">&#x1F999; Ollama</text>
+<text x="190" y="503" text-anchor="middle" fill="#6a6a85" font-size="11">Qwen 2.5 72B &bull; Local &bull; Free</text>
 
 <!-- OPENROUTER (left-center) -->
-<rect x="200" y="450" width="220" height="65" rx="10" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.8"/>
-<text x="310" y="478" text-anchor="middle" fill="#f59e0b" font-size="15" font-weight="600">&#x1F500; OpenRouter</text>
-<text x="310" y="496" text-anchor="middle" fill="#9a9ab8" font-size="11">LLM Router &bull; Multi-Model</text>
-<text x="310" y="510" text-anchor="middle" fill="#6a6a85" font-size="10">Embeddings &bull; Sub-agents</text>
+<rect x="180" y="470" width="220" height="65" rx="10" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.8"/>
+<text x="290" y="498" text-anchor="middle" fill="#f59e0b" font-size="15" font-weight="600">&#x1F500; OpenRouter</text>
+<text x="290" y="516" text-anchor="middle" fill="#9a9ab8" font-size="11">LLM Router &bull; Multi-Model</text>
+<text x="290" y="530" text-anchor="middle" fill="#6a6a85" font-size="10">Embeddings &bull; Sub-agents</text>
 
 <!-- MATON HUB (center) -->
-<rect x="540" y="440" width="320" height="75" rx="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="2"/>
-<text x="700" y="472" text-anchor="middle" fill="#f59e0b" font-size="17" font-weight="700">&#x1F310; Maton Hub</text>
-<text x="700" y="492" text-anchor="middle" fill="#9a9ab8" font-size="12">OAuth Proxy for Google APIs</text>
-<text x="700" y="508" text-anchor="middle" fill="#6a6a85" font-size="10">2 Google Accounts &bull; Bearer Token Auth</text>
-<circle cx="848" cy="450" r="4" fill="#f59e0b"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+<rect x="540" y="460" width="320" height="75" rx="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="2"/>
+<text x="700" y="492" text-anchor="middle" fill="#f59e0b" font-size="17" font-weight="700">&#x1F310; Maton Hub</text>
+<text x="700" y="512" text-anchor="middle" fill="#9a9ab8" font-size="12">OAuth Proxy for Google APIs</text>
+<text x="700" y="528" text-anchor="middle" fill="#6a6a85" font-size="10">2 Google Accounts &bull; Bearer Token Auth</text>
+<circle cx="848" cy="470" r="4" fill="#f59e0b"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
 
 <!-- TELEGRAM (right) -->
-<rect x="910" y="450" width="190" height="60" rx="10" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="1.5"/>
-<text x="1005" y="477" text-anchor="middle" fill="#06b6d4" font-size="14" font-weight="600">&#x2708; Telegram</text>
-<text x="1005" y="495" text-anchor="middle" fill="#9a9ab8" font-size="11">@drakestarsbot &bull; @the_constructs</text>
+<rect x="910" y="465" width="190" height="60" rx="10" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="1.5"/>
+<text x="1005" y="492" text-anchor="middle" fill="#06b6d4" font-size="14" font-weight="600">&#x2708; Telegram</text>
+<text x="1005" y="510" text-anchor="middle" fill="#9a9ab8" font-size="11">Bot API &bull; Channel API</text>
 
 <!-- WEBCHAT (far right) -->
-<rect x="1140" y="440" width="180" height="55" rx="10" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="1.2"/>
-<text x="1230" y="465" text-anchor="middle" fill="#06b6d4" font-size="13" font-weight="500">&#x1F4AC; Webchat</text>
-<text x="1230" y="483" text-anchor="middle" fill="#6a6a85" font-size="10">Tailscale-only &bull; HTTPS</text>
+<rect x="1140" y="460" width="180" height="55" rx="10" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="1.2"/>
+<text x="1230" y="485" text-anchor="middle" fill="#06b6d4" font-size="13" font-weight="500">&#x1F4AC; Webchat</text>
+<text x="1230" y="503" text-anchor="middle" fill="#6a6a85" font-size="10">Tailscale-only &bull; HTTPS</text>
 
 <!-- MERCURY (far left) -->
-<rect x="10" y="480" width="170" height="50" rx="8" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-width="1"/>
-<text x="95" y="505" text-anchor="middle" fill="#a855f7" font-size="13" font-weight="500">&#x1FA90; Mercury 2</text>
-<text x="95" y="520" text-anchor="middle" fill="#6a6a85" font-size="9">Inception Labs &bull; Diffusion LLM</text>
+<rect x="10" y="500" width="170" height="50" rx="8" fill="rgba(168,85,247,0.08)" stroke="#a855f7" stroke-width="1"/>
+<text x="95" y="525" text-anchor="middle" fill="#a855f7" font-size="13" font-weight="500">&#x1FA90; Mercury 2</text>
+<text x="95" y="540" text-anchor="middle" fill="#6a6a85" font-size="9">Inception Labs &bull; Diffusion LLM</text>
 
 <!-- PERPLEXITY (under OpenRouter) -->
-<rect x="140" y="570" width="200" height="45" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
-<text x="240" y="593" text-anchor="middle" fill="#f59e0b" font-size="13" font-weight="500">Perplexity Sonar Pro</text>
-<text x="240" y="607" text-anchor="middle" fill="#6a6a85" font-size="10">Web Search &bull; Real-time data</text>
+<rect x="120" y="590" width="200" height="45" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
+<text x="220" y="613" text-anchor="middle" fill="#f59e0b" font-size="13" font-weight="500">Perplexity Sonar Pro</text>
+<text x="220" y="627" text-anchor="middle" fill="#6a6a85" font-size="10">Web Search &bull; Real-time data</text>
 
 <!-- GOOGLE SERVICES ROW -->
-<rect x="420" y="590" width="160" height="50" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
-<text x="500" y="612" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="500">Gmail &bull; Calendar</text>
-<text x="500" y="628" text-anchor="middle" fill="#6a6a85" font-size="10">Contacts &bull; Drive</text>
+<rect x="420" y="610" width="160" height="50" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
+<text x="500" y="632" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="500">Gmail &bull; Calendar</text>
+<text x="500" y="648" text-anchor="middle" fill="#6a6a85" font-size="10">Contacts &bull; Drive</text>
 
-<rect x="620" y="590" width="160" height="50" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
-<text x="700" y="612" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="500">Sheets &bull; Docs</text>
-<text x="700" y="628" text-anchor="middle" fill="#6a6a85" font-size="10">Google Tasks</text>
+<rect x="620" y="610" width="160" height="50" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
+<text x="700" y="632" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="500">Sheets &bull; Docs</text>
+<text x="700" y="648" text-anchor="middle" fill="#6a6a85" font-size="10">Google Tasks</text>
 
-<rect x="830" y="590" width="160" height="50" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
-<text x="910" y="612" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="500">QuickBooks</text>
-<text x="910" y="628" text-anchor="middle" fill="#6a6a85" font-size="10">Monday.com</text>
+<rect x="830" y="610" width="160" height="50" rx="8" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1"/>
+<text x="910" y="632" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="500">QuickBooks</text>
+<text x="910" y="648" text-anchor="middle" fill="#6a6a85" font-size="10">Monday.com</text>
 
 <!-- ====== BOTTOM: CODE & DEPLOY ====== -->
 
 <!-- GITHUB -->
-<rect x="500" y="720" width="280" height="65" rx="12" fill="rgba(236,72,153,0.12)" stroke="#ec4899" stroke-width="2"/>
-<text x="640" y="750" text-anchor="middle" fill="#ec4899" font-size="17" font-weight="700">&#x1F419; GitHub</text>
-<text x="640" y="770" text-anchor="middle" fill="#9a9ab8" font-size="12">Drake-Chance &bull; PAT Auth</text>
-<text x="640" y="783" text-anchor="middle" fill="#6a6a85" font-size="10">the-construct &bull; Sparsewave &bull; nfr-landing</text>
+<rect x="500" y="750" width="280" height="65" rx="12" fill="rgba(236,72,153,0.12)" stroke="#ec4899" stroke-width="2"/>
+<text x="640" y="780" text-anchor="middle" fill="#ec4899" font-size="17" font-weight="700">&#x1F419; GitHub</text>
+<text x="640" y="800" text-anchor="middle" fill="#9a9ab8" font-size="12">Drake-Chance &bull; PAT Auth</text>
+<text x="640" y="813" text-anchor="middle" fill="#6a6a85" font-size="10">the-construct &bull; Sparsewave &bull; nfr-landing</text>
 
 <!-- VERCEL -->
-<rect x="840" y="790" width="220" height="55" rx="10" fill="rgba(236,72,153,0.08)" stroke="#ec4899" stroke-width="1.2"/>
-<text x="950" y="816" text-anchor="middle" fill="#ec4899" font-size="14" font-weight="600">&#x25B2; Vercel</text>
-<text x="950" y="834" text-anchor="middle" fill="#6a6a85" font-size="11">sparsewave.com &bull; Auto-deploy on push</text>
+<rect x="840" y="820" width="220" height="55" rx="10" fill="rgba(236,72,153,0.08)" stroke="#ec4899" stroke-width="1.2"/>
+<text x="950" y="846" text-anchor="middle" fill="#ec4899" font-size="14" font-weight="600">&#x25B2; Vercel</text>
+<text x="950" y="864" text-anchor="middle" fill="#6a6a85" font-size="11">sparsewave.com &bull; Auto-deploy</text>
 
 <!-- AWS -->
-<rect x="270" y="720" width="200" height="65" rx="10" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1.2"/>
-<text x="370" y="750" text-anchor="middle" fill="#22c55e" font-size="14" font-weight="600">&#x2601; AWS EC2</text>
-<text x="370" y="768" text-anchor="middle" fill="#9a9ab8" font-size="11">avionicsworks.com</text>
-<text x="370" y="781" text-anchor="middle" fill="#6a6a85" font-size="10">Apache &bull; AeroIntel API &bull; PHP</text>
+<rect x="270" y="750" width="200" height="65" rx="10" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1.2"/>
+<text x="370" y="780" text-anchor="middle" fill="#22c55e" font-size="14" font-weight="600">&#x2601; AWS EC2</text>
+<text x="370" y="798" text-anchor="middle" fill="#9a9ab8" font-size="11">avionicsworks.com</text>
+<text x="370" y="811" text-anchor="middle" fill="#6a6a85" font-size="10">Apache &bull; AeroIntel API &bull; PHP</text>
 
 <!-- CRONS -->
-<rect x="1060" y="720" width="240" height="65" rx="10" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1.2"/>
-<text x="1180" y="750" text-anchor="middle" fill="#22c55e" font-size="14" font-weight="600">&#x23F0; Cron Jobs</text>
-<text x="1180" y="768" text-anchor="middle" fill="#9a9ab8" font-size="11">SMS &bull; Email &bull; Channel &bull; Contacts</text>
-<text x="1180" y="781" text-anchor="middle" fill="#6a6a85" font-size="10">Heartbeat &bull; Every 30-60min</text>
+<rect x="1060" y="750" width="240" height="65" rx="10" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1.2"/>
+<text x="1180" y="780" text-anchor="middle" fill="#22c55e" font-size="14" font-weight="600">&#x23F0; Cron Jobs</text>
+<text x="1180" y="798" text-anchor="middle" fill="#9a9ab8" font-size="11">SMS &bull; Email &bull; Channel &bull; Contacts</text>
+<text x="1180" y="811" text-anchor="middle" fill="#6a6a85" font-size="10">Heartbeat &bull; Every 30-60min</text>
 
 <!-- GOOGLE DRIVE SYNC -->
-<rect x="60" y="720" width="180" height="50" rx="8" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-width="1"/>
-<text x="150" y="745" text-anchor="middle" fill="#22c55e" font-size="13" font-weight="500">&#x1F4C1; Google Drive</text>
-<text x="150" y="761" text-anchor="middle" fill="#6a6a85" font-size="10">Neb &#x2194; Desktop file sync</text>
+<rect x="60" y="750" width="180" height="50" rx="8" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-width="1"/>
+<text x="150" y="775" text-anchor="middle" fill="#22c55e" font-size="13" font-weight="500">&#x1F4C1; Google Drive</text>
+<text x="150" y="791" text-anchor="middle" fill="#6a6a85" font-size="10">Neb &#x2194; Desktop file sync</text>
 
 <!-- ====== LEGEND ====== -->
-<rect x="30" y="870" width="1340" height="60" rx="10" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="60" y="895" fill="#9a9ab8" font-size="12" font-weight="500">Legend:</text>
-<line x1="110" y1="892" x2="145" y2="892" stroke="#a855f7" stroke-width="2.5"/>
-<text x="152" y="896" fill="#6a6a85" font-size="11">LLM calls</text>
-<line x1="230" y1="892" x2="265" y2="892" stroke="#f59e0b" stroke-width="2.5"/>
-<text x="272" y="896" fill="#6a6a85" font-size="11">API calls</text>
-<line x1="340" y1="892" x2="375" y2="892" stroke="#06b6d4" stroke-width="2.5"/>
-<text x="382" y="896" fill="#6a6a85" font-size="11">Communication</text>
-<line x1="485" y1="892" x2="520" y2="892" stroke="#ec4899" stroke-width="2.5"/>
-<text x="527" y="896" fill="#6a6a85" font-size="11">Code/Deploy</text>
-<line x1="620" y1="892" x2="655" y2="892" stroke="#22c55e" stroke-width="2.5"/>
-<text x="662" y="896" fill="#6a6a85" font-size="11">Infrastructure</text>
-<line x1="765" y1="892" x2="800" y2="892" stroke="#4a8aff" stroke-width="2" stroke-dasharray="5 3"/>
-<text x="807" y="896" fill="#6a6a85" font-size="11">Dashed = async/secondary</text>
-<circle cx="970" cy="892" r="5" fill="#22c55e"/><text x="982" y="896" fill="#6a6a85" font-size="11">= Live 24/7</text>
-<text x="60" y="918" fill="#6a6a85" font-size="10">All traffic encrypted via Tailscale mesh or HTTPS. No public ports exposed.</text>
+<rect x="30" y="900" width="1340" height="60" rx="10" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+<text x="60" y="925" fill="#9a9ab8" font-size="12" font-weight="500">Legend:</text>
+<line x1="120" y1="922" x2="155" y2="922" stroke="#a855f7" stroke-width="2.5"/>
+<text x="162" y="926" fill="#6a6a85" font-size="11">LLM calls</text>
+<line x1="240" y1="922" x2="275" y2="922" stroke="#f59e0b" stroke-width="2.5"/>
+<text x="282" y="926" fill="#6a6a85" font-size="11">API calls</text>
+<line x1="350" y1="922" x2="385" y2="922" stroke="#06b6d4" stroke-width="2.5"/>
+<text x="392" y="926" fill="#6a6a85" font-size="11">Communication</text>
+<line x1="505" y1="922" x2="540" y2="922" stroke="#ec4899" stroke-width="2.5"/>
+<text x="547" y="926" fill="#6a6a85" font-size="11">Code/Deploy</text>
+<line x1="640" y1="922" x2="675" y2="922" stroke="#22c55e" stroke-width="2.5"/>
+<text x="682" y="926" fill="#6a6a85" font-size="11">Infrastructure</text>
+<line x1="785" y1="922" x2="820" y2="922" stroke="#4a8aff" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="827" y="926" fill="#6a6a85" font-size="11">Dashed = async/secondary</text>
+<circle cx="990" cy="922" r="5" fill="#22c55e"/><text x="1002" y="926" fill="#6a6a85" font-size="11">= Live 24/7</text>
+<text x="60" y="948" fill="#6a6a85" font-size="10">All traffic encrypted via Tailscale mesh or HTTPS. No public ports exposed. The Construct is the web dashboard for managing all services.</text>
 
 </svg>
 </div>
