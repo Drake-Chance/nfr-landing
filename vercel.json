@@ -2,6 +2,7 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/easy", "destination": "/easy.html" },
+    { "source": "/flowchart", "destination": "/flowchart.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

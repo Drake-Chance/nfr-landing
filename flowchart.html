@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Construct — System Architecture | SparseWave</title>
+    <meta name="description" content="Full system architecture of The Construct — M0RPH3US autonomous AI infrastructure. How OpenClaw, Claude, DigitalOcean, GitHub, and 15+ APIs integrate.">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --bg-card: #12121e;
+            --bg-card-hover: #1a1a2a;
+            --text: #e8e8f0;
+            --text-secondary: #9a9ab8;
+            --text-muted: #6a6a85;
+            --accent: #4a8aff;
+            --accent-glow: rgba(74, 138, 255, 0.15);
+            --green: #22c55e;
+            --green-glow: rgba(34, 197, 94, 0.15);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.15);
+            --purple: #a855f7;
+            --purple-glow: rgba(168, 85, 247, 0.15);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.15);
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.15);
+            --pink: #ec4899;
+            --pink-glow: rgba(236, 72, 153, 0.15);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-strong: rgba(255, 255, 255, 0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(10, 10, 18, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1400px; margin: 0 auto;
+            padding: 0.9rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 1rem; }
+        .nav-logo {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem; font-weight: 600;
+            letter-spacing: 0.06em; color: var(--text);
+            text-decoration: none;
+        }
+        .nav-divider { width: 1px; height: 20px; background: var(--border-strong); }
+        .nav-subtitle { font-size: 0.78rem; color: var(--text-secondary); letter-spacing: 0.02em; }
+        .nav-back { font-size: 0.82rem; color: var(--accent); text-decoration: none; letter-spacing: 0.02em; }
+        .nav-back:hover { text-decoration: underline; }
+        .hero {
+            padding: 7rem 2rem 2rem;
+            text-align: center;
+            max-width: 900px; margin: 0 auto;
+        }
+        .hero h1 {
+            font-size: 2.4rem; font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.6rem;
+            background: linear-gradient(135deg, #fff 0%, #4a8aff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .subtitle {
+            font-size: 1.05rem; color: var(--text-secondary);
+            max-width: 700px; margin: 0 auto 1.5rem; line-height: 1.7;
+        }
+        .hero .meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem; color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+        .legend {
+            max-width: 1400px; margin: 1.5rem auto 0.5rem;
+            padding: 0 2rem;
+            display: flex; flex-wrap: wrap; gap: 1.2rem;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex; align-items: center; gap: 0.4rem;
+            font-size: 0.72rem; color: var(--text-muted);
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: 0.03em;
+        }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .flowchart {
+            max-width: 1400px; margin: 2rem auto;
+            padding: 0 1rem; position: relative;
+        }
+        .flow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            position: relative; z-index: 2;
+        }
+        .tier-label {
+            grid-column: 1 / -1;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0.8rem 0 0.2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 0.5rem;
+        }
+        .node {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+        .node:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .node.span-2 { grid-column: span 2; }
+        .node.span-3 { grid-column: span 3; }
+        .node-header {
+            display: flex; align-items: center; gap: 0.6rem;
+            margin-bottom: 0.6rem;
+        }
+        .node-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+        }
+        .node-icon.blue { background: var(--accent-glow); color: var(--accent); }
+        .node-icon.green { background: var(--green-glow); color: var(--green); }
+        .node-icon.orange { background: var(--orange-glow); color: var(--orange); }
+        .node-icon.purple { background: var(--purple-glow); color: var(--purple); }
+        .node-icon.red { background: var(--red-glow); color: var(--red); }
+        .node-icon.cyan { background: var(--cyan-glow); color: var(--cyan); }
+        .node-icon.pink { background: var(--pink-glow); color: var(--pink); }
+        .node-name { font-size: 0.92rem; font-weight: 600; letter-spacing: -0.01em; }
+        .node-type {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem; color: var(--text-muted);
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .node-desc {
+            font-size: 0.78rem; color: var(--text-secondary);
+            line-height: 1.55; margin-bottom: 0.7rem;
+        }
+        .conn-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .conn-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem; padding: 0.15rem 0.5rem;
+            border-radius: 4px; letter-spacing: 0.03em;
+        }
+        .conn-tag.sends { background: rgba(74,138,255,0.1); color: var(--accent); border: 1px solid rgba(74,138,255,0.2); }
+        .conn-tag.receives { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+        .conn-tag.auth { background: rgba(168,85,247,0.1); color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+        .conn-tag.api { background: rgba(245,158,11,0.1); color: var(--orange); border: 1px solid rgba(245,158,11,0.2); }
+        .conn-tag.deploys { background: rgba(236,72,153,0.1); color: var(--pink); border: 1px solid rgba(236,72,153,0.2); }
+        .conn-tag.hosts { background: rgba(6,182,212,0.1); color: var(--cyan); border: 1px solid rgba(6,182,212,0.2); }
+        .status-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            position: absolute; top: 1rem; right: 1rem;
+        }
+        .status-dot.live { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+        .status-dot.idle { background: var(--orange); }
+        .detail-list { list-style: none; margin-top: 0.5rem; }
+        .detail-list li {
+            font-size: 0.72rem; color: var(--text-muted);
+            padding: 0.2rem 0;
+            display: flex; align-items: flex-start; gap: 0.4rem;
+        }
+        .detail-list li::before { content: '\2192'; color: var(--text-muted); opacity: 0.5; flex-shrink: 0; }
+        .section-explainer {
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+        }
+        .section-explainer h3 { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .section-explainer p { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; }
+        .flow-diagram {
+            grid-column: 1 / -1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem; overflow-x: auto;
+        }
+        .flow-path {
+            display: flex; align-items: center; gap: 0;
+            flex-wrap: wrap; justify-content: center; margin: 0.8rem 0;
+        }
+        .flow-step {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem; padding: 0.4rem 0.8rem;
+            border-radius: 6px; white-space: nowrap;
+        }
+        .flow-arrow {
+            color: var(--text-muted); font-size: 0.7rem;
+            padding: 0 0.3rem; white-space: nowrap;
+        }
+        .flow-step.user { background: rgba(74,138,255,0.12); color: var(--accent); border: 1px solid rgba(74,138,255,0.25); }
+        .flow-step.service { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+        .flow-step.ai { background: rgba(168,85,247,0.12); color: var(--purple); border: 1px solid rgba(168,85,247,0.25); }
+        .flow-step.infra { background: rgba(245,158,11,0.12); color: var(--orange); border: 1px solid rgba(245,158,11,0.25); }
+        .flow-step.output { background: rgba(236,72,153,0.12); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+        .flow-label {
+            font-size: 0.68rem; color: var(--text-muted);
+            text-align: center; margin-bottom: 0.3rem; font-weight: 500;
+        }
+        .key-table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+        .key-table th, .key-table td {
+            font-size: 0.72rem; padding: 0.4rem 0.6rem;
+            text-align: left; border-bottom: 1px solid var(--border);
+        }
+        .key-table th {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem; color: var(--text-muted);
+            letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;
+        }
+        .key-table td { color: var(--text-secondary); }
+        .key-table td code {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem; background: rgba(255,255,255,0.05);
+            padding: 0.1rem 0.35rem; border-radius: 3px;
+        }
+        footer {
+            text-align: center; padding: 3rem 2rem 2rem;
+            font-size: 0.72rem; color: var(--text-muted);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        @media (max-width: 900px) {
+            .flow-grid { grid-template-columns: 1fr; }
+            .node.span-2, .node.span-3 { grid-column: span 1; }
+            .hero h1 { font-size: 1.6rem; }
+            .flow-path { justify-content: flex-start; }
+        }
+        @media (min-width: 901px) and (max-width: 1100px) {
+            .flow-grid { grid-template-columns: 1fr 1fr; }
+            .node.span-3 { grid-column: span 2; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-dot.live { animation: pulse 2s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <div class="nav-brand">
+            <a href="/" class="nav-logo">SPARSEWAVE</a>
+            <div class="nav-divider"></div>
+            <span class="nav-subtitle">System Architecture</span>
+        </div>
+        <a href="/" class="nav-back">&larr; Back to Research</a>
+    </div>
+</nav>
+
+<div class="hero">
+    <h1>The Construct &mdash; Full System Map</h1>
+    <p class="subtitle">
+        An autonomous AI agent ("M0RPH3US") running 24/7 on a DigitalOcean VPS, 
+        orchestrating Claude, OpenRouter, GitHub, Google APIs, Telegram, and more 
+        through the OpenClaw framework. Here's how every piece connects.
+    </p>
+    <p class="meta">LAST UPDATED MARCH 2026 &nbsp;&middot;&nbsp; ALL CONNECTIONS ACTIVE</p>
+</div>
+
+<div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> AI / LLM</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Infrastructure</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div> APIs &amp; Services</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Auth / Tokens</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--pink)"></div> Deployment</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div> Communication</div>
+</div>
+
+<div class="flowchart">
+    <div class="flow-grid">
+
+        <!-- TIER 1: CORE BRAIN -->
+        <div class="tier-label">TIER 1 &mdash; THE BRAIN</div>
+
+        <div class="node span-2">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon green">&#x1F9E0;</div>
+                <div>
+                    <div class="node-name">OpenClaw Gateway</div>
+                    <div class="node-type">Agent Framework &middot; Neb VPS</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                The orchestration layer. OpenClaw is an open-source framework that runs on the VPS as a systemd service.
+                It manages sessions, routes messages between channels (Telegram, webchat), handles tool calls,
+                memory, compaction, heartbeats, and cron jobs. Think of it as the nervous system &mdash; everything flows through here.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag sends">&rarr; Claude API</span>
+                <span class="conn-tag sends">&rarr; OpenRouter</span>
+                <span class="conn-tag receives">&larr; Telegram</span>
+                <span class="conn-tag receives">&larr; Webchat</span>
+                <span class="conn-tag hosts">Hosts: Neb VPS</span>
+            </div>
+            <ul class="detail-list">
+                <li>Runs as <code>openclaw.service</code> (systemd, auto-restart)</li>
+                <li>Manages session files, JSONL logs, memory search (embeddings)</li>
+                <li>Dispatches tool calls: exec, browser, web_search, nodes, message</li>
+                <li>Heartbeat every 60min &mdash; checks SMS/email alerts, runs diagnostics</li>
+                <li>Cron engine: SMS scan, email scan, Telegram channel posts (4x/day)</li>
+                <li>Compaction: auto-summarizes when context exceeds 80K tokens</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon purple">&#x26A1;</div>
+                <div>
+                    <div class="node-name">Anthropic Claude API</div>
+                    <div class="node-type">Primary LLM &middot; Claude Sonnet 4.5</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                The "thinking" model. All M0RPH3US reasoning, code generation, and conversation goes through Claude.
+                OpenClaw sends prompts, Claude returns responses + tool calls.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">API Key: sk-ant-*</span>
+                <span class="conn-tag receives">&larr; OpenClaw prompts</span>
+                <span class="conn-tag sends">&rarr; Responses + tool calls</span>
+            </div>
+            <ul class="detail-list">
+                <li>Default model: <code>claude-sonnet-4-5</code></li>
+                <li>Opus available for complex tasks</li>
+                <li>Token managed by OpenClaw (session tokens)</li>
+                <li>Supports vision, code, extended thinking</li>
+            </ul>
+        </div>
+
+        <!-- TIER 2: INFRASTRUCTURE -->
+        <div class="tier-label">TIER 2 &mdash; INFRASTRUCTURE</div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon green">&#x1F680;</div>
+                <div>
+                    <div class="node-name">Nebuchadnezzar (Neb)</div>
+                    <div class="node-type">DigitalOcean VPS &middot; NYC Datacenter</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                The VPS where M0RPH3US lives. A DigitalOcean droplet running Ubuntu, connected to all other systems via Tailscale VPN. Orchestration only &mdash; no heavy compute.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag hosts">Runs: OpenClaw, DrakeStarsBot</span>
+                <span class="conn-tag api">Tailscale: 100.88.242.12</span>
+            </div>
+            <ul class="detail-list">
+                <li>1 vCPU, 1GB RAM + 3GB swap, 25GB disk</li>
+                <li>25GB attached volume (<code>/mnt/volume-nyc1-01</code>)</li>
+                <li>Ubuntu Linux, Node.js v22</li>
+                <li>Firewall: SSH + Tailscale only, no public ports</li>
+                <li>Cannot run local LLMs (no GPU, too little RAM)</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon blue">&#x1F5A5;&#xFE0F;</div>
+                <div>
+                    <div class="node-name">Desktop Node</div>
+                    <div class="node-type">Windows &middot; OpenClaw Node</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Drake's desktop workstation, paired as an OpenClaw node. Provides GPU compute (RTX 5090 32GB), 128GB RAM, 
+                browser proxy, and runs Ollama for local LLMs.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag sends">&rarr; Neb via WSS</span>
+                <span class="conn-tag hosts">Runs: Ollama, SparseWave</span>
+                <span class="conn-tag api">Tailscale: 100.98.23.35</span>
+            </div>
+            <ul class="detail-list">
+                <li>Connects to Neb via WebSocket (WSS over Tailscale)</li>
+                <li>Capabilities: system.run, system.which, browser.proxy</li>
+                <li>Ollama: Qwen 2.5 72B Q4 (local LLM, 47GB model)</li>
+                <li>RTX 5090 for ML experiments (SparseWave training)</li>
+                <li>WinRM remote control from Neb available</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon cyan">&#x1F512;</div>
+                <div>
+                    <div class="node-name">Tailscale VPN</div>
+                    <div class="node-type">Mesh Network &middot; WireGuard</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Private encrypted mesh connecting all devices. No public ports needed &mdash; 
+                everything communicates through Tailscale IPs over WireGuard tunnels.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">Auth: Tailnet tail92ef3d</span>
+            </div>
+            <ul class="detail-list">
+                <li>Neb: <code>100.88.242.12</code></li>
+                <li>Desktop: <code>100.98.23.35</code></li>
+                <li>Phone: <code>100.102.56.30</code></li>
+                <li>Tailscale Serve: proxies HTTPS to OpenClaw webchat</li>
+                <li>MagicDNS: <code>nebuchadnezzar.tail92ef3d.ts.net</code></li>
+            </ul>
+        </div>
+
+        <!-- TIER 3: AI & LLM SERVICES -->
+        <div class="tier-label">TIER 3 &mdash; AI &amp; LLM ROUTING</div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon orange">&#x1F500;</div>
+                <div>
+                    <div class="node-name">OpenRouter</div>
+                    <div class="node-type">LLM Router &middot; Multi-Model Gateway</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                A unified API gateway that routes to 100+ LLM providers. Used for Perplexity web search, 
+                embedding generation, and fallback models.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">API Key: sk-or-v1-*</span>
+                <span class="conn-tag api">&rarr; Perplexity Sonar Pro</span>
+                <span class="conn-tag api">&rarr; OpenAI Embeddings</span>
+            </div>
+            <ul class="detail-list">
+                <li>Primary use: Perplexity Sonar Pro (web search)</li>
+                <li>Memory search: <code>text-embedding-3-small</code> embeddings</li>
+                <li>Sub-agents can use cheaper models (Gemini)</li>
+                <li>Credit-based billing, token limits per request</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="node-header">
+                <div class="node-icon blue">&#x1F999;</div>
+                <div>
+                    <div class="node-name">Ollama (Local LLM)</div>
+                    <div class="node-type">Self-Hosted &middot; Desktop Only</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Local LLM inference on the Desktop node's RTX 5090. Runs open-weight models
+                without API costs. Used for bulk tasks and experimentation.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag hosts">Host: Desktop GPU</span>
+                <span class="conn-tag api">Model: Qwen 2.5 72B</span>
+            </div>
+            <ul class="detail-list">
+                <li>47GB model loaded in VRAM</li>
+                <li>No API costs &mdash; fully local inference</li>
+                <li>Accessible to OpenClaw via node proxy</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="node-header">
+                <div class="node-icon purple">&#x1FA90;</div>
+                <div>
+                    <div class="node-name">Inception Mercury</div>
+                    <div class="node-type">Diffusion LLM &middot; Experimental</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                A novel diffusion-based language model from Inception Labs. Available as an OpenAI-compatible 
+                endpoint for experimentation.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">API Key: sk_b80*</span>
+                <span class="conn-tag api">Base: api.inceptionlabs.ai</span>
+            </div>
+            <ul class="detail-list">
+                <li>Model: <code>mercury-2</code></li>
+                <li>OpenAI-compatible <code>/v1/chat/completions</code></li>
+            </ul>
+        </div>
+
+        <!-- TIER 4: GOOGLE / MATON -->
+        <div class="tier-label">TIER 4 &mdash; GOOGLE SERVICES (via Maton Hub)</div>
+
+        <div class="node span-3">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon orange">&#x1F310;</div>
+                <div>
+                    <div class="node-name">Maton Hub Gateway</div>
+                    <div class="node-type">OAuth Proxy &middot; gateway.maton.ai</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                An OAuth proxy service that manages Google API authentication. Instead of handling OAuth tokens directly,
+                M0RPH3US uses Maton Hub bearer tokens to access Gmail, Calendar, Contacts, Drive, Sheets, Docs, and Google Tasks.
+                Two separate Google accounts are connected with independent bearer tokens.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">Bearer: Personal Account</span>
+                <span class="conn-tag auth">Bearer: Business Account</span>
+                <span class="conn-tag api">&rarr; Gmail API</span>
+                <span class="conn-tag api">&rarr; Calendar API</span>
+                <span class="conn-tag api">&rarr; Contacts API</span>
+                <span class="conn-tag api">&rarr; Drive API</span>
+                <span class="conn-tag api">&rarr; Sheets API</span>
+                <span class="conn-tag api">&rarr; Google Tasks API</span>
+                <span class="conn-tag api">&rarr; QuickBooks API</span>
+            </div>
+            <table class="key-table">
+                <thead>
+                    <tr><th>Google Service</th><th>Used For</th><th>Accounts</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Gmail</td><td>Email scanning cron &mdash; flags real-person emails, ignores spam/marketing</td><td>Both</td></tr>
+                    <tr><td>Calendar</td><td>Appointment checking, schedule awareness</td><td>Personal</td></tr>
+                    <tr><td>Contacts</td><td>Phone-to-name resolution (1,070 entries cached), auto-contact creation</td><td>Personal</td></tr>
+                    <tr><td>Drive</td><td>File storage, workspace sync, project files</td><td>Personal</td></tr>
+                    <tr><td>Sheets</td><td>Data analysis, spreadsheet automation</td><td>Personal</td></tr>
+                    <tr><td>Google Tasks</td><td>M0RPH3US task queue &mdash; crons create tasks, heartbeat processes them</td><td>Personal</td></tr>
+                    <tr><td>QuickBooks</td><td>Invoicing, receivables tracking, payment management</td><td>Business</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TIER 5: COMMUNICATION -->
+        <div class="tier-label">TIER 5 &mdash; COMMUNICATION CHANNELS</div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon cyan">&#x2708;&#xFE0F;</div>
+                <div>
+                    <div class="node-name">Telegram</div>
+                    <div class="node-type">Chat + Channel &middot; Bot API</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Primary mobile chat interface. DrakeStarsBot runs as a Stars-based AI Q&amp;A bot.
+                The Construct Channel publishes automated content 4x/day.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag sends">@drakestarsbot (DM)</span>
+                <span class="conn-tag sends">@the_constructs (Channel)</span>
+            </div>
+            <ul class="detail-list">
+                <li>DrakeStarsBot: Stars-based payments for AI Q&amp;A</li>
+                <li>Channel engine: <code>channel-engine.js</code> (cron 4x/day)</li>
+                <li>Paywall teasers + free code drops</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon cyan">&#x1F4AC;</div>
+                <div>
+                    <div class="node-name">Webchat</div>
+                    <div class="node-type">Browser UI &middot; Tailscale-Only</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Browser-based chat interface for talking to M0RPH3US. Only accessible over the 
+                Tailscale network (private, no public URL).
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag hosts">nebuchadnezzar.tail*.ts.net</span>
+                <span class="conn-tag auth">Tailscale auth only</span>
+            </div>
+            <ul class="detail-list">
+                <li>Served by OpenClaw's built-in web server</li>
+                <li>HTTPS via Tailscale Serve certificates</li>
+                <li>Supports file uploads, code blocks, markdown</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon cyan">&#x1F4F1;</div>
+                <div>
+                    <div class="node-name">Phone (Pixel 10 Pro XL)</div>
+                    <div class="node-type">Termux &middot; SMS Gateway</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Drake's phone, running Termux with SSH. M0RPH3US can read SMS messages, 
+                send texts, and make calls through it. Also an OpenClaw node.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag api">SSH: port 8022</span>
+                <span class="conn-tag sends">&rarr; SMS (termux-sms-*)</span>
+                <span class="conn-tag api">Tailscale: 100.102.56.30</span>
+            </div>
+            <ul class="detail-list">
+                <li>SMS scan cron reads messages via SSH + termux-sms-list</li>
+                <li>Auto-text unknown numbers: "who is this?"</li>
+                <li>Camera, location, notifications via OpenClaw nodes API</li>
+            </ul>
+        </div>
+
+        <!-- TIER 6: CODE & DEPLOYMENT -->
+        <div class="tier-label">TIER 6 &mdash; CODE &amp; DEPLOYMENT</div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon pink">&#x1F419;</div>
+                <div>
+                    <div class="node-name">GitHub</div>
+                    <div class="node-type">Source Control &middot; Drake-Chance</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                All code repositories live here. Commits from Neb push directly via Personal Access Token (PAT).
+                Some repos auto-deploy to Vercel on push.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">PAT: ghp_*</span>
+                <span class="conn-tag deploys">&rarr; Vercel (auto-deploy)</span>
+            </div>
+            <ul class="detail-list">
+                <li><code>Drake-Chance/the-construct</code> &mdash; Construct codebase (private)</li>
+                <li><code>Drake-Chance/Sparsewave</code> &mdash; SparseWave research code</li>
+                <li><code>Drake-Chance/nfr-landing</code> &mdash; This website (sparsewave.com)</li>
+                <li>Push from Neb: <code>git push</code> with embedded PAT in remote URL</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon pink">&#x25B2;</div>
+                <div>
+                    <div class="node-name">Vercel</div>
+                    <div class="node-type">Hosting &middot; Auto-Deploy from GitHub</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Hosts sparsewave.com. Automatically deploys when code is pushed to the 
+                nfr-landing GitHub repository. Zero-config static hosting with global CDN.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag deploys">sparsewave.com</span>
+                <span class="conn-tag receives">&larr; GitHub webhook</span>
+            </div>
+            <ul class="detail-list">
+                <li>Custom domain: <code>sparsewave.com</code></li>
+                <li>Auto SSL, global edge CDN</li>
+                <li>Rewrites: <code>/flowchart</code> &rarr; <code>flowchart.html</code></li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="status-dot live"></div>
+            <div class="node-header">
+                <div class="node-icon green">&#x2601;&#xFE0F;</div>
+                <div>
+                    <div class="node-name">AWS EC2</div>
+                    <div class="node-type">Ubuntu &middot; avionicsworks.com</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Hosts the Avionics Works business website + AeroIntel API. Apache serving a 
+                Vite-built static site with PHP contact form and Node.js API backend.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag hosts">avionicsworks.com</span>
+                <span class="conn-tag auth">SSH Key: avionicsworks.pem</span>
+            </div>
+            <ul class="detail-list">
+                <li>IP: <code>3.135.8.43</code></li>
+                <li>Apache 2.4.58, PHP (PHPMailer contact form)</li>
+                <li>AeroIntel API: Node.js port 3001, SQLite 41K aircraft</li>
+                <li>AI chat widget via PredictableDialogs</li>
+            </ul>
+        </div>
+
+        <!-- TIER 7: BUSINESS TOOLS -->
+        <div class="tier-label">TIER 7 &mdash; BUSINESS &amp; AUTOMATION</div>
+
+        <div class="node">
+            <div class="node-header">
+                <div class="node-icon orange">&#x1F4CA;</div>
+                <div>
+                    <div class="node-name">QuickBooks Online</div>
+                    <div class="node-type">Accounting &middot; via Maton</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Business accounting &mdash; invoices, payments, receivables tracking. Connected through 
+                Maton Hub for API access.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag api">Company ID: 193514702358264</span>
+                <span class="conn-tag receives">&larr; via Maton Hub</span>
+            </div>
+            <ul class="detail-list">
+                <li>Tracks ~$300K in receivables</li>
+                <li>Invoice + payment management</li>
+                <li>Customer financial history</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="node-header">
+                <div class="node-icon orange">&#x1F4CB;</div>
+                <div>
+                    <div class="node-name">Monday.com</div>
+                    <div class="node-type">Project Management &middot; API</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                Customer and job tracking boards. API access via bearer token 
+                for reading/updating project statuses.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag auth">Bearer: JWT token</span>
+                <span class="conn-tag api">GraphQL API</span>
+            </div>
+            <ul class="detail-list">
+                <li>Aircraft job tracking boards</li>
+                <li>Customer status management</li>
+            </ul>
+        </div>
+
+        <div class="node">
+            <div class="node-header">
+                <div class="node-icon green">&#x1F4C1;</div>
+                <div>
+                    <div class="node-name">Google Drive Sync</div>
+                    <div class="node-type">File System &middot; Bi-directional</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                The <code>workspace_unloaded</code> folder syncs between Neb and the Desktop 
+                via Google Drive. Projects, scripts, data &mdash; all shared.
+            </div>
+            <div class="conn-tags">
+                <span class="conn-tag sends">Neb: /root/gdrive/</span>
+                <span class="conn-tag sends">Desktop: G:\My Drive\</span>
+            </div>
+            <ul class="detail-list">
+                <li>Projects, tools, scripts, apps, financials</li>
+                <li>Both machines see the same files</li>
+                <li>Active project workspace</li>
+            </ul>
+        </div>
+
+        <!-- TIER 8: CRON & AUTOMATION -->
+        <div class="tier-label">TIER 8 &mdash; CRON JOBS &amp; AUTOMATION</div>
+
+        <div class="node span-3">
+            <div class="node-header">
+                <div class="node-icon green">&#x23F0;</div>
+                <div>
+                    <div class="node-name">Cron Automation Layer</div>
+                    <div class="node-type">Scheduled Jobs &middot; Neb systemd/cron</div>
+                </div>
+            </div>
+            <div class="node-desc">
+                All automated background tasks running on Neb. Crons are isolated &mdash; they run independently 
+                of the main AI session and only surface results when something needs attention.
+            </div>
+            <table class="key-table">
+                <thead>
+                    <tr><th>Job</th><th>Schedule</th><th>What It Does</th><th>Output</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SMS Scanner</td>
+                        <td>Every 30min (Mon-Sat, 12-23 UTC)</td>
+                        <td>SSH into phone &rarr; read texts &rarr; resolve numbers to names &rarr; flag unanswered</td>
+                        <td><code>/tmp/sms-alert-latest.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td>Email Scanner</td>
+                        <td>Every 30min (Mon-Sat, 12-23 UTC)</td>
+                        <td>Gmail API via Maton &rarr; filter real-person emails &rarr; ignore spam</td>
+                        <td><code>/tmp/email-alert-latest.txt</code></td>
+                    </tr>
+                    <tr>
+                        <td>Channel Engine</td>
+                        <td>4x/day (14, 18, 22, 02 UTC)</td>
+                        <td>Generate + post AI content to @the_constructs Telegram channel</td>
+                        <td>Telegram channel post</td>
+                    </tr>
+                    <tr>
+                        <td>Contacts Cache</td>
+                        <td>Daily at 12:00 UTC</td>
+                        <td>Refresh phone-to-name lookup from Google Contacts API</td>
+                        <td><code>/tmp/contacts-lookup.json</code> (1,070 entries)</td>
+                    </tr>
+                    <tr>
+                        <td>Heartbeat</td>
+                        <td>Every 60min</td>
+                        <td>OpenClaw self-check: reads alert files, runs diagnostics, checks integrity</td>
+                        <td>Alert to Drake or HEARTBEAT_OK</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DATA FLOW DIAGRAMS -->
+        <div class="tier-label">DATA FLOW &mdash; HOW MESSAGES TRAVEL</div>
+
+        <div class="flow-diagram">
+            <div class="flow-label">When Drake sends a message:</div>
+            <div class="flow-path">
+                <div class="flow-step user">Drake (Telegram/Webchat)</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step infra">OpenClaw Gateway (Neb)</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step ai">Claude API (Anthropic)</div>
+                <div class="flow-arrow">&rarr; response &rarr;</div>
+                <div class="flow-step infra">OpenClaw (route)</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step output">Reply to Drake</div>
+            </div>
+
+            <div class="flow-label" style="margin-top: 1.5rem;">When M0RPH3US needs to search the web:</div>
+            <div class="flow-path">
+                <div class="flow-step ai">Claude (tool call)</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step infra">OpenClaw (dispatch)</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step service">OpenRouter API</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step service">Perplexity Sonar Pro</div>
+                <div class="flow-arrow">&rarr; results &rarr;</div>
+                <div class="flow-step ai">Claude (synthesize)</div>
+            </div>
+
+            <div class="flow-label" style="margin-top: 1.5rem;">When the SMS cron detects an unanswered text:</div>
+            <div class="flow-path">
+                <div class="flow-step infra">Cron (Neb)</div>
+                <div class="flow-arrow">&rarr; SSH &rarr;</div>
+                <div class="flow-step user">Phone (Termux)</div>
+                <div class="flow-arrow">&rarr; sms-list &rarr;</div>
+                <div class="flow-step infra">Script (Neb)</div>
+                <div class="flow-arrow">&rarr; lookup &rarr;</div>
+                <div class="flow-step service">Contacts Cache</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step output">Google Tasks Queue</div>
+            </div>
+
+            <div class="flow-label" style="margin-top: 1.5rem;">When code is pushed to GitHub:</div>
+            <div class="flow-path">
+                <div class="flow-step ai">M0RPH3US (git push)</div>
+                <div class="flow-arrow">&rarr; PAT auth &rarr;</div>
+                <div class="flow-step service">GitHub (Drake-Chance)</div>
+                <div class="flow-arrow">&rarr; webhook &rarr;</div>
+                <div class="flow-step service">Vercel</div>
+                <div class="flow-arrow">&rarr; build + deploy &rarr;</div>
+                <div class="flow-step output">sparsewave.com (live)</div>
+            </div>
+
+            <div class="flow-label" style="margin-top: 1.5rem;">When M0RPH3US runs a GPU task:</div>
+            <div class="flow-path">
+                <div class="flow-step ai">Claude (tool call: nodes.run)</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step infra">OpenClaw (Neb)</div>
+                <div class="flow-arrow">&rarr; WSS &rarr;</div>
+                <div class="flow-step infra">Desktop Node</div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step service">RTX 5090 / Ollama</div>
+                <div class="flow-arrow">&rarr; result &rarr;</div>
+                <div class="flow-step ai">Claude (process)</div>
+            </div>
+        </div>
+
+        <!-- AUTH MAP -->
+        <div class="tier-label">AUTHENTICATION MAP</div>
+
+        <div class="section-explainer">
+            <h3>How Credentials Flow</h3>
+            <p>
+                Every external service requires authentication. Here's how the token chain works:
+                Drake's OpenClaw config stores API keys &rarr; OpenClaw injects them into tool calls &rarr; 
+                tools authenticate against external services. No credentials are hardcoded in AI responses &mdash; 
+                they're managed by the framework configuration layer.
+            </p>
+            <table class="key-table" style="margin-top: 1rem;">
+                <thead>
+                    <tr><th>Service</th><th>Auth Method</th><th>Managed By</th><th>Used For</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Anthropic (Claude)</td><td>API Key (<code>sk-ant-*</code>)</td><td>OpenClaw config</td><td>All LLM reasoning</td></tr>
+                    <tr><td>OpenRouter</td><td>API Key (<code>sk-or-v1-*</code>)</td><td>Script + OpenClaw</td><td>Web search, embeddings, sub-agents</td></tr>
+                    <tr><td>GitHub</td><td>Personal Access Token</td><td>Git remote URL</td><td>Push/pull code repos</td></tr>
+                    <tr><td>Maton Hub (Google)</td><td>Bearer tokens (2 accounts)</td><td>Skill scripts</td><td>Gmail, Calendar, Drive, Tasks, etc.</td></tr>
+                    <tr><td>Inception Labs</td><td>API Key (<code>sk_*</code>)</td><td>TOOLS.md</td><td>Mercury 2 model access</td></tr>
+                    <tr><td>Telegram Bot</td><td>Bot Token</td><td>OpenClaw config</td><td>@drakestarsbot, channel posts</td></tr>
+                    <tr><td>AWS EC2</td><td>SSH Key (<code>.pem</code>)</td><td>Neb filesystem</td><td>Website deployment</td></tr>
+                    <tr><td>DigitalOcean</td><td>SSH Key + Password</td><td>DO dashboard</td><td>VPS management</td></tr>
+                    <tr><td>Tailscale</td><td>Machine keys</td><td>tailscaled service</td><td>VPN mesh connectivity</td></tr>
+                    <tr><td>Phone (Termux)</td><td>SSH password</td><td>Neb SSH config</td><td>SMS read/send, device control</td></tr>
+                    <tr><td>Desktop (WinRM)</td><td>NTLM (user/pass)</td><td>Neb scripts</td><td>Remote command execution</td></tr>
+                    <tr><td>Monday.com</td><td>JWT Bearer</td><td>TOOLS.md</td><td>Project board management</td></tr>
+                    <tr><td>QuickBooks</td><td>OAuth via Maton</td><td>Maton Hub</td><td>Accounting, invoices</td></tr>
+                    <tr><td>Construct Panel</td><td>Custom token</td><td>nebu-control config</td><td>Control panel web UI</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SYSTEM SUMMARY -->
+        <div class="tier-label">SYSTEM SUMMARY</div>
+
+        <div class="section-explainer">
+            <h3>The Big Picture</h3>
+            <p style="margin-bottom: 0.8rem;">
+                The Construct is a 24/7 autonomous AI system built on open-source infrastructure. At its core:
+            </p>
+            <p>
+                <strong>1. Brain:</strong> Claude (Anthropic) does all the reasoning. It's the LLM that "thinks."<br>
+                <strong>2. Nervous System:</strong> OpenClaw is the agent framework &mdash; it manages conversations, tools, memory, and routing. Runs on the VPS.<br>
+                <strong>3. Body:</strong> The Nebuchadnezzar VPS (DigitalOcean) is where OpenClaw lives. 24/7 uptime, Linux, cron jobs, git operations.<br>
+                <strong>4. Arms:</strong> APIs and tools &mdash; GitHub for code, Maton for Google services, Termux for phone control, Vercel for deployment.<br>
+                <strong>5. Muscles:</strong> The Desktop node provides GPU power (RTX 5090) for ML training and local LLM inference when needed.<br>
+                <strong>6. Eyes:</strong> SMS and email scanners watch for critical messages. The heartbeat checks system health every hour.<br>
+                <strong>7. Memory:</strong> Markdown files (MEMORY.md, daily logs, WORKING_BUFFER.md) provide continuity across sessions. Semantic search via embeddings.
+            </p>
+            <p style="margin-top: 0.8rem; color: var(--text-muted); font-style: italic;">
+                Everything connects through Tailscale's encrypted mesh network. No public ports are exposed. 
+                The AI can read emails, send texts, deploy websites, run ML experiments, manage finances, 
+                and monitor the business &mdash; all autonomously, 24/7.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>
+        <a href="/">SparseWave</a> &middot; Built by Drake Pageau &amp; M0RPH3US &middot; 
+        Powered by <a href="https://github.com/openclaw/openclaw" target="_blank">OpenClaw</a> &middot; 
+        Running on <a href="https://www.digitalocean.com" target="_blank">DigitalOcean</a>
+    </p>
+    <p style="margin-top: 0.4rem;">
+        The Construct is a real system &mdash; this page was generated and deployed by M0RPH3US autonomously.
+    </p>
+</footer>
+
+</body>
+</html>
