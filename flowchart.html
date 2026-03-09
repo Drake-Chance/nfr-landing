@@ -340,7 +340,7 @@
 <!-- CONTROL PANEL (inside construct, top-center) -->
 <rect x="420" y="175" width="260" height="90" rx="14" fill="rgba(34,197,94,0.08)" stroke="#22c55e" stroke-width="1.5"/>
 <text x="550" y="210" text-anchor="middle" fill="#22c55e" font-size="16" font-weight="600">&#x1F4CA; Control Panel</text>
-<text x="550" y="228" text-anchor="middle" fill="#9a9ab8" font-size="11">Web Dashboard (port 18790)</text>
+<text x="550" y="228" text-anchor="middle" fill="#9a9ab8" font-size="11">Web Dashboard (private port)</text>
 <text x="550" y="245" text-anchor="middle" fill="#6a6a85" font-size="10">Nexus (Tasks) &bull; Services &bull; Logs</text>
 
 <!-- CRON ENGINE (inside construct, top-right) -->
@@ -463,7 +463,7 @@
 <rect x="540" y="515" width="320" height="75" rx="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="2"/>
 <text x="700" y="547" text-anchor="middle" fill="#f59e0b" font-size="17" font-weight="700">&#x1F310; Maton Hub</text>
 <text x="700" y="567" text-anchor="middle" fill="#9a9ab8" font-size="12">OAuth Proxy for Google APIs</text>
-<text x="700" y="583" text-anchor="middle" fill="#6a6a85" font-size="10">2 Google Accounts &bull; Bearer Token Auth</text>
+<text x="700" y="583" text-anchor="middle" fill="#6a6a85" font-size="10">2 Google Accounts 2 Google Accounts &bull; Bearer Token Authbull; OAuth</text>
 <circle cx="848" cy="525" r="4" fill="#f59e0b"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
 
 <!-- TELEGRAM -->
@@ -602,7 +602,7 @@
                 OpenClaw sends prompts, Claude returns responses + tool calls.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">API Key: sk-ant-*</span>
+                <span class="conn-tag auth">API Key (private)</span>
                 <span class="conn-tag receives">&larr; OpenClaw prompts</span>
                 <span class="conn-tag sends">&rarr; Responses + tool calls</span>
             </div>
@@ -631,7 +631,7 @@
             </div>
             <div class="conn-tags">
                 <span class="conn-tag hosts">Runs: OpenClaw, DrakeStarsBot</span>
-                <span class="conn-tag api">Tailscale: 100.88.242.12</span>
+                <span class="conn-tag api">Tailscale (private IP)</span>
             </div>
             <ul class="detail-list">
                 <li>1 vCPU, 1GB RAM + 3GB swap, 25GB disk</li>
@@ -658,7 +658,7 @@
             <div class="conn-tags">
                 <span class="conn-tag sends">&rarr; Neb via WSS</span>
                 <span class="conn-tag hosts">Runs: Ollama, SparseWave</span>
-                <span class="conn-tag api">Tailscale: 100.98.23.35</span>
+                <span class="conn-tag api">Tailscale (private IP)</span>
             </div>
             <ul class="detail-list">
                 <li>Connects to Neb via WebSocket (WSS over Tailscale)</li>
@@ -683,14 +683,14 @@
                 everything communicates through Tailscale IPs over WireGuard tunnels.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">Auth: Tailnet tail92ef3d</span>
+                <span class="conn-tag auth">Private mesh network</span>
             </div>
             <ul class="detail-list">
-                <li>Neb: <code>100.88.242.12</code></li>
-                <li>Desktop: <code>100.98.23.35</code></li>
-                <li>Phone: <code>100.102.56.30</code></li>
+                <li>Neb: Private Tailscale IP</li>
+                <li>Desktop: Private Tailscale IP</li>
+                <li>Phone: Private Tailscale IP</li>
                 <li>Tailscale Serve: proxies HTTPS to OpenClaw webchat</li>
-                <li>MagicDNS: <code>nebuchadnezzar.tail92ef3d.ts.net</code></li>
+                <li>MagicDNS: private hostname</li>
             </ul>
         </div>
 
@@ -711,7 +711,7 @@
                 embedding generation, and fallback models.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">API Key: sk-or-v1-*</span>
+                <span class="conn-tag auth">API Key (private)</span>
                 <span class="conn-tag api">&rarr; Perplexity Sonar Pro</span>
                 <span class="conn-tag api">&rarr; OpenAI Embeddings</span>
             </div>
@@ -759,7 +759,7 @@
                 endpoint for experimentation.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">API Key: sk_b80*</span>
+                <span class="conn-tag auth">API Key (private)</span>
                 <span class="conn-tag api">Base: api.inceptionlabs.ai</span>
             </div>
             <ul class="detail-list">
@@ -786,8 +786,8 @@
                 Two separate Google accounts are connected with independent bearer tokens.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">Bearer: Personal Account</span>
-                <span class="conn-tag auth">Bearer: Business Account</span>
+                <span class="conn-tag auth">Bearer token (private)</span>
+                <span class="conn-tag auth">Bearer token (private)</span>
                 <span class="conn-tag api">&rarr; Gmail API</span>
                 <span class="conn-tag api">&rarr; Calendar API</span>
                 <span class="conn-tag api">&rarr; Contacts API</span>
@@ -877,9 +877,9 @@
                 send texts, and make calls through it. Also an OpenClaw node.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag api">SSH: port 8022</span>
+                <span class="conn-tag api">SSH (private port)</span>
                 <span class="conn-tag sends">&rarr; SMS (termux-sms-*)</span>
-                <span class="conn-tag api">Tailscale: 100.102.56.30</span>
+                <span class="conn-tag api">Tailscale (private IP)</span>
             </div>
             <ul class="detail-list">
                 <li>SMS scan cron reads messages via SSH + termux-sms-list</li>
@@ -901,11 +901,11 @@
                 </div>
             </div>
             <div class="node-desc">
-                All code repositories live here. Commits from Neb push directly via Personal Access Token (PAT).
+                All code repositories live here. Commits from Neb push directly via PAT (private) (PAT).
                 Some repos auto-deploy to Vercel on push.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">PAT: ghp_*</span>
+                <span class="conn-tag auth">PAT (private)</span>
                 <span class="conn-tag deploys">&rarr; Vercel (auto-deploy)</span>
             </div>
             <ul class="detail-list">
@@ -955,10 +955,10 @@
             </div>
             <div class="conn-tags">
                 <span class="conn-tag hosts">avionicsworks.com</span>
-                <span class="conn-tag auth">SSH Key: avionicsworks.pem</span>
+                <span class="conn-tag auth">SSH Key (private)</span>
             </div>
             <ul class="detail-list">
-                <li>IP: <code>3.135.8.43</code></li>
+                <li>Hosted on AWS</li>
                 <li>Apache 2.4.58, PHP (PHPMailer contact form)</li>
                 <li>AeroIntel API: Node.js port 3001, SQLite 41K aircraft</li>
                 <li>AI chat widget via PredictableDialogs</li>
@@ -981,7 +981,7 @@
                 Maton Hub for API access.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag api">Company ID: 193514702358264</span>
+                <span class="conn-tag api">Connected via Maton</span>
                 <span class="conn-tag receives">&larr; via Maton Hub</span>
             </div>
             <ul class="detail-list">
@@ -1004,7 +1004,7 @@
                 for reading/updating project statuses.
             </div>
             <div class="conn-tags">
-                <span class="conn-tag auth">Bearer: JWT token</span>
+                <span class="conn-tag auth">Bearer token (private)</span>
                 <span class="conn-tag api">GraphQL API</span>
             </div>
             <ul class="detail-list">
@@ -1174,18 +1174,18 @@
                     <tr><th>Service</th><th>Auth Method</th><th>Managed By</th><th>Used For</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>Anthropic (Claude)</td><td>API Key (<code>sk-ant-*</code>)</td><td>OpenClaw config</td><td>All LLM reasoning</td></tr>
-                    <tr><td>OpenRouter</td><td>API Key (<code>sk-or-v1-*</code>)</td><td>Script + OpenClaw</td><td>Web search, embeddings, sub-agents</td></tr>
-                    <tr><td>GitHub</td><td>Personal Access Token</td><td>Git remote URL</td><td>Push/pull code repos</td></tr>
-                    <tr><td>Maton Hub (Google)</td><td>Bearer tokens (2 accounts)</td><td>Skill scripts</td><td>Gmail, Calendar, Drive, Tasks, etc.</td></tr>
-                    <tr><td>Inception Labs</td><td>API Key (<code>sk_*</code>)</td><td>TOOLS.md</td><td>Mercury 2 model access</td></tr>
+                    <tr><td>Anthropic (Claude)</td><td>API Key (private)</td><td>OpenClaw config</td><td>All LLM reasoning</td></tr>
+                    <tr><td>OpenRouter</td><td>API Key (private)</td><td>Script + OpenClaw</td><td>Web search, embeddings, sub-agents</td></tr>
+                    <tr><td>GitHub</td><td>PAT (private)</td><td>Git remote URL</td><td>Push/pull code repos</td></tr>
+                    <tr><td>Maton Hub (Google)</td><td>Bearer tokens (private)</td><td>Skill scripts</td><td>Gmail, Calendar, Drive, Tasks, etc.</td></tr>
+                    <tr><td>Inception Labs</td><td>API Key (private)</td><td>TOOLS.md</td><td>Mercury 2 model access</td></tr>
                     <tr><td>Telegram Bot</td><td>Bot Token</td><td>OpenClaw config</td><td>@drakestarsbot, channel posts</td></tr>
                     <tr><td>AWS EC2</td><td>SSH Key (<code>.pem</code>)</td><td>Neb filesystem</td><td>Website deployment</td></tr>
                     <tr><td>DigitalOcean</td><td>SSH Key + Password</td><td>DO dashboard</td><td>VPS management</td></tr>
                     <tr><td>Tailscale</td><td>Machine keys</td><td>tailscaled service</td><td>VPN mesh connectivity</td></tr>
-                    <tr><td>Phone (Termux)</td><td>SSH password</td><td>Neb SSH config</td><td>SMS read/send, device control</td></tr>
-                    <tr><td>Desktop (WinRM)</td><td>NTLM (user/pass)</td><td>Neb scripts</td><td>Remote command execution</td></tr>
-                    <tr><td>Monday.com</td><td>JWT Bearer</td><td>TOOLS.md</td><td>Project board management</td></tr>
+                    <tr><td>Phone (Termux)</td><td>SSH auth (private)</td><td>Neb SSH config</td><td>SMS read/send, device control</td></tr>
+                    <tr><td>Desktop (WinRM)</td><td>NTLM auth (private)</td><td>Neb scripts</td><td>Remote command execution</td></tr>
+                    <tr><td>Monday.com</td><td>Bearer token (private)</td><td>TOOLS.md</td><td>Project board management</td></tr>
                     <tr><td>QuickBooks</td><td>OAuth via Maton</td><td>Maton Hub</td><td>Accounting, invoices</td></tr>
                     <tr><td>Construct Panel</td><td>Custom token</td><td>nebu-control config</td><td>Control panel web UI</td></tr>
                 </tbody>
