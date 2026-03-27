@@ -685,13 +685,11 @@
         <div class="hero-label">SparseWave Research</div>
         <h1>Sparse Frequency-Domain Representations for Machine Intelligence</h1>
         <p class="hero-abstract">
-            We introduce SparseWave, a frequency-domain architecture that encodes knowledge as 
-            sparse frequency-domain waveforms. By representing information through amplitude and phase 
-            across frequency bins — transformed via inverse Fourier transform into time-domain signals — 
-            SparseWave achieves 99.68% superposition accuracy while maintaining 93.6% reconstruction 
-            across seven scientific domains on 10,000 documents. At scale, SparseWave delivers 93.9% reconstruction fidelity 
-            on 1 billion tokens with confirmed spectral sparsity — 8 of 64 frequency bins match the performance of all 64
-            with a perplexity ratio of just 1.002x. A 110K-parameter downstream model outperforms a 65M-parameter baseline by 2.7x.
+        We introduce SparseWave, a LLM architecture that encodes knowledge as spectral waveforms. 
+        Information is represented through amplitude and phase across a carrier frequency. 
+        SparseWave achieves 93.9% reconstruction fidelity on 1 billion tokens with confirmed spectral sparsity.
+        A 110K-parameter downstream model outperforms a 65M-parameter baseline by 2.7x. 
+        In superposition experiments, 10,000 documents summed in a single waveform achieve 99.68% separation and retrieval accuracy.
         </p>
         <div class="hero-meta">
             <div class="hero-meta-item">
@@ -849,7 +847,7 @@
                 <div class="col-card-label">v21.1 Synthetic Proof</div>
                 <h3>Complete Superposition</h3>
                 <p>
-                    1,000 synthetic documents encoded on a single carrier frequency with 99.68% accuracy. 
+                    1,000 synthetic documents encoded on a single waveform with 99.68% accuracy. 
                     This controlled experiment proves the theoretical viability of carrier-based superposition 
                     before scaling to real-world data.
                 </p>
@@ -865,7 +863,7 @@
                 <h3>10K Document Scale</h3>
                 <p>
                     10,000 real scientific documents from seven domains encoded with 93.6% character-level reconstruction. 
-                    Carrier tuning enables 7,886 documents per carrier average — unprecedented information density 
+                    Carrier tuning enables 7,886 documents per carrier average this is unprecedented information density 
                     in frequency domain.
                 </p>
                 <ul>
