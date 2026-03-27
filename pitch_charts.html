@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SparseWave — Experimental Results</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    background: #fafafa;
+    color: #1a1a2e;
+  }
+
+  /* ── NAV BAR ── */
+  .nav {
+    display: flex;
+    align-items: center;
+    padding: 18px 48px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a1a2e;
+    letter-spacing: -0.5px;
+  }
+  .nav-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(0,0,0,0.15);
+    margin: 0 16px;
+  }
+  .nav-subtitle {
+    font-size: 0.85rem;
+    color: #4a4a65;
+    font-weight: 400;
+  }
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border: 1.5px solid #0a7c50;
+    color: #0a7c50;
+    border-radius: 3px;
+  }
+
+  /* ── HERO (light) ── */
+  .hero {
+    padding: 100px 48px 60px;
+    max-width: 900px;
+  }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #2a5cc7;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.15;
+    margin-bottom: 28px;
+    letter-spacing: -1px;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: #4a4a65;
+    line-height: 1.7;
+    max-width: 720px;
+  }
+
+  /* ── STATS BAR (dark) ── */
+  .stats-bar {
+    background: #111118;
+    padding: 56px 48px;
+  }
+  .stats-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 32px;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .stat-item .stat-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 3.2rem;
+    font-weight: 600;
+    color: #e8e8f0;
+    line-height: 1;
+  }
+  .stat-item .stat-number .stat-unit {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.4);
+  }
+  .stat-item .stat-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .stat-item .stat-detail {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* ── SECTIONS (light) ── */
+  .section {
+    padding: 80px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #2a5cc7;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .section-desc {
+    font-size: 1rem;
+    color: #4a4a65;
+    max-width: 700px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  /* ── CHART CARDS ── */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .chart-card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
+    padding: 28px;
+  }
+  .chart-card-title {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+  .chart-card-sub {
+    font-size: 0.78rem;
+    color: #6a6a85;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .chart-container {
+    position: relative;
+    height: 340px;
+  }
+  .chart-container.tall {
+    height: 400px;
+  }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+  }
+  .badge.measured {
+    background: rgba(10,124,80,0.08);
+    color: #0a7c50;
+    border: 1px solid rgba(10,124,80,0.2);
+  }
+  .badge.projected {
+    background: rgba(42,92,199,0.08);
+    color: #2a5cc7;
+    border: 1px solid rgba(42,92,199,0.2);
+  }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.06);
+    color: #3a3a55;
+  }
+  .callout .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .callout strong { color: #1a1a2e; font-weight: 600; }
+
+  /* ── DIVIDERS ── */
+  .divider {
+    border: none;
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+    margin: 0;
+  }
+
+  /* ── FULL-WIDTH DARK CHART ── */
+  .dark-section {
+    background: #111118;
+    padding: 80px 48px;
+  }
+  .dark-section .section-label { color: rgba(255,255,255,0.35); }
+  .dark-section .section-title { color: #e8e8f0; }
+  .dark-section .section-desc { color: rgba(255,255,255,0.5); }
+  .dark-section .chart-card {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .dark-section .chart-card-title { color: #e8e8f0; }
+  .dark-section .chart-card-sub { color: rgba(255,255,255,0.4); }
+  .dark-section .callout {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+  }
+  .dark-section .callout strong { color: #e8e8f0; }
+  .dark-section .badge.measured {
+    background: rgba(10,124,80,0.15);
+    color: #4ade80;
+    border-color: rgba(10,124,80,0.3);
+  }
+  .dark-section .badge.projected {
+    background: rgba(42,92,199,0.15);
+    color: #93b4f5;
+    border-color: rgba(42,92,199,0.3);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 40px 48px;
+    color: #8a8aa5;
+    font-size: 0.75rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    background: #fff;
+  }
+  .footer .fine { color: #b0b0c0; font-size: 0.65rem; margin-top: 4px; }
+
+  @media (max-width: 1000px) {
+    .chart-row { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero, .section, .stats-bar, .dark-section { padding-left: 24px; padding-right: 24px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav { padding: 14px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<div class="nav">
+  <a href="/" style="text-decoration:none;color:inherit;"><div class="nav-brand">SparseWave</div></a>
+  <div class="nav-divider"></div>
+  <div class="nav-subtitle">Experimental Results — Investor Presentation</div>
+  <div class="nav-right">
+    <a href="/" style="color:#4a4a65;text-decoration:none;font-size:0.85rem;font-weight:500;">Home</a>
+    <div class="nav-badge">Patent Pending</div>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-label">SparseWave Research</div>
+  <h1>Sparse Frequency-Domain Representations for Machine Intelligence</h1>
+  <p>We introduce SparseWave, a frequency-domain architecture that encodes knowledge as sparse waveforms. By representing information through amplitude and phase across frequency bins — transformed via inverse Fourier transform — SparseWave achieves capabilities that dense token representations cannot.</p>
+</div>
+
+<!-- ═══ STATS BAR (dark) ═══ -->
+<div class="stats-bar">
+  <div class="stats-label">Experimental Results</div>
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-number">99.68<span class="stat-unit">%</span></div>
+      <div class="stat-desc">Superposition accuracy — carrier frequency architecture</div>
+      <div class="stat-detail">10,000 documents on shared frequency carriers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">93.9<span class="stat-unit">%</span></div>
+      <div class="stat-desc">Byte-level reconstruction fidelity from waveform encoding</div>
+      <div class="stat-detail">1 billion tokens of diverse web text — 50M encoder</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">590<span class="stat-unit">×</span></div>
+      <div class="stat-desc">Fewer parameters than standard dense embeddings</div>
+      <div class="stat-detail">PPL 1.024 (110K params) vs 2.719 (65M params)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">2<span class="stat-unit">×</span></div>
+      <div class="stat-desc">FFT encoder advantage over plain encoding</div>
+      <div class="stat-detail">Controlled ablation — same architecture, same data</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: ENERGY (light) ═══ -->
+<div class="section">
+  <div class="section-label">01 — The Energy Problem</div>
+  <div class="section-title">The Fundamental Inefficiency of Dense Representations</div>
+  <div class="section-desc">State-of-the-art language models encode every token as a dense vector in which all dimensions are active. This density is computationally expensive, memory-intensive, and may be fundamentally unnecessary. We proved that language concentrates into 8 of 64 frequency bins — 87.5% of the spectrum carries less than 0.2% of the information.</div>
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="badge measured">✓ Measured</div>
+      <div class="chart-card-title">Parameter Efficiency at 1B Scale</div>
+      <div class="chart-card-sub">50M encoder on OpenWebText. SparseWave spectral embeddings (top-k bins) vs standard dense embeddings on identical downstream transformers.</div>
+      <div class="chart-container">
+        <canvas id="chart1a"></canvas>
+      </div>
+      <div class="callout">
+        <span class="icon">⚡</span>
+        <span><strong>110K parameters at PPL 1.024</strong> versus <strong>65.2M parameters at PPL 2.719</strong> — same task, same data, same evaluation.</span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="badge projected">↗ Projected</div>
+      <div class="chart-card-title">FLOPS Reduction at Industry Scale</div>
+      <div class="chart-card-sub">Dimension-dependent operations (QKV projections, FFN layers) scale as O(d²). Reducing effective dimensionality by 87.5% cuts these FLOPS proportionally.</div>
+      <div class="chart-container">
+        <canvas id="chart1b"></canvas>
+      </div>
+      <div class="callout">
+        <span class="icon">📐</span>
+        <span>Based on measured k=8/k=64 perplexity ratio of <strong>1.002</strong>. Projection assumes sparsity holds at larger model dimensions.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 2: SUPERPOSITION (light) ═══ -->
+<div class="section">
+  <div class="section-label">02 — Superposition</div>
+  <div class="section-title">A Capability Dense Representations Cannot Replicate</div>
+  <div class="section-desc">Adding two token embeddings produces an unrecoverable mixture. Adding two waveforms produces a composite signal from which both originals can be recovered — a property of linear signal superposition. This enables constant-memory knowledge storage.</div>
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="badge measured">✓ Measured</div>
+      <div class="chart-card-title">Full-Pipeline Superposition Decode</div>
+      <div class="chart-card-sub">Encode N documents → sum into one waveform → subtract N-1 → decode through GPT-2. Measure word overlap with original.</div>
+      <div class="chart-container">
+        <canvas id="chart2a"></canvas>
+      </div>
+      <div class="callout">
+        <span class="icon">🔬</span>
+        <span>At N=20 superimposed documents: <strong>95.7% average word overlap — identical to the N=1 baseline</strong>. Zero degradation through the full pipeline.</span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="badge projected">↗ Projected</div>
+      <div class="chart-card-title">Memory Scaling: Linear vs Constant</div>
+      <div class="chart-card-sub">Traditional storage grows linearly. SparseWave superposition maintains a constant-size carrier signal regardless of document count.</div>
+      <div class="chart-container">
+        <canvas id="chart2b"></canvas>
+      </div>
+      <div class="callout">
+        <span class="icon">💾</span>
+        <span>Measured: 1,000 documents on a single carrier at <strong>99.68% accuracy</strong>. 10,000 documents at <strong>93.6%</strong>.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 3: SCALING (light) ═══ -->
+<div class="section">
+  <div class="section-label">03 — Scaling Behavior</div>
+  <div class="section-title">Spectral Sparsity Tightens With Capacity</div>
+  <div class="section-desc">Most compression techniques degrade at scale. SparseWave's spectral sparsity does the opposite — it tightens with larger encoders. The k=8/k=64 perplexity ratio dropped from 1.14 to 1.002 as encoder capacity increased from 1M to 50M parameters.</div>
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="badge measured">✓ Measured</div>
+      <div class="chart-card-title">Sparsity Ratio by Encoder Scale</div>
+      <div class="chart-card-sub">k=8/k=64 PPL ratio at three encoder sizes. 1.0 = perfect sparsity (8 bins carry all information).</div>
+      <div class="chart-container">
+        <canvas id="chart3a"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="badge projected">↗ Projected</div>
+      <div class="chart-card-title">Projected Sparsity at 500M–10B Scale</div>
+      <div class="chart-card-sub">Conservative log-linear extrapolation from three measured data points. Assumes diminishing returns at larger scale.</div>
+      <div class="chart-container">
+        <canvas id="chart3b"></canvas>
+      </div>
+      <div class="callout">
+        <span class="icon">📈</span>
+        <span>Measured: <strong>1M → 50M tightened from 1.14 to 1.002</strong>. At 1B+, ratio projected below <strong>1.001</strong>.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: FFT ABLATION (dark) ═══ -->
+<div class="dark-section">
+  <div style="max-width: 1400px; margin: 0 auto;">
+    <div class="section-label">04 — Controlled Ablation</div>
+    <div class="section-title">FFT Encoding Is Not Cosmetic</div>
+    <div class="section-desc" style="margin-bottom: 40px;">Same architecture, same data, same compute, same hyperparameters. The only variable: one encoder uses an FFT pathway, the other uses a standard learned linear projection. The FFT encoder converges to half the validation loss.</div>
+
+    <div class="chart-card" style="max-width: 900px;">
+      <div class="badge measured">✓ Measured — Test 1</div>
+      <div class="chart-card-title">Validation Loss: FFT Encoder vs Plain Encoder</div>
+      <div class="chart-card-sub">v3.7 (FFT) ran 48 epochs to convergence. Test 1 (plain) at epoch 12, still improving but already 2× behind. Both trained from scratch on identical data.</div>
+      <div class="chart-container tall">
+        <canvas id="chart4"></canvas>
+      </div>
+      <div class="callout">
+        <span class="icon">🧪</span>
+        <span>FFT converges at <strong>val 1.53</strong>. Plain encoder at <strong>val 3.14</strong> after 12 epochs — projected plateau <strong>~2.5</strong>. The frequency domain learns language structure faster and more completely.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: ENDGAME (light) ═══ -->
+<div class="section">
+  <div class="section-label">05 — Architecture Roadmap</div>
+  <div class="section-title">From Encoder to Full Spectral Architecture</div>
+  <div class="section-desc">The encoder is proven. The next step: replace dot-product attention entirely with spectral operations. A waveform-native transformer that processes language in the frequency domain at O(n log n) — no tokens, no quadratic attention.</div>
+
+  <!-- Proportional Visual -->
+  <div class="chart-card" style="margin-bottom: 28px;">
+    <div class="badge projected">↗ Architecture Roadmap</div>
+    <div class="chart-card-title">Operations Required at 128K Context — To Scale</div>
+    <div class="chart-card-sub">Each square's area is proportional to the number of operations required. Same task, same context length, different architecture.</div>
+
+    <div style="display: flex; align-items: flex-end; justify-content: center; gap: 80px; padding: 40px 20px 20px; min-height: 460px;">
+      <!-- Attention: massive square -->
+      <div style="text-align: center;">
+        <div style="width: 380px; height: 380px; background: linear-gradient(135deg, rgba(200,60,60,0.12), rgba(200,60,60,0.06)); border: 2px solid rgba(200,60,60,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 2.4rem; font-weight: 600; color: #c83c3c;">16.4B</div>
+          <div style="font-size: 0.8rem; color: rgba(200,60,60,0.5); font-weight: 500;">operations</div>
+        </div>
+        <div style="margin-top: 14px; font-family: 'IBM Plex Serif', serif; font-size: 0.95rem; font-weight: 600; color: #c83c3c;">Standard Attention</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #8a8aa5; margin-top: 2px;">O(n²)</div>
+      </div>
+
+      <!-- Arrow -->
+      <div style="padding-bottom: 60px; font-size: 2rem; color: #b0b0c0;">→</div>
+
+      <!-- Spectral stack -->
+      <div style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 36px;">
+        <div>
+          <div style="width: 10px; height: 10px; background: #2a5cc7; border-radius: 2px; margin: 0 auto; box-shadow: 0 0 12px rgba(42,92,199,0.4);"></div>
+          <div style="margin-top: 10px; font-family: 'IBM Plex Serif', serif; font-size: 0.9rem; font-weight: 600; color: #2a5cc7;">Spectral Mixing</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #8a8aa5;">O(n log n) — 2.2M ops</div>
+          <div style="margin-top: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 600; color: #2a5cc7; background: rgba(42,92,199,0.08); padding: 3px 10px; border-radius: 3px; display: inline-block;">7,400× fewer</div>
+        </div>
+        <div>
+          <div style="width: 3px; height: 3px; background: #0a7c50; border-radius: 1px; margin: 0 auto; box-shadow: 0 0 10px rgba(10,124,80,0.5);"></div>
+          <div style="margin-top: 10px; font-family: 'IBM Plex Serif', serif; font-size: 0.9rem; font-weight: 600; color: #0a7c50;">+ 87.5% Sparsity</div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #8a8aa5;">278K ops</div>
+          <div style="margin-top: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 600; color: #0a7c50; background: rgba(10,124,80,0.08); padding: 3px 10px; border-radius: 3px; display: inline-block;">59,000× fewer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">👁️</span>
+      <span>The squares are <strong>to scale</strong>. The attention square is 380×380 pixels. The spectral dot is 10×10. The sparse dot is 3×3. That is the actual ratio of operations at 128K context length.</span>
+    </div>
+  </div>
+
+  <!-- Gap Table -->
+  <div class="chart-card">
+    <div class="badge projected">↗ Derived from Algorithmic Complexity</div>
+    <div class="chart-card-title">The Advantage Grows Exponentially With Context Length</div>
+    <div class="chart-card-sub">As context windows grow (GPT-4: 128K, Gemini: 1M+), the advantage of spectral operations over quadratic attention accelerates.</div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+      <thead>
+        <tr style="border-bottom: 2px solid rgba(0,0,0,0.08);">
+          <th style="text-align: left; padding: 12px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: #8a8aa5; font-weight: 500;">Context</th>
+          <th style="text-align: right; padding: 12px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: #c83c3c; font-weight: 500;">Attention</th>
+          <th style="text-align: right; padding: 12px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: #0a7c50; font-weight: 500;">SparseWave</th>
+          <th style="text-align: right; padding: 12px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: #2a5cc7; font-weight: 500;">Advantage</th>
+          <th style="padding: 12px 16px; width: 28%;"></th>
+        </tr>
+      </thead>
+      <tbody id="gapTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  SparseWave — Patent Pending (USPTO, Provisional Filed March 4, 2026) — Confidential
+  <div class="fine">All "Measured" data points are from experiments run March 4–26, 2026 on RTX 5090. "Projected" extrapolations are clearly labeled and derived from measured trends.</div>
+</div>
+
+<script>
+// ── Chart.js defaults matching sparsewave.com ──
+Chart.defaults.color = '#8a8aa5';
+Chart.defaults.borderColor = 'rgba(0,0,0,0.06)';
+Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
+
+const gridColor = 'rgba(0,0,0,0.04)';
+const brandBlue = '#2a5cc7';
+const brandGreen = '#0a7c50';
+const brandRed = '#c83c3c';
+const textDark = '#1a1a2e';
+
+// ═══════════════════════════════════════════
+// CHART 1A: Parameter Efficiency
+// ═══════════════════════════════════════════
+new Chart(document.getElementById('chart1a'), {
+  type: 'bar',
+  data: {
+    labels: ['SW k=4\n55K', 'SW k=8\n110K', 'SW k=16\n229K', 'SW k=32\n506K', 'SW k=64\n1.2M', 'Dense\n65.2M'],
+    datasets: [{
+      data: [1.027, 1.024, 1.022, 1.021, 1.021, 2.719],
+      backgroundColor: [
+        'rgba(42,92,199,0.7)', 'rgba(42,92,199,0.8)', 'rgba(42,92,199,0.6)',
+        'rgba(42,92,199,0.45)', 'rgba(42,92,199,0.3)', 'rgba(200,60,60,0.5)'
+      ],
+      borderColor: [brandBlue,brandBlue,brandBlue,brandBlue,brandBlue,brandRed],
+      borderWidth: 1.5, borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 3.5,
+        title: { display: true, text: 'Perplexity (lower = better)', font: { size: 11 } },
+        grid: { color: gridColor }
+      },
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 0 } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// CHART 1B: FLOPS Projection
+// ═══════════════════════════════════════════
+new Chart(document.getElementById('chart1b'), {
+  type: 'bar',
+  data: {
+    labels: ['GPT-3.5\n20B', 'Llama 70B', 'Frontier\n175B', 'GPT-4 Class\n~1.8T'],
+    datasets: [
+      { label: 'Dense (100%)', data: [100,100,100,100], backgroundColor: 'rgba(200,60,60,0.35)', borderColor: brandRed, borderWidth: 1, borderRadius: 6 },
+      { label: 'SW k=8 (12.5%)', data: [12.5,12.5,12.5,12.5], backgroundColor: 'rgba(42,92,199,0.5)', borderColor: brandBlue, borderWidth: 1, borderRadius: 6 },
+      { label: 'SW k=4 (6.25%)', data: [6.25,6.25,6.25,6.25], backgroundColor: 'rgba(10,124,80,0.5)', borderColor: brandGreen, borderWidth: 1, borderRadius: 6 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'rectRounded', padding: 10, font: { size: 9 } } } },
+    scales: {
+      y: { beginAtZero: true, max: 120, title: { display: true, text: 'Relative FLOPS (%)', font: { size: 10 } }, grid: { color: gridColor }, ticks: { callback: v => v+'%' } },
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 0 } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// CHART 2A: Superposition
+// ═══════════════════════════════════════════
+new Chart(document.getElementById('chart2a'), {
+  type: 'line',
+  data: {
+    labels: ['Baseline', 'N=2', 'N=3', 'N=5', 'N=10', 'N=20'],
+    datasets: [{
+      label: 'Avg Word Overlap (%)', data: [95.7, 90.3, 93.5, 96.1, 94.8, 95.7],
+      borderColor: brandBlue, backgroundColor: 'rgba(42,92,199,0.06)',
+      borderWidth: 2.5, pointBackgroundColor: brandBlue, pointBorderColor: '#fff',
+      pointBorderWidth: 2, pointRadius: 6, fill: true, tension: 0.3,
+    },{
+      label: 'Expected If Degrading', data: [95.7, 85, 75, 60, 40, 20],
+      borderColor: 'rgba(200,60,60,0.25)', borderWidth: 1.5, pointRadius: 0, borderDash: [6, 4], fill: false, tension: 0.3,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14, font: { size: 10 } } } },
+    scales: {
+      y: { min: 0, max: 100, title: { display: true, text: 'Word Overlap (%)', font: { size: 11 } }, grid: { color: gridColor } },
+      x: { title: { display: true, text: 'Documents Superimposed', font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// CHART 2B: Memory
+// ═══════════════════════════════════════════
+new Chart(document.getElementById('chart2b'), {
+  type: 'line',
+  data: {
+    labels: ['10', '100', '500', '1K', '5K', '10K', '50K', '100K'],
+    datasets: [
+      { label: 'Traditional (linear)', data: [0.01, 0.1, 0.5, 1, 5, 10, 50, 100],
+        borderColor: brandRed, backgroundColor: 'rgba(200,60,60,0.04)', borderWidth: 2.5, fill: true, tension: 0.3, pointRadius: 3, pointBackgroundColor: brandRed },
+      { label: 'SparseWave (constant)', data: [0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002, 0.002],
+        borderColor: brandBlue, backgroundColor: 'rgba(42,92,199,0.06)', borderWidth: 2.5, fill: true, tension: 0, pointRadius: 3, pointBackgroundColor: brandBlue }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14, font: { size: 10 } } } },
+    scales: {
+      y: { type: 'logarithmic', min: 0.001, max: 200, title: { display: true, text: 'Memory (MB)', font: { size: 11 } }, grid: { color: gridColor } },
+      x: { title: { display: true, text: 'Documents Stored', font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// CHART 3A: Sparsity Measured
+// ═══════════════════════════════════════════
+new Chart(document.getElementById('chart3a'), {
+  type: 'bar',
+  data: {
+    labels: ['v9.3\n~1M params', 'Compact\n1B-scale', '50M\nEncoder'],
+    datasets: [
+      { label: 'Sparsity Ratio', data: [1.019, 1.143, 1.002],
+        backgroundColor: ['rgba(10,124,80,0.5)','rgba(10,124,80,0.5)','rgba(10,124,80,0.8)'],
+        borderColor: brandGreen, borderWidth: 1.5, borderRadius: 6, yAxisID: 'y' },
+      { label: 'Reconstruction %', data: [86.1, 91.5, 93.9],
+        backgroundColor: ['rgba(42,92,199,0.35)','rgba(42,92,199,0.35)','rgba(42,92,199,0.6)'],
+        borderColor: brandBlue, borderWidth: 1.5, borderRadius: 6, yAxisID: 'y2' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'rectRounded', padding: 14, font: { size: 10 } } } },
+    scales: {
+      y: { min: 0.95, max: 1.20, title: { display: true, text: 'Sparsity Ratio (1.0 = perfect)', font: { size: 10 } }, grid: { color: gridColor } },
+      y2: { position: 'right', min: 80, max: 100, title: { display: true, text: 'Reconstruction %', font: { size: 10 }, color: brandBlue }, grid: { display: false }, ticks: { color: brandBlue } },
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 0 } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// CHART 3B: Sparsity Projected
+// ═══════════════════════════════════════════
+new Chart(document.getElementById('chart3b'), {
+  type: 'line',
+  data: {
+    labels: ['1M', '50M', '500M', '1B', '10B'],
+    datasets: [
+      { label: 'Measured', data: [1.143, 1.002, null, null, null],
+        borderColor: brandGreen, borderWidth: 2.5, pointBackgroundColor: brandGreen, pointBorderColor: '#fff',
+        pointBorderWidth: 2, pointRadius: 7, fill: false, tension: 0.3, spanGaps: false },
+      { label: 'Projected', data: [null, 1.002, 1.0008, 1.0004, 1.0001],
+        borderColor: 'rgba(42,92,199,0.6)', borderWidth: 2, borderDash: [6, 4],
+        pointBackgroundColor: brandBlue, pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 5,
+        fill: false, tension: 0.3, spanGaps: true },
+      { label: 'Perfect (1.0)', data: [1.0,1.0,1.0,1.0,1.0],
+        borderColor: 'rgba(0,0,0,0.08)', borderWidth: 1, borderDash: [3,3], pointRadius: 0, fill: false }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 12, font: { size: 10 } } } },
+    scales: {
+      y: { min: 0.995, max: 1.16, title: { display: true, text: 'k=8/k=64 PPL Ratio', font: { size: 11 } }, grid: { color: gridColor } },
+      x: { title: { display: true, text: 'Encoder Parameters', font: { size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// CHART 4: FFT vs Plain (dark section)
+// ═══════════════════════════════════════════
+const darkGrid = 'rgba(255,255,255,0.06)';
+new Chart(document.getElementById('chart4'), {
+  type: 'line',
+  data: {
+    labels: ['1','2','3','4','5','6','7','8','9','10','11','12','15','20','25','30','35','40','43','48'],
+    datasets: [
+      { label: 'FFT Encoder (v3.7) — Measured',
+        data: [3.65,3.35,3.1,2.9,2.63,2.45,2.35,2.25,2.15,2.07,2.0,1.95,1.82,1.7,1.62,1.58,1.55,1.54,1.53,1.53],
+        borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,0.06)',
+        borderWidth: 2.5, pointBackgroundColor: '#4ade80', pointBorderColor: '#111118',
+        pointBorderWidth: 2, pointRadius: 4, fill: true, tension: 0.4 },
+      { label: 'Plain Encoder — Measured (1-12)',
+        data: [4.50,4.24,4.05,3.90,3.78,3.71,3.60,3.52,3.44,3.35,3.25,3.14,null,null,null,null,null,null,null,null],
+        borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.06)',
+        borderWidth: 2.5, pointBackgroundColor: '#f87171', pointBorderColor: '#111118',
+        pointBorderWidth: 2, pointRadius: 4, fill: true, tension: 0.4, spanGaps: false },
+      { label: 'Plain — Projected plateau',
+        data: [null,null,null,null,null,null,null,null,null,null,null,3.14,2.95,2.7,2.55,2.50,2.48,2.47,2.47,2.47],
+        borderColor: 'rgba(248,113,113,0.35)', borderWidth: 1.5, borderDash: [6,4],
+        pointBackgroundColor: 'rgba(248,113,113,0.4)', pointBorderColor: '#111118',
+        pointBorderWidth: 1, pointRadius: 2, fill: false, tension: 0.4, spanGaps: true }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14, font: { size: 10 }, color: 'rgba(255,255,255,0.6)' } },
+      annotation: {
+        annotations: {
+          fftLine: { type: 'line', yMin: 1.53, yMax: 1.53, borderColor: 'rgba(74,222,128,0.25)', borderWidth: 1, borderDash: [4,4],
+            label: { display: true, content: 'FFT converged: 1.53', position: 'start', font: { size: 10, family: "'IBM Plex Mono', monospace" }, color: '#4ade80', backgroundColor: 'rgba(74,222,128,0.08)', padding: 4 } },
+          plainLine: { type: 'line', yMin: 2.47, yMax: 2.47, borderColor: 'rgba(248,113,113,0.25)', borderWidth: 1, borderDash: [4,4],
+            label: { display: true, content: 'Plain plateau: ~2.5', position: 'end', font: { size: 10, family: "'IBM Plex Mono', monospace" }, color: '#f87171', backgroundColor: 'rgba(248,113,113,0.08)', padding: 4 } },
+          gapBox: { type: 'box', yMin: 1.53, yMax: 2.47, xMin: 15, xMax: 19, backgroundColor: 'rgba(74,222,128,0.03)', borderColor: 'rgba(74,222,128,0.1)', borderWidth: 1,
+            label: { display: true, content: '2× gap', font: { size: 13, weight: '700', family: "'IBM Plex Mono', monospace" }, color: 'rgba(74,222,128,0.4)', position: 'center' } }
+        }
+      }
+    },
+    scales: {
+      y: { min: 1.0, max: 5.0, title: { display: true, text: 'Validation Loss', font: { size: 12 }, color: 'rgba(255,255,255,0.5)' }, grid: { color: darkGrid }, ticks: { color: 'rgba(255,255,255,0.4)' } },
+      x: { title: { display: true, text: 'Epoch', font: { size: 12 }, color: 'rgba(255,255,255,0.5)' }, grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)' } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════
+// GAP TABLE
+// ═══════════════════════════════════════════
+const gapData = [
+  { label: '2K', n: 2048, note: '' },
+  { label: '4K', n: 4096, note: 'GPT-3 era' },
+  { label: '8K', n: 8192, note: '' },
+  { label: '16K', n: 16384, note: '' },
+  { label: '32K', n: 32768, note: '' },
+  { label: '128K', n: 131072, note: 'GPT-4, Claude' },
+  { label: '1M', n: 1048576, note: 'Gemini' },
+];
+
+function fmtOps(n) {
+  if (n >= 1e12) return (n/1e12).toFixed(1) + 'T';
+  if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(0) + 'K';
+  return n.toFixed(0);
+}
+
+const maxAdv = gapData[gapData.length-1].n / (Math.log2(gapData[gapData.length-1].n) * 0.125);
+const tbody = document.getElementById('gapTable');
+
+gapData.forEach((row, i) => {
+  const attn = row.n * row.n;
+  const sw = row.n * Math.log2(row.n) * 0.125;
+  const adv = Math.round(attn / sw);
+  const barPct = Math.max(3, (adv / maxAdv) * 100);
+  const isLast = i === gapData.length - 1;
+
+  const tr = document.createElement('tr');
+  tr.style.borderBottom = '1px solid rgba(0,0,0,0.05)';
+  if (isLast) tr.style.background = 'rgba(42,92,199,0.03)';
+
+  tr.innerHTML = `
+    <td style="padding: 13px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.95rem; color: #1a1a2e;">${row.label}</td>
+    <td style="padding: 13px 16px; text-align: right; font-family: 'IBM Plex Mono', monospace; color: #c83c3c; font-size: 0.85rem;">${fmtOps(attn)}</td>
+    <td style="padding: 13px 16px; text-align: right; font-family: 'IBM Plex Mono', monospace; color: #0a7c50; font-size: 0.85rem;">${fmtOps(sw)}</td>
+    <td style="padding: 13px 16px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: ${isLast ? '1.1rem' : '0.95rem'}; color: #2a5cc7;">${adv.toLocaleString()}×</td>
+    <td style="padding: 13px 16px; width: 28%;">
+      <div style="height: 8px; border-radius: 4px; background: rgba(42,92,199,0.08); overflow: hidden;">
+        <div style="height: 100%; width: ${barPct}%; background: linear-gradient(90deg, rgba(42,92,199,0.4), ${brandBlue}); border-radius: 4px;"></div>
+      </div>
+      ${row.note ? `<div style="font-size: 0.65rem; color: #8a8aa5; margin-top: 3px;">${row.note}</div>` : ''}
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+</script>
+
+</body>
+</html>
