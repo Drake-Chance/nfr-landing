@@ -685,11 +685,12 @@
         <div class="hero-label">SparseWave Research</div>
         <h1>Sparse Frequency-Domain Representations for Machine Intelligence</h1>
         <p class="hero-abstract">
-        We introduce SparseWave, a LLM architecture that encodes knowledge as spectral waveforms. 
-        Information is represented through amplitude and phase across a carrier frequency. 
-        SparseWave achieves 93.9% reconstruction fidelity on 1 billion tokens with confirmed spectral sparsity.
-        A 110K-parameter downstream model outperforms a 65M-parameter baseline by 2.7x. 
-        In superposition experiments, 10,000 documents summed in a single waveform achieve 99.68% separation and retrieval accuracy.
+            We introduce SparseWave, a LLM architecture that encodes knowledge as sparse waveforms.
+            Information is represented through amplitude and phase across a carrier frequency.
+            SparseWave achieves 93.9% reconstruction fidelity on 1 billion tokens with confirmed spectral sparsity.
+            A 110K-parameter downstream model outperforms a 65M-parameter baseline by 2.7x.
+            Sparsewaves can overlap in physics they call this superpostion.
+            This means we are able to put 10,000 documents into a single sparsewave and achieve 99.68% separation and retrieval accuracy.
         </p>
         <div class="hero-meta">
             <div class="hero-meta-item">
@@ -721,7 +722,7 @@
                 </div>
                 <div class="result-item">
                     <div class="result-value">93.9<span class="result-unit">%</span></div>
-                    <div class="result-label">Byte-level reconstruction fidelity from waveform encoding</div>
+                    <div class="result-label">Reconstruction fidelity from waveform encoding</div>
                     <div class="result-context">1 billion tokens of diverse web text — 50M encoder</div>
                 </div>
                 <div class="result-item">
@@ -780,7 +781,7 @@
                     <li>8 of 64 frequency bins carry equivalent performance to all 64</li>
                     <li>Information concentrates in sparse spectral peaks</li>
                     <li>Waveforms carry verifiable sequential structure</li>
-                    <li>Sparsity is learned, not imposed — it emerges from energy minimization</li>
+                    <li>Sparsity is learned, not imposed it emerges from energy minimization</li>
                 </ul>
             </div>
         </div>
@@ -803,7 +804,7 @@
         <div class="spectrum-inner">
             <canvas id="waveform-demo"></canvas>
             <p class="spectrum-caption">
-                FIG. 1 — Top: Output waveform after inverse FFT. Green regions contain encoded data; 
+                FIG. 1 — Top: Output waveform. Green regions contain encoded data; 
                 gray regions are near-zero (silence). Bottom: Corresponding frequency spectrum. 
                 At 1B-token scale, the top 8 of 64 frequency bins achieve equivalent downstream 
                 performance to all 64 bins (PPL ratio 1.002x with 50M encoder).
