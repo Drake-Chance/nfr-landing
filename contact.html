@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — SparseWave</title>
+    <meta name="description" content="Get in touch with SparseWave for licensing, investment, or research partnership inquiries.">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafafa;
+            --bg-alt: #f3f3f5;
+            --bg-dark: #111118;
+            --text: #1a1a2e;
+            --text-secondary: #4a4a65;
+            --text-muted: #8a8aa0;
+            --accent: #1a3a8a;
+            --accent-light: #2a5cc7;
+            --accent-muted: rgba(26, 58, 138, 0.08);
+            --green: #0a7c50;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-strong: rgba(0, 0, 0, 0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(250, 250, 250, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0.9rem 3rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 1.2rem; }
+        .nav-logo {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem; font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .nav-divider { width: 1px; height: 20px; background: var(--border-strong); }
+        .nav-title { font-size: 0.8rem; color: var(--text-secondary); font-weight: 400; }
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .nav-link {
+            font-size: 0.78rem; color: var(--text-secondary);
+            text-decoration: none; font-weight: 500;
+            transition: color 0.15s;
+        }
+        .nav-link:hover { color: var(--text); }
+
+        /* Page */
+        .page-header {
+            padding: 10rem 3rem 4rem;
+            max-width: 1200px; margin: 0 auto;
+            position: relative;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 60% 50% at 30% 30%, rgba(26, 58, 138, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .page-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem; font-weight: 500;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent-light);
+            margin-bottom: 1.5rem;
+        }
+        .page-header h1 {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 600; line-height: 1.15;
+            max-width: 600px; margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+        .page-header p {
+            font-size: 1.05rem; color: var(--text-secondary);
+            max-width: 540px; line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* Form container */
+        .form-section {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 3rem 6rem;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 5rem;
+        }
+
+        /* Form */
+        .form-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        }
+        .form-row {
+            margin-bottom: 1.8rem;
+        }
+        .form-row-half {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
+        }
+        label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem; font-weight: 500;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        label .required {
+            color: var(--accent-light);
+            margin-left: 2px;
+        }
+        input, select, textarea {
+            width: 100%;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9rem;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-light);
+            box-shadow: 0 0 0 3px rgba(42, 92, 199, 0.08);
+        }
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a8aa0' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 12px rgba(26, 58, 138, 0.2);
+        }
+        .submit-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(26, 58, 138, 0.25);
+        }
+        .form-note {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            padding-top: 0.5rem;
+        }
+        .sidebar-card {
+            padding: 2rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            background: #fff;
+        }
+        .sidebar-card h3 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+        }
+        .sidebar-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-card a {
+            color: var(--accent-light);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .sidebar-card a:hover { text-decoration: underline; }
+        .sidebar-list {
+            list-style: none; padding: 0; margin: 0;
+        }
+        .sidebar-list li {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+        .sidebar-list li:last-child { border-bottom: none; }
+        .sidebar-list .check {
+            color: var(--green);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* Success state */
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .form-success .check-circle {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: rgba(10, 124, 80, 0.08);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.8rem;
+        }
+        .form-success h2 {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 1.6rem; margin-bottom: 0.8rem;
+        }
+        .form-success p {
+            font-size: 0.95rem; color: var(--text-secondary);
+            max-width: 400px; margin: 0 auto;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 3rem;
+            border-top: 1px solid var(--border);
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        footer p { font-size: 0.7rem; color: var(--text-muted); }
+        footer a { color: var(--text-secondary); text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .nav-inner { padding: 0.9rem 1.5rem; }
+            .page-header { padding: 8rem 1.5rem 3rem; }
+            .form-section {
+                padding: 0 1.5rem 4rem;
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .form-row-half { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <a href="/" class="nav-logo">SparseWave</a>
+                <div class="nav-divider"></div>
+                <div class="nav-title">Contact</div>
+            </div>
+            <div class="nav-right">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/pitch_charts.html" class="nav-link">Presentation</a>
+                <a href="/contact.html" class="nav-link" style="color:var(--text)">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="page-label">Get in Touch</div>
+        <h1>Interested in SparseWave?</h1>
+        <p>Whether you're exploring investment opportunities, licensing, or research partnerships — we'd like to hear from you.</p>
+    </div>
+
+    <div class="form-section">
+        <div>
+            <div class="form-card" id="formCard">
+                <form id="contactForm" action="https://formsubmit.co/contact@sparsewave.com" method="POST">
+                    <input type="hidden" name="_subject" value="SparseWave Inquiry">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="text" name="_honey" style="display:none">
+                    <input type="hidden" name="_next" value="https://sparsewave.com/contact.html?sent=true">
+
+                    <div class="form-row-half">
+                        <div>
+                            <label>First Name <span class="required">*</span></label>
+                            <input type="text" name="first_name" required placeholder="Jane">
+                        </div>
+                        <div>
+                            <label>Last Name <span class="required">*</span></label>
+                            <input type="text" name="last_name" required placeholder="Smith">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email" required placeholder="jane@example.com">
+                    </div>
+
+                    <div class="form-row-half">
+                        <div>
+                            <label>Company / Organization</label>
+                            <input type="text" name="company" placeholder="Acme Ventures">
+                        </div>
+                        <div>
+                            <label>Title / Role</label>
+                            <input type="text" name="title" placeholder="Partner">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Phone</label>
+                        <input type="tel" name="phone" placeholder="+1 (555) 000-0000">
+                    </div>
+
+                    <div class="form-row">
+                        <label>Interest <span class="required">*</span></label>
+                        <select name="interest" required>
+                            <option value="" disabled selected>Select your primary interest</option>
+                            <option value="investment">Investment</option>
+                            <option value="licensing">Technology Licensing</option>
+                            <option value="research">Research Partnership</option>
+                            <option value="integration">Product Integration</option>
+                            <option value="general">General Inquiry</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Message</label>
+                        <textarea name="message" placeholder="Tell us about your interest in SparseWave and how we might work together..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Submit Inquiry</button>
+
+                    <p class="form-note">
+                        Your information is kept confidential and used only to respond to your inquiry. 
+                        We typically respond within 1–2 business days.
+                    </p>
+                </form>
+            </div>
+
+            <div class="form-success" id="formSuccess">
+                <div class="check-circle">✓</div>
+                <h2>Thank you</h2>
+                <p>We've received your inquiry and will be in touch within 1–2 business days.</p>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3>Why SparseWave</h3>
+                <ul class="sidebar-list">
+                    <li><span class="check">✓</span> Patent-pending frequency-domain LLM architecture</li>
+                    <li><span class="check">✓</span> 99.2% encoding fidelity proven at scale</li>
+                    <li><span class="check">✓</span> 1,000-document superposition at 99.68% retrieval</li>
+                    <li><span class="check">✓</span> 250x parameter efficiency vs conventional models</li>
+                    <li><span class="check">✓</span> Spectral sparsity: 8 of 64 bins carry 97% of signal</li>
+                </ul>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>Direct Contact</h3>
+                <p>Prefer email?</p>
+                <p><a href="mailto:contact@sparsewave.com">contact@sparsewave.com</a></p>
+            </div>
+
+            <div class="sidebar-card">
+                <h3>IP Status</h3>
+                <p>USPTO Provisional Patent filed March 2026. Technology available for licensing and strategic partnership.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SparseWave. All rights reserved.</p>
+        <p>Patent Pending</p>
+    </footer>
+
+    <script>
+        // Check if redirected back after successful send
+        if (window.location.search.includes('sent=true')) {
+            document.getElementById('formCard').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
+        }
+
+        // Handle form submission
+        const form = document.getElementById('contactForm');
+        const formCard = document.getElementById('formCard');
+        const formSuccess = document.getElementById('formSuccess');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+
+            try {
+                const resp = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (resp.ok) {
+                    formCard.style.display = 'none';
+                    formSuccess.style.display = 'block';
+                } else {
+                    btn.textContent = 'Error — try again';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                btn.textContent = 'Error — try again';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
